@@ -1,11 +1,13 @@
-# Docker IPsec/L2TP and Cisco IPsec VPN Server
+# Docker IPsec VPN Server
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server) 
 [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server)
 
-Use this image to set up your own VPN server supporting both `IPsec/L2TP` and `IPsec/XAuth ("Cisco IPsec")`.
+Set up your own IPsec VPN server on Docker, with support for both `IPsec/L2TP` and `IPsec/XAuth ("Cisco IPsec")`.
 
-Available on [Docker Hub](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/). Based on Debian Jessie with [Libreswan](https://libreswan.org) (IPsec VPN software) and [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP daemon).
+Based on Debian Jessie with [Libreswan](https://libreswan.org) (IPsec VPN software) and [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP daemon).
+
+Available on [Docker Hub](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server).
 
 ## Download
 
@@ -27,9 +29,9 @@ VPN_PASSWORD=<VPN Password>
 
 This will create a single account for VPN login. The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
 
-All the variables to this image are optional, which means you don't have to type in any environment variables, and you can have an IPsec VPN server out of the box! Read the sections below for details.
+**Note:** In your `env` file, DO NOT put single or double quotes around values, or add space around `=`.
 
-**Note:** In your `env` file, do not put single or double quotes around values, and do not add space around `=`.
+All the variables to this image are optional, which means you don't have to type in any environment variables, and you can have an IPsec VPN server out of the box! Read the sections below for details.
 
 ### Start the IPsec VPN server
 
@@ -99,7 +101,8 @@ The ports that are exposed for this container to work are:
 
 ## See Also
 
-* [hwdsl2/setup-ipsec-vpn](https://github.com/hwdsl2/setup-ipsec-vpn)
+* [IPsec VPN Server on Ubuntu, Debian and CentOS](https://github.com/hwdsl2/setup-ipsec-vpn)
+* [IKEv2 VPN Server on Docker](https://github.com/gaomd/docker-ikev2-vpn-server)
 
 ## License
 
