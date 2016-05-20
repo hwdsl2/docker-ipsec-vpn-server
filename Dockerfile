@@ -1,7 +1,7 @@
 FROM debian:jessie
 MAINTAINER Lin Song <linsongui@gmail.com>
 
-ENV REFRESHED_AT 2016-05-19
+ENV REFRESHED_AT 2016-05-20
 
 ENV SWAN_VER 3.17
 ENV DEBIAN_FRONTEND noninteractive
@@ -14,6 +14,8 @@ RUN apt-get -yqq update \
          libcurl4-nss-dev flex bison gcc make \
          libunbound-dev libnss3-tools libevent-dev xl2tpd \
     && apt-get -yqq --no-install-recommends install xmlto \
+    && apt-get -yq --purge autoremove \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/src
