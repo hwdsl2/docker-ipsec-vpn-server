@@ -38,7 +38,7 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
 fi
 
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-  echo "VPN credentials cannot be empty. Edit the script and re-enter them."
+  echo "VPN credentials cannot be empty. Edit your 'env' file and re-enter them."
   exit 1
 fi
 
@@ -46,8 +46,9 @@ echo
 echo 'Trying to auto discover IPs of this server...'
 echo
 
-# In case auto IP discovery fails, you may manually enter server IPs here.
-# If your server only has a public IP, put that public IP on both lines.
+# In case auto IP discovery fails, you may manually enter server IPs
+# in your 'env' file via variables VPN_PUBLIC_IP and VPN_PRIVATE_IP.
+# If your server only has a public IP, use that public IP for both.
 PUBLIC_IP=$VPN_PUBLIC_IP
 PRIVATE_IP=$VPN_PRIVATE_IP
 
@@ -60,11 +61,11 @@ PRIVATE_IP=$VPN_PRIVATE_IP
 # Check IPs for correct format
 IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
 if ! printf %s "$PUBLIC_IP" | grep -Eq "$IP_REGEX"; then
-  echo "Cannot find valid public IP. Edit the script and manually enter IPs."
+  echo "Cannot find valid public IP. See 'run.sh' for how to manually enter IPs."
   exit 1
 fi
 if ! printf %s "$PRIVATE_IP" | grep -Eq "$IP_REGEX"; then
-  echo "Cannot find valid private IP. Edit the script and manually enter IPs."
+  echo "Cannot find valid private IP. See 'run.sh' for how to manually enter IPs."
   exit 1
 fi
 
@@ -226,7 +227,7 @@ iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "$
 sysctl -q -p 2>/dev/null
 
 # Update file attributes
-chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
+chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets /etc/ipsec.d/passwd
 
 echo
 echo '================================================'
@@ -248,6 +249,8 @@ echo '================================================'
 echo
 
 # Start services
-mkdir -p /var/run/xl2tpd
+rm -f /var/run/pluto/pluto.pid
 /usr/local/sbin/ipsec start --config /etc/ipsec.conf
+
+mkdir -p /var/run/xl2tpd
 /usr/sbin/xl2tpd -D -c /etc/xl2tpd/xl2tpd.conf
