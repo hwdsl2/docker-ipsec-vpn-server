@@ -1,7 +1,7 @@
 # Docker IPsec VPN Server
 
+[![Build Status](https://img.shields.io/travis/hwdsl2/docker-ipsec-vpn-server.svg)](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server) 
 [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server) 
-[![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server)
 
 Set up your own IPsec VPN server on Docker, with support for both `IPsec/L2TP` and `IPsec/XAuth ("Cisco IPsec")`.
 
@@ -35,7 +35,7 @@ All the variables to this image are optional, which means you don't have to type
 
 ### Start the IPsec VPN server
 
-First, run `modprobe af_key` on the host to load the IPsec `NETKEY` kernel module.
+First, run `sudo modprobe af_key` on the host to load the IPsec `NETKEY` kernel module.
 
 Start your Docker container with the following command (replace `./vpn.env` with your own `env` file) :
 
