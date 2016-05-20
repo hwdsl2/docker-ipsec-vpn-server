@@ -1,5 +1,8 @@
 # Docker IPsec/L2TP and Cisco IPsec VPN Server
 
+[![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server) 
+[![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server)
+
 Use this image to set up your own VPN server supporting both `IPsec/L2TP` and `IPsec/XAuth ("Cisco IPsec")`.
 
 Available on [Docker Hub](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/). Based on Debian Jessie with [Libreswan](https://libreswan.org) (IPsec VPN software) and [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP daemon).
