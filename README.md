@@ -29,6 +29,8 @@ This will create a single account for VPN login. The IPsec PSK (pre-shared key) 
 
 All the variables to this image are optional, which means you don't have to type in any environment variables, and you can have an IPsec VPN server out of the box! Read the sections below for details.
 
+**Note:** In your `env` file, do not put single or double quotes around values, and do not add space around `=`.
+
 ### Start the IPsec VPN server
 
 First, run `modprobe af_key` on the host to load the IPsec `NETKEY` kernel module.
@@ -48,10 +50,10 @@ docker run \
 
 ### Retrieve VPN login details
 
-If you did not set any environment variables via an `env` file, `VPN_USER` will default to `vpnuser` and both `VPN_IPSEC_PSK` and `VPN_PASSWORD` will be randomly generated. To retrieve them, show the logs of the running container:
+If you did not set environment variables via an `env` file, `VPN_USER` will default to `vpnuser` and both `VPN_IPSEC_PSK` and `VPN_PASSWORD` will be randomly generated. To retrieve them, show the logs of the running container:
 
 ```
-docker logs <CONTAINER ID>
+docker logs docker-ipsec-vpn-server
 ```
 
 Search for these lines in the output:
