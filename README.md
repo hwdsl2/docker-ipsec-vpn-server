@@ -1,7 +1,8 @@
 # IPsec VPN Server on Docker
 
 [![Build Status](https://img.shields.io/travis/hwdsl2/docker-ipsec-vpn-server.svg)](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server) 
-[![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server) 
+[![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server) 
+[![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server)
 
 Set up your own IPsec VPN server on Docker, with support for both `IPsec/L2TP` and `IPsec/XAuth ("Cisco IPsec")`.
 
@@ -27,7 +28,7 @@ VPN_USER=<VPN Username>
 VPN_PASSWORD=<VPN Password>
 ```
 
-This will create a single account for VPN login. The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
+This will create a single user account for VPN login. The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
 
 **Note:** In your `env` file, DO NOT put single or double quotes around values, or add space around `=`.
 
