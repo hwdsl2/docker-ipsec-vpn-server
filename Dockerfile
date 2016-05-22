@@ -1,20 +1,19 @@
 FROM debian:jessie
 MAINTAINER Lin Song <linsongui@gmail.com>
 
-ENV REFRESHED_AT 2016-05-20
+ENV REFRESHED_AT 2016-05-21
 
 ENV SWAN_VER 3.17
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get -yqq update \
-    && apt-get -yqq install wget dnsutils openssl \
+    && apt-get -yqq --no-install-recommends install \
+         wget dnsutils openssl ca-certificates \
          iproute gawk grep sed net-tools iptables \
          libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
          libcap-ng-dev libcap-ng-utils libselinux1-dev \
          libcurl4-nss-dev flex bison gcc make \
-         libunbound-dev libnss3-tools libevent-dev xl2tpd \
-    && apt-get -yqq --no-install-recommends install xmlto \
-    && apt-get -yq --purge autoremove \
+         libunbound-dev libnss3-tools libevent-dev xl2tpd xmlto \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -33,4 +32,4 @@ EXPOSE 500/udp 4500/udp
 
 VOLUME ["/lib/modules"]
 
-CMD /run.sh
+CMD ["/run.sh"]

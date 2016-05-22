@@ -229,29 +229,30 @@ sysctl -q -p 2>/dev/null
 # Update file attributes
 chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets /etc/ipsec.d/passwd
 
-echo
-echo '================================================'
-echo
-echo 'IPsec/L2TP VPN server is now ready for use!'
-echo
-echo 'Connect to your new VPN with these details:'
-echo
-echo "Server IP: $PUBLIC_IP"
-echo "IPsec PSK: $VPN_IPSEC_PSK"
-echo "Username: $VPN_USER"
-echo "Password: $VPN_PASSWORD"
-echo
-echo "Write these down. You'll need them to connect! "
-echo
-echo 'Setup VPN Clients: https://git.io/vpnclients'
-echo
-echo '================================================'
-echo
+cat <<EOF
+
+================================================
+
+IPsec VPN server is now ready for use!
+
+Connect to your new VPN with these details:
+
+Server IP: $PUBLIC_IP
+IPsec PSK: $VPN_IPSEC_PSK
+Username: $VPN_USER
+Password: $VPN_PASSWORD
+
+Write these down. You'll need them to connect!
+
+Setup VPN Clients: https://git.io/vpnclients
+
+================================================
+
+EOF
 
 # Start services
 mkdir -p /var/run/pluto /var/run/xl2tpd
-rm -f /var/run/pluto/pluto.pid
-rm -f /var/run/xl2tpd/xl2tpd.pid
+rm -f /var/run/pluto/pluto.pid /var/run/xl2tpd/xl2tpd.pid
 
 /usr/local/sbin/ipsec start --config /etc/ipsec.conf
-/usr/sbin/xl2tpd -D -c /etc/xl2tpd/xl2tpd.conf
+exec /usr/sbin/xl2tpd -D -c /etc/xl2tpd/xl2tpd.conf
