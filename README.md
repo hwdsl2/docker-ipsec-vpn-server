@@ -66,7 +66,7 @@ Connect to your new VPN with these details:
 
 Server IP: <VPN Server IP>
 IPsec PSK: <IPsec pre-shared key>
-Username: vpnuser
+Username: <VPN Username>
 Password: <VPN Password>
 ```
 
