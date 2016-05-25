@@ -8,17 +8,15 @@ services:
 
 install:
   - docker build -t vpnserver .
-  - sudo modprobe af_key
   - docker run --name vpnserver --env-file ./vpn.env.example -p 500:500/udp -p 4500:4500/udp -v /lib/modules:/lib/modules:ro -d --privileged vpnserver
 
 script:
-  - sleep 30
+  - sleep 20
   - docker ps | grep -q vpnserver
   - docker logs vpnserver
   - docker exec -it vpnserver ipsec status
-  - docker stop vpnserver
-  - docker start vpnserver
-  - sleep 30
+  - docker restart vpnserver
+  - sleep 20
   - docker ps | grep -q vpnserver
   - docker logs vpnserver
   - docker exec -it vpnserver ipsec status
