@@ -1,7 +1,7 @@
 FROM debian:jessie
 MAINTAINER Lin Song <linsongui@gmail.com>
 
-ENV REFRESHED_AT 2016-05-21
+ENV REFRESHED_AT 2016-05-25
 
 ENV SWAN_VER 3.17
 ENV DEBIAN_FRONTEND noninteractive
@@ -18,7 +18,9 @@ RUN apt-get -yqq update \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/src
-RUN wget -t 3 -T 30 -qO- "libreswan-${SWAN_VER}.tar.gz" "https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz" | tar xz \
+RUN wget -t 3 -T 30 -nv -O "libreswan-${SWAN_VER}.tar.gz" "https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz" \
+    && tar xzf "libreswan-${SWAN_VER}.tar.gz" \
+    && rm -f "libreswan-${SWAN_VER}.tar.gz" \
     && cd "libreswan-${SWAN_VER}" \
     && echo "WERROR_CFLAGS =" > Makefile.inc.local \
     && make -s programs \
