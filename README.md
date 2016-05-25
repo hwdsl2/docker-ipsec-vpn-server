@@ -36,9 +36,7 @@ All the variables to this image are optional, which means you don't have to type
 
 ### Start the IPsec VPN server
 
-First, run `sudo modprobe af_key` on the host to load the IPsec `NETKEY` kernel module.
-
-Start your Docker container with the following command (replace `./vpn.env` with your own `env` file) :
+Create a new Docker container with the following command (replace `./vpn.env` with your own `env` file) :
 
 ```
 docker run \

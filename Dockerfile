@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get -yqq update \
     && apt-get -yqq --no-install-recommends install \
-         wget dnsutils openssl ca-certificates \
+         wget dnsutils openssl ca-certificates kmod \
          iproute gawk grep sed net-tools iptables \
          libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
          libcap-ng-dev libcap-ng-utils libselinux1-dev \

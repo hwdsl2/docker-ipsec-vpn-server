@@ -14,17 +14,17 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-
-if [ ! -f /.dockerenv ]; then
-  echo 'This script should ONLY be run in a docker container! Aborting.'
-  exit 1
-fi
-
 # IPsec Pre-Shared Key, VPN Username and Password
 VPN_IPSEC_PSK=$VPN_IPSEC_PSK
 VPN_USER=$VPN_USER
 VPN_PASSWORD=$VPN_PASSWORD
+
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+if [ ! -f /.dockerenv ]; then
+  echo 'This script should ONLY be run in a Docker container! Aborting.'
+  exit 1
+fi
 
 if [ ! -f /sys/class/net/eth0/operstate ]; then
   echo "Network interface 'eth0' is not available. Aborting."
@@ -46,26 +46,25 @@ echo
 echo 'Trying to auto discover IPs of this server...'
 echo
 
-# In case auto IP discovery fails, you may manually enter server IPs
-# in your 'env' file via variables VPN_PUBLIC_IP and VPN_PRIVATE_IP.
-# If your server only has a public IP, use that public IP for both.
+# In case auto IP discovery fails, you may manually enter the public IP
+# of this server in your 'env' file, using variable 'VPN_PUBLIC_IP'.
 PUBLIC_IP=$VPN_PUBLIC_IP
-PRIVATE_IP=$VPN_PRIVATE_IP
 
 # Try to auto discover server IPs
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-[ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
+PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
 [ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
 
 # Check IPs for correct format
 IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
 if ! printf %s "$PUBLIC_IP" | grep -Eq "$IP_REGEX"; then
-  echo "Cannot find valid public IP. See 'run.sh' for how to manually enter IPs."
+  echo "Cannot find valid public IP. Please manually enter the public IP"
+  echo "of this server in your 'env' file, using variable 'VPN_PUBLIC_IP'."
   exit 1
 fi
 if ! printf %s "$PRIVATE_IP" | grep -Eq "$IP_REGEX"; then
-  echo "Cannot find valid private IP. See 'run.sh' for how to manually enter IPs."
+  echo "Cannot find valid private IP. Aborting."
   exit 1
 fi
 
@@ -249,6 +248,9 @@ Setup VPN Clients: https://git.io/vpnclients
 ================================================
 
 EOF
+
+# Load IPsec NETKEY kernel module
+modprobe af_key
 
 # Start services
 mkdir -p /var/run/pluto /var/run/xl2tpd
