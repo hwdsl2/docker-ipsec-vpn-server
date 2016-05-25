@@ -30,9 +30,9 @@ VPN_PASSWORD=<VPN Password>
 
 This will create a single user account for VPN login. The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
 
-**Note:** In your `env` file, DO NOT put single or double quotes around values, or add space around `=`.
+**Note:** In your `env` file, DO NOT put single or double quotes around values, or add space around `=`. Also, DO NOT use these characters within values: `\ " '`
 
-All the variables to this image are optional, which means you don't have to type in any environment variables, and you can have an IPsec VPN server out of the box! Read the sections below for details.
+All the variables to this image are optional, which means you don't have to type in any environment variable, and you can have an IPsec VPN server out of the box! Read the sections below for details.
 
 ### Start the IPsec VPN server
 
@@ -42,7 +42,7 @@ Start your Docker container with the following command (replace `./vpn.env` with
 
 ```
 docker run \
-    --name docker-ipsec-vpn-server \
+    --name ipsec-vpn-server \
     --env-file ./vpn.env \
     -p 500:500/udp \
     -p 4500:4500/udp \
@@ -56,7 +56,7 @@ docker run \
 If you did not set environment variables via an `env` file, `VPN_USER` will default to `vpnuser` and both `VPN_IPSEC_PSK` and `VPN_PASSWORD` will be randomly generated. To retrieve them, show the logs of the running container:
 
 ```
-docker logs docker-ipsec-vpn-server
+docker logs ipsec-vpn-server
 ```
 
 Search for these lines in the output:
@@ -72,10 +72,10 @@ Password: <VPN Password>
 
 ### Check server status
 
-To check the status of your IPsec VPN server, you can pass `ipsec status` to your container like this :
+To check the status of your IPsec VPN server, you can pass `ipsec status` to your container like this:
 
 ```
-docker exec -it docker-ipsec-vpn-server ipsec status
+docker exec -it ipsec-vpn-server ipsec status
 ```
 
 ## Next Steps
@@ -87,13 +87,15 @@ Get your computer or device to use the VPN. Please refer to:
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
-## Services Running
+## Technical Details
 
 There are two services running: `Libreswan (pluto)` for the IPsec VPN, and `xl2tpd` for L2TP support.
 
+Clients are configured to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN connection is active.
+
 The default IPsec configuration supports:
 
-* IKEv1 with PSK and XAuth ("Cisco IPSec")
+* IKEv1 with PSK and XAuth ("Cisco IPsec")
 * IPsec/L2TP with PSK
 
 The ports that are exposed for this container to work are:
