@@ -254,7 +254,7 @@ modprobe af_key
 
 # Start services
 mkdir -p /var/run/pluto /var/run/xl2tpd
-rm -f /var/run/pluto/pluto.pid /var/run/xl2tpd/xl2tpd.pid
+rm -f /var/run/pluto/pluto.pid /var/run/xl2tpd.pid
 
 /usr/local/sbin/ipsec start --config /etc/ipsec.conf
 exec /usr/sbin/xl2tpd -D -c /etc/xl2tpd/xl2tpd.conf
