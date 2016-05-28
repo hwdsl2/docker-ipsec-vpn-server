@@ -10,7 +10,7 @@ Based on Debian Jessie with [Libreswan](https://libreswan.org) (IPsec VPN softwa
 
 ## Install Docker
 
-[Follow these instructions](https://docs.docker.com/engine/installation/) to get Docker running on your server.
+Follow [these instructions](https://docs.docker.com/engine/installation/) to get Docker running on your server.
 
 ## Download the image
 
@@ -48,7 +48,13 @@ All the variables to this image are optional, which means you don't have to type
 
 ### Start the IPsec VPN server
 
-Create a new Docker container with the following command (replace `./vpn.env` with your own `env` file) :
+First, run this command on the Docker host to load the IPsec `NETKEY` kernel module:
+
+```
+sudo modprobe af_key
+```
+
+Start a new Docker container with the following command (replace `./vpn.env` with your own `env` file) :
 
 ```
 docker run \
