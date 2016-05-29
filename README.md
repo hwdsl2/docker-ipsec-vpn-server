@@ -6,7 +6,7 @@
 
 Docker image to run an IPsec VPN server, with support for both `IPsec/L2TP` and `IPsec/XAuth ("Cisco IPsec")`.
 
-Based on Debian Jessie with [Libreswan](https://libreswan.org) (IPsec VPN software) and [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP daemon).
+Based on Debian Jessie with [Libreswan](https://libreswan.org) (IPsec VPN software) and [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP daemon). Available on [Docker Hub](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server).
 
 ## Install Docker
 
@@ -14,7 +14,7 @@ Follow [these instructions](https://docs.docker.com/engine/installation/) to get
 
 ## Download the image
 
-Get the [trusted build on the Docker Hub](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server):
+Get the trusted build from the Docker Hub registry:
 
 ```
 docker pull hwdsl2/ipsec-vpn-server
