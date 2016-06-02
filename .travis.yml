@@ -8,15 +8,23 @@ services:
 
 install:
   - docker build -t vpnserver .
-  - docker run --name vpnserver --env-file ./vpn.env.example -p 500:500/udp -p 4500:4500/udp -v /lib/modules:/lib/modules:ro -d --privileged vpnserver
+  - docker run --name vpnserver1 --env-file ./vpn.env.example -p 500:500/udp -p 4500:4500/udp -v /lib/modules:/lib/modules:ro -d --privileged vpnserver
+  - docker run --name vpnserver2 -p 501:500/udp -p 4501:4500/udp -v /lib/modules:/lib/modules:ro -d --privileged vpnserver
 
 script:
   - sleep 20
-  - docker ps | grep -q vpnserver
-  - docker logs vpnserver
-  - docker exec -it vpnserver ipsec status
-  - docker restart vpnserver
+  - docker ps | grep -q vpnserver1
+  - docker ps | grep -q vpnserver2
+  - docker logs vpnserver1
+  - docker logs vpnserver2
+  - docker exec -it vpnserver1 ipsec status
+  - docker exec -it vpnserver2 ipsec status
+  - docker restart vpnserver1
+  - docker restart vpnserver2
   - sleep 20
-  - docker ps | grep -q vpnserver
-  - docker logs vpnserver
-  - docker exec -it vpnserver ipsec status
+  - docker ps | grep -q vpnserver1
+  - docker ps | grep -q vpnserver2
+  - docker logs vpnserver1
+  - docker logs vpnserver2
+  - docker exec -it vpnserver1 ipsec status
+  - docker exec -it vpnserver2 ipsec status
