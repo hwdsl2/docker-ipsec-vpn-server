@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Docker script for starting an IPsec/L2TP VPN server
+# Docker script for configuring an IPsec VPN server
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS ONLY MEANT TO BE RUN
 # IN A DOCKER CONTAINER!
@@ -14,10 +14,10 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-# IPsec Pre-Shared Key, VPN Username and Password
-VPN_IPSEC_PSK=$VPN_IPSEC_PSK
-VPN_USER=$VPN_USER
-VPN_PASSWORD=$VPN_PASSWORD
+# IPsec pre-shared key, VPN username and password
+VPN_IPSEC_PSK=${VPN_IPSEC_PSK:-''}
+VPN_USER=${VPN_USER:-''}
+VPN_PASSWORD=${VPN_PASSWORD:-''}
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
@@ -38,7 +38,7 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
 fi
 
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-  echo "VPN credentials cannot be empty. Edit your 'env' file and re-enter them."
+  echo "VPN credentials must be specified. Edit your 'env' file and re-enter them."
   exit 1
 fi
 
@@ -48,7 +48,7 @@ echo
 
 # In case auto IP discovery fails, you may manually enter the public IP
 # of this server in your 'env' file, using variable 'VPN_PUBLIC_IP'.
-PUBLIC_IP=$VPN_PUBLIC_IP
+PUBLIC_IP=${VPN_PUBLIC_IP:-''}
 
 # Try to auto discover server IPs
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
