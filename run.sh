@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Docker script for configuring an IPsec VPN server
+# Docker script to configure and start an IPsec VPN server
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS ONLY MEANT TO BE RUN
 # IN A DOCKER CONTAINER!
@@ -13,11 +13,6 @@
 #
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
-
-# IPsec pre-shared key, VPN username and password
-VPN_IPSEC_PSK=${VPN_IPSEC_PSK:-''}
-VPN_USER=${VPN_USER:-''}
-VPN_PASSWORD=${VPN_PASSWORD:-''}
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
@@ -214,10 +209,6 @@ iptables -I FORWARD 2 -i eth+ -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED
 iptables -I FORWARD 3 -i ppp+ -o eth+ -j ACCEPT
 iptables -I FORWARD 4 -i eth+ -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 iptables -I FORWARD 5 -s 192.168.43.0/24 -o eth+ -j ACCEPT
-# To allow traffic between VPN clients themselves, uncomment these lines:
-# iptables -I FORWARD 6 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
-# iptables -I FORWARD 7 -s 192.168.43.0/24 -d 192.168.43.0/24 -j ACCEPT
-iptables -A FORWARD -j DROP
 iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP"
 iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "$PRIVATE_IP"
 
