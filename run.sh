@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Docker script to configure and start an IPsec VPN server
 #
@@ -13,7 +13,6 @@
 #
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
-
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 if [ ! -f /.dockerenv ]; then
@@ -26,13 +25,13 @@ if [ ! -f /sys/class/net/eth0/operstate ]; then
   exit 1
 fi
 
-if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
+if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER_CREDENTIAL_LIST" ]; then
   VPN_IPSEC_PSK="$(< /dev/urandom tr -dc 'A-HJ-NPR-Za-km-z2-9' | head -c 16)"
-  VPN_USER=vpnuser
   VPN_PASSWORD="$(< /dev/urandom tr -dc 'A-HJ-NPR-Za-km-z2-9' | head -c 16)"
+  VPN_USER_CREDENTIAL_LIST="[{\"login\":\"vpnuser\",\"password\":\"$VPN_PASSWORD\"}]"
 fi
 
-if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
+if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER_CREDENTIAL_LIST" ]; then
   echo "VPN credentials must be specified. Edit your 'env' file and re-enter them."
   exit 1
 fi
@@ -155,20 +154,22 @@ lcp-echo-interval 30
 EOF
 
 # Create VPN credentials
-cat > /etc/ppp/chap-secrets <<EOF
-# Secrets for authentication using CHAP
-# client  server  secret  IP addresses
-"$VPN_USER" l2tpd "$VPN_PASSWORD" *
-EOF
+echo "$VPN_USER_CREDENTIAL_LIST" | jq -r '.[] | .login + " l2tpd " + .password + " *"' > /etc/ppp/chap-secrets
 
-VPN_PASSWORD_ENC=$(openssl passwd -1 "$VPN_PASSWORD")
-echo "${VPN_USER}:${VPN_PASSWORD_ENC}:xauth-psk" > /etc/ipsec.d/passwd
+CREDENTIALS_NUMBER=`echo "$VPN_USER_CREDENTIAL_LIST" | jq 'length'`
+for (( i=0; i<=$CREDENTIALS_NUMBER - 1; i++ ))
+do
+	VPN_USER_LOGIN=`echo "$VPN_USER_CREDENTIAL_LIST" | jq ".["$i"] | .login"`
+	VPN_USER_PASSWORD=`echo "$VPN_USER_CREDENTIAL_LIST" | jq ".["$i"] | .password"`
+	VPN_PASSWORD_ENC=$(openssl passwd -1 "$VPN_USER_PASSWORD")
+	echo "${VPN_USER_LOGIN}:${VPN_PASSWORD_ENC}:xauth-psk" >> /etc/ipsec.d/passwd
+done
 
 # Update sysctl settings
-if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
+if ! grep -qs "Added by run.sh script" /etc/sysctl.conf; then
 cat >> /etc/sysctl.conf <<EOF
 
-# Added by hwdsl2 VPN script
+# Added by run.sh script
 kernel.msgmnb = 65536
 kernel.msgmax = 65536
 kernel.shmmax = 68719476736
@@ -226,8 +227,17 @@ Connect to your new VPN with these details:
 
 Server IP: $PUBLIC_IP
 IPsec PSK: $VPN_IPSEC_PSK
-Username: $VPN_USER
-Password: $VPN_PASSWORD
+Users credentials :
+EOF
+
+for (( i=0; i<=$CREDENTIALS_NUMBER - 1; i++ ))
+do
+	VPN_USER_LOGIN=`echo "$VPN_USER_CREDENTIAL_LIST" | jq -r ".["$i"] | .login"`
+	VPN_USER_PASSWORD=`echo "$VPN_USER_CREDENTIAL_LIST" | jq -r ".["$i"] | .password"`
+	echo "Login : ${VPN_USER_LOGIN} Password : ${VPN_USER_PASSWORD}"
+done
+
+cat <<EOF
 
 Write these down. You'll need them to connect!
 

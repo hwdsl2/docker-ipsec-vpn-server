@@ -1,7 +1,7 @@
 FROM debian:jessie
-MAINTAINER Lin Song <linsongui@gmail.com>
+MAINTAINER Francois COJEAN <francois.cojean@gmail.com>
 
-ENV REFRESHED_AT 2016-05-25
+ENV REFRESHED_AT 2016-06-05
 
 ENV SWAN_VER 3.17
 ENV DEBIAN_FRONTEND noninteractive
@@ -14,6 +14,7 @@ RUN apt-get -yqq update \
          libcap-ng-dev libcap-ng-utils libselinux1-dev \
          libcurl4-nss-dev flex bison gcc make \
          libunbound-dev libnss3-tools libevent-dev xl2tpd xmlto \
+         jq \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

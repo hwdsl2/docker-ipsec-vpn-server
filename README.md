@@ -23,9 +23,9 @@ docker pull hwdsl2/ipsec-vpn-server
 or download and compile the source yourself from GitHub:
 
 ```
-git clone https://github.com/hwdsl2/docker-ipsec-vpn-server.git
+git clone https://github.com/fcojean/docker-ipsec-vpn-server.git
 cd docker-ipsec-vpn-server
-docker build -t hwdsl2/ipsec-vpn-server .
+docker build -t fcojean/l2tp-ipsec-vpn-server .
 ```
 
 ## How to use this image
@@ -58,13 +58,13 @@ Start a new Docker container with the following command (replace `./vpn.env` wit
 
 ```
 docker run \
-    --name ipsec-vpn-server \
+    --name l2tp-ipsec-vpn-server \
     --env-file ./vpn.env \
     -p 500:500/udp \
     -p 4500:4500/udp \
     -v /lib/modules:/lib/modules:ro \
     -d --privileged \
-    hwdsl2/ipsec-vpn-server
+    fcojean/l2tp-ipsec-vpn-server
 ```
 
 ### Retrieve VPN login details
