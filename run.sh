@@ -68,6 +68,8 @@ cat > /etc/ipsec.conf <<EOF
 version 2.0
 
 config setup
+
+  nat_traversal=yes
   virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!192.168.42.0/23
   protostack=netkey
   nhelpers=0
@@ -82,9 +84,9 @@ conn shared
   authby=secret
   pfs=no
   rekey=no
-  keyingtries=5
-  dpddelay=30
-  dpdtimeout=120
+  keyingtries=3
+  dpddelay=15
+  dpdtimeout=30
   dpdaction=clear
   ike=3des-sha1,aes-sha1
   phase2alg=3des-sha1,aes-sha1
@@ -128,7 +130,7 @@ cat > /etc/xl2tpd/xl2tpd.conf <<EOF
 port = 1701
 
 [lns default]
-ip range = 192.168.42.10-192.168.42.250
+ip range = 192.168.42.10-192.168.42.50
 local ip = 192.168.42.1
 require chap = yes
 refuse pap = yes
@@ -147,13 +149,9 @@ ms-dns 8.8.4.4
 noccp
 auth
 crtscts
-idle 1800
-mtu 1280
-mru 1280
 lock
-lcp-echo-failure 10
-lcp-echo-interval 60
-connect-delay 5000
+lcp-echo-failure 4
+lcp-echo-interval 30
 EOF
 
 # Create VPN credentials
