@@ -1,8 +1,10 @@
-# IPsec VPN Server on Docker
+﻿# IPsec VPN Server on Docker
 
-[![Build Status](https://img.shields.io/travis/hwdsl2/docker-ipsec-vpn-server.svg)](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server) 
-[![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server) 
-[![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server)
+[![Build Status](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server.svg?branch=master)](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server) 
+[![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server) 
+[![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server)
+
+*Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
 Docker image to run an IPsec VPN server, with support for both `IPsec/L2TP` and `IPsec/XAuth ("Cisco IPsec")`.
 
@@ -77,7 +79,7 @@ docker logs ipsec-vpn-server
 
 Search for these lines in the output:
 
-```console
+```
 Connect to your new VPN with these details:
 
 Server IP: <VPN Server IP>
@@ -125,10 +127,10 @@ The ports that are exposed for this container to work are:
 
 ## Author
 
-##### Lin Song   
+**Lin Song** (linsongui@gmail.com)   
 - Final year U.S. PhD candidate, majoring in Electrical and Computer Engineering (ECE)
 - Actively seeking opportunities in areas such as Software or Systems Engineering
-- Contact me on LinkedIn: <a href="https://www.linkedin.com/in/linsongui" target="_blank">https://www.linkedin.com/in/linsongui</a>
+- Contact me on LinkedIn: [https://www.linkedin.com/in/linsongui](https://www.linkedin.com/in/linsongui)
 
 ## License
 
