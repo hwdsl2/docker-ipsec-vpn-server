@@ -5,7 +5,7 @@
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS ONLY MEANT TO BE RUN
 # IN A DOCKER CONTAINER!
 #
-# Copyright (C) 2016 Lin Song
+# Copyright (C) 2016 Lin Song <linsongui@gmail.com>
 # Based on the work of Thomas Sarlandie (Copyright 2012)
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
@@ -16,13 +16,15 @@
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
+echoerr() { echo "$@" 1>&2; }
+
 if [ ! -f /.dockerenv ]; then
-  echo 'This script should ONLY be run in a Docker container! Aborting.'
+  echoerr 'This script should ONLY be run in a Docker container! Aborting.'
   exit 1
 fi
 
 if [ ! -f /sys/class/net/eth0/operstate ]; then
-  echo "Network interface 'eth0' is not available. Aborting."
+  echoerr "Network interface 'eth0' is not available. Aborting."
   exit 1
 fi
 
@@ -33,7 +35,7 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
 fi
 
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-  echo "VPN credentials must be specified. Edit your 'env' file and re-enter them."
+  echoerr "VPN credentials must be specified. Edit your 'env' file and re-enter them."
   exit 1
 fi
 
@@ -54,12 +56,12 @@ PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
 # Check IPs for correct format
 IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
 if ! printf %s "$PUBLIC_IP" | grep -Eq "$IP_REGEX"; then
-  echo "Cannot find valid public IP. Please manually enter the public IP"
-  echo "of this server in your 'env' file, using variable 'VPN_PUBLIC_IP'."
+  echoerr "Cannot find valid public IP. Please manually enter the public IP"
+  echoerr "of this server in your 'env' file, using variable 'VPN_PUBLIC_IP'."
   exit 1
 fi
 if ! printf %s "$PRIVATE_IP" | grep -Eq "$IP_REGEX"; then
-  echo "Cannot find valid private IP. Aborting."
+  echoerr "Cannot find valid private IP. Aborting."
   exit 1
 fi
 
