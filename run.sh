@@ -169,38 +169,31 @@ VPN_PASSWORD_ENC=$(openssl passwd -1 "$VPN_PASSWORD")
 echo "${VPN_USER}:${VPN_PASSWORD_ENC}:xauth-psk" > /etc/ipsec.d/passwd
 
 # Update sysctl settings
-if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
-cat >> /etc/sysctl.conf <<EOF
-
-# Added by hwdsl2 VPN script
-kernel.msgmnb = 65536
-kernel.msgmax = 65536
-kernel.shmmax = 68719476736
-kernel.shmall = 4294967296
-
-net.ipv4.ip_forward = 1
-net.ipv4.tcp_syncookies = 1
-net.ipv4.conf.all.accept_source_route = 0
-net.ipv4.conf.default.accept_source_route = 0
-net.ipv4.conf.all.accept_redirects = 0
-net.ipv4.conf.default.accept_redirects = 0
-net.ipv4.conf.all.send_redirects = 0
-net.ipv4.conf.default.send_redirects = 0
-net.ipv4.conf.lo.send_redirects = 0
-net.ipv4.conf.eth0.send_redirects = 0
-net.ipv4.conf.all.rp_filter = 0
-net.ipv4.conf.default.rp_filter = 0
-net.ipv4.conf.lo.rp_filter = 0
-net.ipv4.conf.eth0.rp_filter = 0
-net.ipv4.icmp_echo_ignore_broadcasts = 1
-net.ipv4.icmp_ignore_bogus_error_responses = 1
-
-net.core.wmem_max = 12582912
-net.core.rmem_max = 12582912
-net.ipv4.tcp_rmem = 10240 87380 12582912
-net.ipv4.tcp_wmem = 10240 87380 12582912
-EOF
-fi
+SYST='/sbin/sysctl -e -q -w'
+$SYST kernel.msgmnb=65536
+$SYST kernel.msgmax=65536
+$SYST kernel.shmmax=68719476736
+$SYST kernel.shmall=4294967296
+$SYST net.ipv4.ip_forward=1
+$SYST net.ipv4.tcp_syncookies=1
+$SYST net.ipv4.conf.all.accept_source_route=0
+$SYST net.ipv4.conf.default.accept_source_route=0
+$SYST net.ipv4.conf.all.accept_redirects=0
+$SYST net.ipv4.conf.default.accept_redirects=0
+$SYST net.ipv4.conf.all.send_redirects=0
+$SYST net.ipv4.conf.default.send_redirects=0
+$SYST net.ipv4.conf.lo.send_redirects=0
+$SYST net.ipv4.conf.eth0.send_redirects=0
+$SYST net.ipv4.conf.all.rp_filter=0
+$SYST net.ipv4.conf.default.rp_filter=0
+$SYST net.ipv4.conf.lo.rp_filter=0
+$SYST net.ipv4.conf.eth0.rp_filter=0
+$SYST net.ipv4.icmp_echo_ignore_broadcasts=1
+$SYST net.ipv4.icmp_ignore_bogus_error_responses=1
+$SYST net.core.wmem_max=12582912
+$SYST net.core.rmem_max=12582912
+$SYST net.ipv4.tcp_rmem="10240 87380 12582912"
+$SYST net.ipv4.tcp_wmem="10240 87380 12582912"
 
 # Create IPTables rules
 iptables -I INPUT 1 -p udp -m multiport --dports 500,4500 -j ACCEPT
@@ -218,9 +211,6 @@ iptables -I FORWARD 6 -s 192.168.43.0/24 -o eth+ -j ACCEPT
 iptables -A FORWARD -j DROP
 iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP"
 iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "$PRIVATE_IP"
-
-# Reload sysctl.conf
-sysctl -q -p 2>/dev/null
 
 # Update file attributes
 chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets /etc/ipsec.d/passwd
