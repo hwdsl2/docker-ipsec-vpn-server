@@ -29,19 +29,20 @@ if [ ! -f /sys/class/net/eth0/operstate ]; then
 fi
 
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
+  echo
+  echo "VPN credentials not set by user. Generating random PSK and password..."
   VPN_IPSEC_PSK="$(< /dev/urandom tr -dc 'A-HJ-NPR-Za-km-z2-9' | head -c 16)"
   VPN_USER=vpnuser
   VPN_PASSWORD="$(< /dev/urandom tr -dc 'A-HJ-NPR-Za-km-z2-9' | head -c 16)"
 fi
 
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-  echoerr "VPN credentials must be specified. Edit your 'env' file and re-enter them."
+  echoerr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
   exit 1
 fi
 
 echo
 echo 'Trying to auto discover IPs of this server...'
-echo
 
 # In case auto IP discovery fails, you may manually enter the public IP
 # of this server in your 'env' file, using variable 'VPN_PUBLIC_IP'.
