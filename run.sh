@@ -23,11 +23,6 @@ if [ ! -f /.dockerenv ]; then
   exit 1
 fi
 
-if [ ! -f /sys/class/net/eth0/operstate ]; then
-  echoerr "Network interface 'eth0' is not available. Aborting."
-  exit 1
-fi
-
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
   echo
   echo "VPN credentials not set by user. Generating random PSK and password..."
@@ -206,7 +201,7 @@ iptables -I FORWARD 3 -i ppp+ -o eth+ -j ACCEPT
 iptables -I FORWARD 4 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
 iptables -I FORWARD 5 -i eth+ -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 iptables -I FORWARD 6 -s 192.168.43.0/24 -o eth+ -j ACCEPT
-# To disallow (DROP) traffic between VPN clients themselves, uncomment these lines:
+# Uncomment to DROP traffic between VPN clients themselves
 # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
 # iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 iptables -A FORWARD -j DROP
