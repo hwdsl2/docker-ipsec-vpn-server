@@ -10,7 +10,7 @@ RUN apt-get -yqq update \
          iproute gawk grep sed net-tools iptables \
          libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
          libcap-ng-dev libcap-ng-utils libselinux1-dev \
-         libcurl4-nss-dev flex bison gcc make \
+         libcurl4-nss-dev libsystemd-dev flex bison gcc make \
          libunbound-dev libnss3-tools libevent-dev xl2tpd xmlto \
     && apt-get -y clean \
     && rm -rf /var/lib/apt/lists/*
