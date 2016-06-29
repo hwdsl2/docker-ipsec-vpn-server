@@ -1,6 +1,6 @@
 ﻿# IPsec VPN Server on Docker
 
-[![Build Status](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server.svg?branch=master)](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server) 
+[![Build Status](https://static.ls20.com/travis-ci/docker-ipsec-vpn-server.svg)](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server) 
 [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server) 
 [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server)
 
@@ -101,7 +101,7 @@ docker exec -it ipsec-vpn-server ipsec status
 Get your computer or device to use the VPN. Please refer to:
 
 [Configure IPsec/L2TP VPN Clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md)   
-[Configure IPsec/XAuth VPN Clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md)
+[Configure IPsec/XAuth ("Cisco IPsec") VPN Clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md)
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 

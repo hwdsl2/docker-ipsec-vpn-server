@@ -1,6 +1,6 @@
 ﻿# 在 Docker 上搭建 IPsec VPN 服务器
 
-[![Build Status](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server.svg?branch=master)](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server) 
+[![Build Status](https://static.ls20.com/travis-ci/docker-ipsec-vpn-server.svg)](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server) 
 [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server) 
 [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server)
 
@@ -101,7 +101,7 @@ docker exec -it ipsec-vpn-server ipsec status
 配置你的计算机或其它设备使用 VPN 。请参见：
 
 [配置 IPsec/L2TP VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md)   
-[配置 IPsec/XAuth VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)
+[配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)
 
 开始使用自己的专属 VPN ! :sparkles::tada::rocket::sparkles:
 
