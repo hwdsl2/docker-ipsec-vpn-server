@@ -16,11 +16,10 @@
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-echoerr() { echo "$@" 1>&2; }
+exiterr() { echo "Error: ${1}" >&2; exit 1; }
 
 if [ ! -f /.dockerenv ]; then
-  echoerr 'This script should ONLY be run in a Docker container! Aborting.'
-  exit 1
+  exiterr "This script should ONLY be run in a Docker container."
 fi
 
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
@@ -32,8 +31,7 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
 fi
 
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-  echoerr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
-  exit 1
+  exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
 fi
 
 echo
@@ -53,13 +51,10 @@ PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
 # Check IPs for correct format
 IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
 if ! printf %s "$PUBLIC_IP" | grep -Eq "$IP_REGEX"; then
-  echoerr "Cannot find valid public IP. Please manually enter the public IP"
-  echoerr "of this server in your 'env' file, using variable 'VPN_PUBLIC_IP'."
-  exit 1
+  exiterr "Cannot find valid public IP. Define it in your 'env' file as 'VPN_PUBLIC_IP'."
 fi
 if ! printf %s "$PRIVATE_IP" | grep -Eq "$IP_REGEX"; then
-  echoerr "Cannot find valid private IP. Aborting."
-  exit 1
+  exiterr "Cannot find valid private IP."
 fi
 
 # Create IPsec (Libreswan) config
