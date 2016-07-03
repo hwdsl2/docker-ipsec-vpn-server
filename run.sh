@@ -117,7 +117,7 @@ $PUBLIC_IP  %any  : PSK "$VPN_IPSEC_PSK"
 EOF
 
 # Create xl2tpd config
-cat > /etc/xl2tpd/xl2tpd.conf <<EOF
+cat > /etc/xl2tpd/xl2tpd.conf <<'EOF'
 [global]
 port = 1701
 
@@ -133,7 +133,7 @@ length bit = yes
 EOF
 
 # Set xl2tpd options
-cat > /etc/ppp/options.xl2tpd <<EOF
+cat > /etc/ppp/options.xl2tpd <<'EOF'
 ipcp-accept-local
 ipcp-accept-remote
 ms-dns 8.8.8.8
@@ -158,7 +158,9 @@ cat > /etc/ppp/chap-secrets <<EOF
 EOF
 
 VPN_PASSWORD_ENC=$(openssl passwd -1 "$VPN_PASSWORD")
-echo "${VPN_USER}:${VPN_PASSWORD_ENC}:xauth-psk" > /etc/ipsec.d/passwd
+cat > /etc/ipsec.d/passwd <<EOF
+$VPN_USER:$VPN_PASSWORD_ENC:xauth-psk
+EOF
 
 # Update sysctl settings
 SYST='/sbin/sysctl -e -q -w'
