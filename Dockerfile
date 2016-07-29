@@ -1,8 +1,8 @@
 FROM debian:jessie
 MAINTAINER Lin Song <linsongui@gmail.com>
 
-ENV REFRESHED_AT 2016-06-21
-ENV SWAN_VER 3.17
+ENV REFRESHED_AT 2016-07-29
+ENV SWAN_VER 3.18
 
 RUN apt-get -yqq update \
     && DEBIAN_FRONTEND=noninteractive apt-get -yqq --no-install-recommends install \
