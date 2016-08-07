@@ -19,7 +19,7 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 exiterr() { echo "Error: ${1}" >&2; exit 1; }
 
 if [ ! -f /.dockerenv ]; then
-  exiterr "This script should ONLY be run in a Docker container."
+  exiterr "This script ONLY runs in a Docker container."
 fi
 
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
@@ -62,6 +62,7 @@ cat > /etc/ipsec.conf <<EOF
 version 2.0
 
 config setup
+  nat_traversal=yes
   virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!192.168.42.0/23
   protostack=netkey
   nhelpers=0
@@ -224,7 +225,7 @@ Password: $VPN_PASSWORD
 
 Write these down. You'll need them to connect!
 
-Setup VPN Clients: https://git.io/vpnclients
+Setup VPN clients: https://git.io/vpnclients
 
 ================================================
 
