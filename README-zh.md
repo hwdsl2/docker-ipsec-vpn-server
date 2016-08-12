@@ -33,7 +33,7 @@ docker build -t hwdsl2/ipsec-vpn-server .
 若不需要改动源码，也可以这样：
 
 ```
-docker built https://github.com/hwdsl2/docker-ipsec-vpn-server.git
+docker build https://github.com/hwdsl2/docker-ipsec-vpn-server.git
 ```
 
 ## 如何使用本镜像
