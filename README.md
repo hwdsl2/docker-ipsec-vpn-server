@@ -30,6 +30,12 @@ cd docker-ipsec-vpn-server
 docker build -t hwdsl2/ipsec-vpn-server .
 ```
 
+if not modify the source code, also:
+
+```
+docker build https://github.com/hwdsl2/docker-ipsec-vpn-server.git
+```
+
 ## How to use this image
 
 ### Environment variables
