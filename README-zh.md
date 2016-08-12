@@ -33,7 +33,7 @@ docker build -t hwdsl2/ipsec-vpn-server .
 若不需要改动源码，也可以这样：
 
 ```
-docker build https://github.com/hwdsl2/docker-ipsec-vpn-server.git
+docker build -t hwdsl2/ipsec-vpn-server github.com/hwdsl2/docker-ipsec-vpn-server.git
 ```
 
 ## 如何使用本镜像
@@ -137,6 +137,8 @@ docker exec -it ipsec-vpn-server ipsec status
 - 最后一年的美国在读博士生，专业是电子与计算机工程 (ECE)
 - 现在正在积极寻找新的工作机会，比如软件或系统工程师
 - 在 LinkedIn 上与我联系： [https://www.linkedin.com/in/linsongui](https://www.linkedin.com/in/linsongui)
+
+感谢本项目所有的 <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/graphs/contributors" target="_blank">贡献者</a>！
 
 ## 授权协议
 

@@ -30,10 +30,10 @@ cd docker-ipsec-vpn-server
 docker build -t hwdsl2/ipsec-vpn-server .
 ```
 
-if not modify the source code, also:
+or use this if not modifying the source code:
 
 ```
-docker build https://github.com/hwdsl2/docker-ipsec-vpn-server.git
+docker build -t hwdsl2/ipsec-vpn-server github.com/hwdsl2/docker-ipsec-vpn-server.git
 ```
 
 ## How to use this image
@@ -137,6 +137,8 @@ The ports that are exposed for this container to work are:
 - Final year U.S. PhD candidate, majoring in Electrical and Computer Engineering (ECE)
 - Actively seeking opportunities in areas such as Software or Systems Engineering
 - Contact me on LinkedIn: [https://www.linkedin.com/in/linsongui](https://www.linkedin.com/in/linsongui)
+
+Thanks to <a href="https://github.com/hwdsl2/docker-ipsec-vpn-server/graphs/contributors" target="_blank">all contributors</a> to this project!
 
 ## License
 
