@@ -1,14 +1,15 @@
 ﻿# 在 Docker 上搭建 IPsec VPN 服务器
 
 [![Build Status](https://static.ls20.com/travis-ci/docker-ipsec-vpn-server.svg)](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server) 
+[![Author](https://img.shields.io/badge/author-Lin%20Song-orange.svg?maxAge=2592000)](https://www.linkedin.com/in/linsongui) 
 [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server) 
 [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server)
 
-*其他语言版本: [English](README.md), [简体中文](README-zh.md).*
-
-使用这个 Docker 镜像快速搭建 IPsec VPN 服务器。同时支持 `IPsec/L2TP` 和 `IPsec/XAuth ("Cisco IPsec")` 协议。
+使用这个 Docker 镜像快速搭建 IPsec VPN 服务器。支持 `IPsec/L2TP` 和 `IPsec/XAuth ("Cisco IPsec")` 协议。
 
 本镜像以 Debian Jessie 为基础，并使用 [Libreswan](https://libreswan.org) (IPsec VPN 软件) 和 [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP 服务进程)。
+
+*其他语言版本: [English](README.md), [简体中文](README-zh.md).*
 
 ## 安装 Docker
 
