@@ -41,17 +41,23 @@ echo 'Trying to auto discover IPs of this server...'
 # of this server in your 'env' file, using variable 'VPN_PUBLIC_IP'.
 PUBLIC_IP=${VPN_PUBLIC_IP:-''}
 
-# Try to auto discover server IPs
+# Try to auto discover IPs of this server
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
-[ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://whatismyip.akamai.com)
-[ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
-[ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
 
 # Check IPs for correct format
 IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
 if ! printf %s "$PUBLIC_IP" | grep -Eq "$IP_REGEX"; then
+  PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://whatismyip.akamai.com)
+fi
+if ! printf %s "$PUBLIC_IP" | grep -Eq "$IP_REGEX"; then
+  PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
+fi
+if ! printf %s "$PUBLIC_IP" | grep -Eq "$IP_REGEX"; then
   exiterr "Cannot find valid public IP. Define it in your 'env' file as 'VPN_PUBLIC_IP'."
+fi
+if ! printf %s "$PRIVATE_IP" | grep -Eq "$IP_REGEX"; then
+  PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
 fi
 if ! printf %s "$PRIVATE_IP" | grep -Eq "$IP_REGEX"; then
   exiterr "Cannot find valid private IP."
