@@ -1,7 +1,7 @@
 ﻿# IPsec VPN Server on Docker
 
 [![Build Status](https://static.ls20.com/travis-ci/docker-ipsec-vpn-server.svg)](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server) 
-[![Author](https://img.shields.io/badge/author-Lin%20Song-orange.svg?maxAge=2592000)](https://www.linkedin.com/in/linsongui) 
+[![Author](https://img.shields.io/badge/author-Lin%20Song-blue.svg?maxAge=2592000)](#author) 
 [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server) 
 [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server)
 
