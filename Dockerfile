@@ -1,10 +1,11 @@
 FROM debian:jessie
 MAINTAINER Lin Song <linsongui@gmail.com>
 
-ENV REFRESHED_AT 2016-07-29
+ENV REFRESHED_AT 2016-09-23
 ENV SWAN_VER 3.18
 
-RUN apt-get -yqq update \
+RUN sed -i "s/httpredir\.debian\.org/ftp.us.debian.org/g" /etc/apt/sources.list \
+    && apt-get -yqq update \
     && DEBIAN_FRONTEND=noninteractive apt-get -yqq --no-install-recommends install \
          wget dnsutils openssl ca-certificates kmod \
          iproute gawk grep sed net-tools iptables \
