@@ -8,8 +8,8 @@ services:
 
 install:
   - docker build -t vpnserver .
-  - docker run --name vpnserver1 --env-file ./vpn.env.example -p 500:500/udp -p 4500:4500/udp -v /lib/modules:/lib/modules:ro -d --privileged vpnserver
-  - docker run --name vpnserver2 -p 501:500/udp -p 4501:4500/udp -v /lib/modules:/lib/modules:ro -d --privileged vpnserver
+  - docker run --name vpnserver1 --env-file ./vpn.env.example -p 500:500/udp -p 4500:4500/udp -v /lib/modules:/lib/modules:ro -d --privileged --restart=always vpnserver
+  - docker run --name vpnserver2 -p 501:500/udp -p 4501:4500/udp -v /lib/modules:/lib/modules:ro -d --privileged --restart=always vpnserver
 
 script:
   - sleep 20
