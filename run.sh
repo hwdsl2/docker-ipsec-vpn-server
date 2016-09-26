@@ -27,11 +27,21 @@ if [ ! -f /.dockerenv ]; then
 fi
 
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
-  echo
-  echo "VPN credentials not set by user. Generating random PSK and password..."
-  VPN_IPSEC_PSK="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
-  VPN_USER=vpnuser
-  VPN_PASSWORD="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
+  if [ -f /vpn-gen.env ]; then
+    echo
+    echo "Retrieving previously generated VPN credentials..."
+    . /vpn-gen.env
+  else
+    echo
+    echo "VPN credentials not set by user. Generating random PSK and password..."
+    VPN_IPSEC_PSK="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
+    VPN_USER=vpnuser
+    VPN_PASSWORD="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
+    echo "VPN_IPSEC_PSK=$VPN_IPSEC_PSK" > /vpn-gen.env
+    echo "VPN_USER=$VPN_USER" >> /vpn-gen.env
+    echo "VPN_PASSWORD=$VPN_PASSWORD" >> /vpn-gen.env
+    chmod 600 /vpn-gen.env
+  fi
 fi
 
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
