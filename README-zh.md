@@ -1,7 +1,7 @@
 ﻿# 在 Docker 上搭建 IPsec VPN 服务器
 
 [![Build Status](https://static.ls20.com/travis-ci/docker-ipsec-vpn-server.svg)](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server) 
-[![Author](https://img.shields.io/badge/author-Lin%20Song-blue.svg?maxAge=2592000)](#作者) 
+[![Author](https://static.ls20.com/travis-ci/author.svg)](#作者) 
 [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server) 
 [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server)
 
@@ -23,19 +23,7 @@
 docker pull hwdsl2/ipsec-vpn-server
 ```
 
-或者，你也可以从 GitHub 下载并自行编译源代码：
-
-```
-git clone https://github.com/hwdsl2/docker-ipsec-vpn-server.git
-cd docker-ipsec-vpn-server
-docker build -t hwdsl2/ipsec-vpn-server .
-```
-
-若不需要改动源码，也可以这样：
-
-```
-docker build -t hwdsl2/ipsec-vpn-server github.com/hwdsl2/docker-ipsec-vpn-server.git
-```
+或者，你也可以自己从 GitHub [编译源代码](#从源代码构建)。
 
 ## 如何使用本镜像
 
@@ -51,13 +39,15 @@ VPN_PASSWORD=<VPN Password>
 
 这将创建一个用于 VPN 登录的用户账户。 IPsec PSK (预共享密钥) 由 `VPN_IPSEC_PSK` 环境变量指定。 VPN 用户名和密码分别在 `VPN_USER` 和 `VPN_PASSWORD` 中定义.
 
-**注:** 在你的 `env` 文件中，不要为变量值添加单引号/双引号，或在 `=` 两边添加空格。另外，不要在值中使用这些字符： `\ " '`
+**注 1:** 在你的 `env` 文件中，不要为变量值添加单引号/双引号，或在 `=` 两边添加空格。另外，不要在值中使用这些字符： `\ " '`
+
+**注 2:** 同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec 协议的局限性，如果上述设备属于同一个 NAT 网络（比如家用路由器），它们无法同时连接到 VPN 服务器。
 
 所有这些环境变量对于本镜像都是可选的，也就是说无需定义它们就可以搭建 IPsec VPN 服务器。详情请参见以下部分。
 
 ### 运行 IPsec VPN 服务器
 
-首先你需要在 Docker 服务器上加载 IPsec `NETKEY` 内核模块：
+（重要） 首先你需要在 Docker 服务器上加载 IPsec `NETKEY` 内核模块：
 
 ```
 sudo modprobe af_key
@@ -73,6 +63,7 @@ docker run \
     -p 4500:4500/udp \
     -v /lib/modules:/lib/modules:ro \
     -d --privileged \
+    --restart=always \
     hwdsl2/ipsec-vpn-server
 ```
 
@@ -110,6 +101,8 @@ docker exec -it ipsec-vpn-server ipsec status
 [配置 IPsec/L2TP VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md)   
 [配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)
 
+如果在连接过程中遇到错误，请参见 [故障排除](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#故障排除)。
+
 开始使用自己的专属 VPN ! :sparkles::tada::rocket::sparkles:
 
 ## 技术细节
@@ -126,6 +119,22 @@ docker exec -it ipsec-vpn-server ipsec status
 为使 VPN 服务器正常工作，本镜像需要打开以下端口：
 
 * 4500/udp and 500/udp for IPsec
+
+## 从源代码构建
+
+高级用户可以从 GitHub 下载并自行编译源代码：
+
+```
+git clone https://github.com/hwdsl2/docker-ipsec-vpn-server.git
+cd docker-ipsec-vpn-server
+docker build -t hwdsl2/ipsec-vpn-server .
+```
+
+若不需要改动源码，也可以这样：
+
+```
+docker build -t hwdsl2/ipsec-vpn-server github.com/hwdsl2/docker-ipsec-vpn-server.git
+```
 
 ## 另见
 
