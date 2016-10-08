@@ -1,7 +1,7 @@
 FROM debian:jessie
 MAINTAINER Lin Song <linsongui@gmail.com>
 
-ENV REFRESHED_AT 2016-10-01
+ENV REFRESHED_AT 2016-10-08
 ENV SWAN_VER 3.18
 
 WORKDIR /opt/src
@@ -36,11 +36,11 @@ RUN sed -i "s/httpredir\.debian\.org/ftp.us.debian.org/g" /etc/apt/sources.list 
     && apt-get -y clean \
     && rm -rf /var/lib/apt/lists/*
 
-COPY ./run.sh /run.sh
-RUN chmod 755 /run.sh
+COPY ./run.sh /opt/src/run.sh
+RUN chmod 755 /opt/src/run.sh
 
 EXPOSE 500/udp 4500/udp
 
 VOLUME ["/lib/modules"]
 
-CMD ["/run.sh"]
+CMD ["/opt/src/run.sh"]
