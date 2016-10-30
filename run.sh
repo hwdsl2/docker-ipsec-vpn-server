@@ -66,7 +66,6 @@ PUBLIC_IP=${VPN_PUBLIC_IP:-''}
 PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
 
 # Check IPs for correct format
-check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://whatismyip.akamai.com)
 check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 check_ip "$PUBLIC_IP" || exiterr "Cannot find valid public IP. Define it in your 'env' file as 'VPN_PUBLIC_IP'."
 check_ip "$PRIVATE_IP" || PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
@@ -207,16 +206,18 @@ $SYST net.ipv4.tcp_rmem="10240 87380 12582912"
 $SYST net.ipv4.tcp_wmem="10240 87380 12582912"
 
 # Create IPTables rules
-iptables -I INPUT 1 -p udp -m multiport --dports 500,4500 -j ACCEPT
-iptables -I INPUT 2 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
-iptables -I INPUT 3 -p udp --dport 1701 -j DROP
+iptables -I INPUT 1 -m conntrack --ctstate INVALID -j DROP
+iptables -I INPUT 2 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+iptables -I INPUT 3 -p udp -m multiport --dports 500,4500 -j ACCEPT
+iptables -I INPUT 4 -p udp --dport 1701 -m policy --dir in --pol ipsec -j ACCEPT
+iptables -I INPUT 5 -p udp --dport 1701 -j DROP
 iptables -I FORWARD 1 -m conntrack --ctstate INVALID -j DROP
 iptables -I FORWARD 2 -i eth+ -o ppp+ -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 iptables -I FORWARD 3 -i ppp+ -o eth+ -j ACCEPT
 iptables -I FORWARD 4 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j ACCEPT
 iptables -I FORWARD 5 -i eth+ -d 192.168.43.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 iptables -I FORWARD 6 -s 192.168.43.0/24 -o eth+ -j ACCEPT
-# Uncomment to DROP traffic between VPN clients themselves
+# Uncomment if you wish to disallow traffic between VPN clients themselves
 # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
 # iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 iptables -A FORWARD -j DROP
