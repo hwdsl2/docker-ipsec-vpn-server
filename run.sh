@@ -16,31 +16,35 @@
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-exiterr() { echo "Error: ${1}" >&2; exit 1; }
+exiterr() { echo "Error: $1" >&2; exit 1; }
+
 check_ip() {
   IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
-  printf %s "${1}" | tr -d '\n' | grep -Eq "$IP_REGEX"
+  printf %s "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
 }
 
-if [ ! -f /.dockerenv ]; then
+if [ ! -f "/.dockerenv" ]; then
   exiterr "This script ONLY runs in a Docker container."
 fi
 
+mkdir -p /opt/src
+vpn_env="/opt/src/vpn-gen.env"
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
-  if [ -f /vpn-gen.env ]; then
+  if [ -f "$vpn_env" ]; then
     echo
     echo "Retrieving previously generated VPN credentials..."
-    . /vpn-gen.env
+    . "$vpn_env"
   else
     echo
     echo "VPN credentials not set by user. Generating random PSK and password..."
     VPN_IPSEC_PSK="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
     VPN_USER=vpnuser
     VPN_PASSWORD="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
-    echo "VPN_IPSEC_PSK=$VPN_IPSEC_PSK" > /vpn-gen.env
-    echo "VPN_USER=$VPN_USER" >> /vpn-gen.env
-    echo "VPN_PASSWORD=$VPN_PASSWORD" >> /vpn-gen.env
-    chmod 600 /vpn-gen.env
+
+    echo "VPN_IPSEC_PSK=$VPN_IPSEC_PSK" > "$vpn_env"
+    echo "VPN_USER=$VPN_USER" >> "$vpn_env"
+    echo "VPN_PASSWORD=$VPN_PASSWORD" >> "$vpn_env"
+    chmod 600 "$vpn_env"
   fi
 fi
 
