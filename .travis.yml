@@ -12,19 +12,23 @@ install:
   - docker run --name vpnserver2 -p 501:500/udp -p 4501:4500/udp -v /lib/modules:/lib/modules:ro -d --privileged --restart=always vpnserver
 
 script:
-  - sleep 20
-  - docker ps | grep -q vpnserver1
-  - docker ps | grep -q vpnserver2
+  - sleep 15
+  - docker ps | grep vpnserver1
+  - docker ps | grep vpnserver2
   - docker logs vpnserver1
   - docker logs vpnserver2
-  - docker exec -it vpnserver1 ipsec status
-  - docker exec -it vpnserver2 ipsec status
+  - docker exec -it vpnserver1 netstat -anpu | grep pluto
+  - docker exec -it vpnserver1 netstat -anpu | grep xl2tpd
+  - docker exec -it vpnserver2 netstat -anpu | grep pluto
+  - docker exec -it vpnserver2 netstat -anpu | grep xl2tpd
   - docker restart vpnserver1
   - docker restart vpnserver2
-  - sleep 20
-  - docker ps | grep -q vpnserver1
-  - docker ps | grep -q vpnserver2
+  - sleep 15
+  - docker ps | grep vpnserver1
+  - docker ps | grep vpnserver2
   - docker logs vpnserver1
   - docker logs vpnserver2
-  - docker exec -it vpnserver1 ipsec status
-  - docker exec -it vpnserver2 ipsec status
+  - docker exec -it vpnserver1 netstat -anpu | grep pluto
+  - docker exec -it vpnserver1 netstat -anpu | grep xl2tpd
+  - docker exec -it vpnserver2 netstat -anpu | grep pluto
+  - docker exec -it vpnserver2 netstat -anpu | grep xl2tpd
