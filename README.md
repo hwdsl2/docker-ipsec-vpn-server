@@ -1,12 +1,12 @@
 # IPsec VPN Server on Docker
 
-[![Build Status](https://static.ls20.com/travis-ci/docker-ipsec-vpn-server.svg)](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server) [![Author](https://static.ls20.com/travis-ci/author.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server#author) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=3600)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server)
+[![Build Status](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server.svg?branch=master)](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/docker-ipsec-vpn-server.svg?maxAge=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server)
 
 Docker image to run an IPsec VPN server, with both `IPsec/L2TP` and `IPsec/XAuth ("Cisco IPsec")`.
 
 Based on Debian Jessie with [Libreswan](https://libreswan.org) (IPsec VPN software) and [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP daemon).
 
-*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server), [Chinese](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
+*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md), [Chinese](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
 
 ## Install Docker
 
@@ -36,37 +36,37 @@ VPN_PASSWORD=<VPN Password>
 
 This will create a single user account for VPN login. The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
 
-**Note 1:** In your `env` file, DO NOT put single or double quotes around values, or add space around `=`. Also, DO NOT use these characters within values: `\ " '`
+**Note 1:** In your `env` file, DO NOT put single or double quotes around values, or add space around `=`. Also, DO NOT use these characters within values: `\ " '`.
 
-**Note 2:** The same VPN account can be used by your multiple devices. However, due to a limitation of the IPsec protocol, if these devices are behind the same NAT (e.g. home router), they cannot simultaneously connect to the VPN server.
+**Note 2:** The same VPN account can be used by your multiple devices. However, due to an IPsec limitation, only one device behind the same NAT (e.g. home router) can connect to the VPN server at a time.
 
 All the variables to this image are optional, which means you don't have to type in any environment variable, and you can have an IPsec VPN server out of the box! Read the sections below for details.
 
 ### Start the IPsec VPN server
 
-(IMPORTANT) First, run this command on the Docker host to load the IPsec `NETKEY` kernel module:
+(Important) First, load the IPsec `NETKEY` kernel module on the Docker host:
 
 ```
 sudo modprobe af_key
 ```
 
-Start a new Docker container with the following command (replace `./vpn.env` with your own `env` file) :
+Create a new Docker container from this image (replace `./vpn.env` with your own `env` file):
 
 ```
 docker run \
     --name ipsec-vpn-server \
     --env-file ./vpn.env \
+    --restart=always \
     -p 500:500/udp \
     -p 4500:4500/udp \
     -v /lib/modules:/lib/modules:ro \
     -d --privileged \
-    --restart=always \
     hwdsl2/ipsec-vpn-server
 ```
 
 ### Retrieve VPN login details
 
-If you did not set environment variables via an `env` file, `VPN_USER` will default to `vpnuser` and both `VPN_IPSEC_PSK` and `VPN_PASSWORD` will be randomly generated. To retrieve them, show the logs of the running container:
+If you did not specify an `env` file in the `docker run` command above, `VPN_USER` will default to `vpnuser` and both `VPN_IPSEC_PSK` and `VPN_PASSWORD` will be randomly generated. To retrieve them, view the container logs:
 
 ```
 docker logs ipsec-vpn-server
@@ -81,6 +81,12 @@ Server IP: <VPN Server IP>
 IPsec PSK: <IPsec pre-shared key>
 Username: <VPN Username>
 Password: <VPN Password>
+```
+
+(Optional) Backup the generated VPN credentials to the current directory:
+
+```
+docker cp ipsec-vpn-server:/opt/src/vpn-gen.env ./
 ```
 
 ### Check server status
@@ -117,9 +123,11 @@ The ports that are exposed for this container to work are:
 
 * 4500/udp and 500/udp for IPsec
 
-## Build from source code
+## Advanced usage
 
-Advanced users can download and compile the source yourself from GitHub:
+### Build from source code
+
+Advanced users can download and compile the source code from GitHub:
 
 ```
 git clone https://github.com/hwdsl2/docker-ipsec-vpn-server.git
@@ -133,23 +141,22 @@ or use this if not modifying the source code:
 docker build -t hwdsl2/ipsec-vpn-server github.com/hwdsl2/docker-ipsec-vpn-server.git
 ```
 
+### Bash shell inside container
+
+To start a Bash session in the running container:
+
+```
+docker exec -it ipsec-vpn-server env TERM=xterm bash -l
+```
+
 ## See also
 
 * [IPsec VPN Server on Ubuntu, Debian and CentOS](https://github.com/hwdsl2/setup-ipsec-vpn)
 * [IKEv2 VPN Server on Docker](https://github.com/gaomd/docker-ikev2-vpn-server)
 
-## Author
-
-**Lin Song** (linsongui@gmail.com)   
-- Final year U.S. PhD candidate, majoring in Electrical and Computer Engineering (ECE)
-- Actively seeking opportunities in areas such as Software or Systems Engineering
-- Contact me on LinkedIn: [https://www.linkedin.com/in/linsongui](https://www.linkedin.com/in/linsongui)
-
-Thanks to [all contributors](https://github.com/hwdsl2/docker-ipsec-vpn-server/graphs/contributors) to this project!
-
 ## License
 
-Copyright (C) 2016 Lin Song   
+Copyright (C) 2016 [Lin Song](https://www.linkedin.com/in/linsongui) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
 Based on [the work of Thomas Sarlandie](https://github.com/sarfata/voodooprivacy) (Copyright 2012)
 
 This work is licensed under the [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/)   
