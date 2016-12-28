@@ -6,29 +6,27 @@ dist: trusty
 services:
   - docker
 
+env:
+  - TESTID=vpn-1 OPT1=--env-file OPT2=./vpn.env.example
+  - TESTID=vpn-2 OPT1= OPT2=
+
 install:
-  - docker build -t vpnserver .
-  - docker run --name vpnserver1 --env-file ./vpn.env.example -p 500:500/udp -p 4500:4500/udp -v /lib/modules:/lib/modules:ro -d --privileged --restart=always vpnserver
-  - docker run --name vpnserver2 -p 501:500/udp -p 4501:4500/udp -v /lib/modules:/lib/modules:ro -d --privileged --restart=always vpnserver
+  - docker build -t vpn .
+  - docker run --name "$TESTID" $OPT1 $OPT2 --restart=always -p 500:500/udp -p 4500:4500/udp -v /lib/modules:/lib/modules:ro -d --privileged vpn
 
 script:
   - sleep 15
-  - docker ps | grep vpnserver1
-  - docker ps | grep vpnserver2
-  - docker logs vpnserver1
-  - docker logs vpnserver2
-  - docker exec -it vpnserver1 netstat -anpu | grep pluto
-  - docker exec -it vpnserver1 netstat -anpu | grep xl2tpd
-  - docker exec -it vpnserver2 netstat -anpu | grep pluto
-  - docker exec -it vpnserver2 netstat -anpu | grep xl2tpd
-  - docker restart vpnserver1
-  - docker restart vpnserver2
+  - docker ps | grep "$TESTID"
+  - docker logs "$TESTID"
+  - docker exec -it "$TESTID" netstat -anpu | grep pluto
+  - docker exec -it "$TESTID" netstat -anpu | grep xl2tpd
+  - docker restart "$TESTID"
   - sleep 15
-  - docker ps | grep vpnserver1
-  - docker ps | grep vpnserver2
-  - docker logs vpnserver1
-  - docker logs vpnserver2
-  - docker exec -it vpnserver1 netstat -anpu | grep pluto
-  - docker exec -it vpnserver1 netstat -anpu | grep xl2tpd
-  - docker exec -it vpnserver2 netstat -anpu | grep pluto
-  - docker exec -it vpnserver2 netstat -anpu | grep xl2tpd
+  - docker ps | grep "$TESTID"
+  - docker logs "$TESTID"
+  - docker exec -it "$TESTID" netstat -anpu | grep pluto
+  - docker exec -it "$TESTID" netstat -anpu | grep xl2tpd
+
+notifications:
+  email:
+    - linsongui@gmail.com
