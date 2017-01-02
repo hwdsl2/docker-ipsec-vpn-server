@@ -3,6 +3,13 @@ language: generic
 sudo: required
 dist: trusty
 
+addons:
+  apt:
+    sources:
+    - debian-sid
+    packages:
+    - shellcheck
+
 services:
   - docker
 
@@ -10,11 +17,12 @@ env:
   - TESTID=vpn-1 OPT1=--env-file OPT2=./vpn.env.example
   - TESTID=vpn-2 OPT1= OPT2=
 
-install:
+script:
+  - export SHELLCHECK_OPTS="-e SC1090,SC1091"
+  - shellcheck *.sh
+  - sudo sed -i "/debian unstable/d" /etc/apt/sources.list
   - docker build -t vpn .
   - docker run --name "$TESTID" $OPT1 $OPT2 --restart=always -p 500:500/udp -p 4500:4500/udp -v /lib/modules:/lib/modules:ro -d --privileged vpn
-
-script:
   - sleep 15
   - docker ps | grep "$TESTID"
   - docker logs "$TESTID"
