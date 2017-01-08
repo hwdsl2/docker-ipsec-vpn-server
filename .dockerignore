@@ -1,6 +1,5 @@
 .travis.yml
-.dockerignore
+LICENSE.md
 README.md
 README-zh.md
-LICENSE.md
 vpn.env.example
