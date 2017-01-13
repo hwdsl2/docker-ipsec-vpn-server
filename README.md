@@ -8,11 +8,11 @@ Based on Debian Jessie with [Libreswan](https://libreswan.org) (IPsec VPN softwa
 
 [**&raquo; See also: IPsec VPN Server on Ubuntu, Debian and CentOS**](https://github.com/hwdsl2/setup-ipsec-vpn)
 
-*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md), [Chinese](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
+*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md), [Chinese (Simplified)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
 
 ## Install Docker
 
-Follow [these instructions](https://docs.docker.com/engine/installation/) to get Docker running on your server.
+Follow [these instructions](https://docs.docker.com/engine/installation/linux/) to get Docker running on your Linux server.
 
 ## Download
 
@@ -46,7 +46,7 @@ All the variables to this image are optional, which means you don't have to type
 
 ### Start the IPsec VPN server
 
-(Important) First, load the IPsec `NETKEY` kernel module on the Docker host:
+**Important:** First, load the IPsec `NETKEY` kernel module on the Docker host:
 
 ```
 sudo modprobe af_key
@@ -85,7 +85,7 @@ Username: <VPN Username>
 Password: <VPN Password>
 ```
 
-(Optional) Backup the generated VPN credentials to the current directory:
+(Optional) Backup the generated VPN credentials (if any) to the current directory:
 
 ```
 docker cp ipsec-vpn-server:/opt/src/vpn-gen.env ./

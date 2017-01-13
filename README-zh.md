@@ -1,4 +1,4 @@
-﻿# 在 Docker 上搭建 IPsec VPN 服务器
+﻿# Docker 上的 IPsec VPN 服务器
 
 [![Build Status](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server.svg?branch=master)](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/docker-ipsec-vpn-server.svg?maxAge=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server)
 
@@ -12,7 +12,7 @@
 
 ## 安装 Docker
 
-参照 [这些步骤](https://docs.docker.com/engine/installation/) 在你的服务器上安装并运行 Docker。
+参照 [这些步骤](https://docs.docker.com/engine/installation/linux/) 在你的 Linux 服务器上安装并运行 Docker。
 
 ## 下载
 
@@ -46,7 +46,7 @@ VPN_PASSWORD=<VPN Password>
 
 ### 运行 IPsec VPN 服务器
 
-（重要） 首先，在 Docker 主机上加载 IPsec `NETKEY` 内核模块：
+**重要：** 首先，在 Docker 主机上加载 IPsec `NETKEY` 内核模块：
 
 ```
 sudo modprobe af_key
@@ -85,7 +85,7 @@ Username: <VPN Username>
 Password: <VPN Password>
 ```
 
-（可选步骤） 备份自动生成的 VPN 登录信息到当前目录：
+（可选步骤） 备份自动生成的 VPN 登录信息（如果有）到当前目录：
 
 ```
 docker cp ipsec-vpn-server:/opt/src/vpn-gen.env ./
