@@ -1,8 +1,8 @@
 FROM debian:jessie
 MAINTAINER Lin Song <linsongui@gmail.com>
 
-ENV REFRESHED_AT 2016-10-08
-ENV SWAN_VER 3.18
+ENV REFRESHED_AT 2017-01-16
+ENV SWAN_VER 3.19
 
 WORKDIR /opt/src
 
