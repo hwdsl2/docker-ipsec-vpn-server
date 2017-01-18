@@ -40,7 +40,7 @@ This will create a single user account for VPN login. The IPsec PSK (pre-shared 
 
 **Note 1:** In your `env` file, DO NOT put single or double quotes around values, or add space around `=`. Also, DO NOT use these characters within values: `\ " '`.
 
-**Note 2:** The same VPN account can be used by your multiple devices. However, due to an IPsec limitation, only one device behind the same NAT (e.g. home router) can connect to the VPN server at a time.
+**Note 2:** The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, you must use only [IPsec/XAuth mode](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md) if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router).
 
 All the variables to this image are optional, which means you don't have to type in any environment variable, and you can have an IPsec VPN server out of the box! Read the sections below for details.
 
@@ -124,6 +124,8 @@ The default IPsec configuration supports:
 The ports that are exposed for this container to work are:
 
 * 4500/udp and 500/udp for IPsec
+
+For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/compute/docs/networking#firewalls)), make sure that these two ports are open.
 
 ## Advanced usage
 

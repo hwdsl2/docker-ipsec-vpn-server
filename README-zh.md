@@ -6,7 +6,7 @@
 
 本镜像以 Debian Jessie 为基础，并使用 [Libreswan](https://libreswan.org) (IPsec VPN 软件) 和 [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP 服务进程)。
 
-[**&raquo; 另见： IPsec VPN Server on Ubuntu, Debian and CentOS**](https://github.com/hwdsl2/setup-ipsec-vpn)
+[**&raquo; 另见： IPsec VPN Server on Ubuntu, Debian and CentOS**](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)
 
 *其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
 
@@ -40,13 +40,13 @@ VPN_PASSWORD=<VPN Password>
 
 **注 1：** 在你的 `env` 文件中，**不要**为变量值添加单引号/双引号，或在 `=` 两边添加空格。**不要**在值中使用这些字符： `\ " '`。
 
-**注 2：** 同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec 的局限性，在同一个 NAT 后面（比如家用路由器）一次只能连接一个设备到 VPN 服务器。
+**注 2：** 同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果你需要同时连接在同一个 NAT 后面（比如家用路由器）的多个设备到 VPN 服务器，你必须仅使用 [IPsec/XAuth 模式](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)。
 
 所有这些环境变量对于本镜像都是可选的，也就是说无需定义它们就可以搭建 IPsec VPN 服务器。详情请参见以下部分。
 
 ### 运行 IPsec VPN 服务器
 
-**重要：** 首先，在 Docker 主机上加载 IPsec `NETKEY` 内核模块：
+**重要：** 首先在 Docker 主机上加载 IPsec `NETKEY` 内核模块：
 
 ```
 sudo modprobe af_key
@@ -125,6 +125,8 @@ docker exec -it ipsec-vpn-server ipsec status
 
 * 4500/udp and 500/udp for IPsec
 
+对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/compute/docs/networking#firewalls)），请确保打开这两个端口。
+
 ## 高级用法
 
 ### 从源代码构建
@@ -153,7 +155,7 @@ docker exec -it ipsec-vpn-server env TERM=xterm bash -l
 
 ## 另见
 
-* [IPsec VPN Server on Ubuntu, Debian and CentOS](https://github.com/hwdsl2/setup-ipsec-vpn)
+* [IPsec VPN Server on Ubuntu, Debian and CentOS](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)
 * [IKEv2 VPN Server on Docker](https://github.com/gaomd/docker-ikev2-vpn-server)
 
 ## 授权协议
