@@ -38,9 +38,7 @@ VPN_PASSWORD=<VPN Password>
 
 This will create a single user account for VPN login. The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
 
-**Note 1:** In your `env` file, DO NOT put single or double quotes around values, or add space around `=`. Also, DO NOT use these characters within values: `\ " '`.
-
-**Note 2:** The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, you must use only [IPsec/XAuth mode](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md) if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router).
+**Note:** In your `env` file, DO NOT put single or double quotes around values, or add space around `=`. DO NOT use these characters within values: `\ " '`.
 
 All the variables to this image are optional, which means you don't have to type in any environment variable, and you can have an IPsec VPN server out of the box! Read the sections below for details.
 
@@ -110,22 +108,23 @@ If you get an error when trying to connect, see [Troubleshooting](https://github
 
 Enjoy your very own VPN!
 
-## Technical details
+## Important notes
 
-There are two services running: `Libreswan (pluto)` for the IPsec VPN, and `xl2tpd` for L2TP support.
+*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#important-notes), [Chinese (Simplified)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
 
-Clients are configured to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN connection is active.
+For **Windows users**, this [one-time registry change](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#windows-error-809) is required if the VPN server and/or client is behind NAT (e.g. home router).
 
-The default IPsec configuration supports:
+The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, you must use only [IPsec/XAuth mode](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md) if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router).
 
-* IKEv1 with PSK and XAuth ("Cisco IPsec")
-* IPsec/L2TP with PSK
+For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/compute/docs/networking#firewalls)), open UDP ports 500 and 4500 for the VPN.
 
-The ports that are exposed for this container to work are:
+Before editing any VPN config files, you must first [start a Bash session](https://github.com/hwdsl2/docker-ipsec-vpn-server#bash-shell-inside-container) in the running container.
 
-* 4500/udp and 500/udp for IPsec
+If you wish to add, edit or remove VPN user accounts, see [Manage VPN Users](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/manage-users.md). When finished, restart the Docker container.
 
-For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/compute/docs/networking#firewalls)), make sure that these two ports are open.
+Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN connection is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in both `/etc/ppp/options.xl2tpd` and `/etc/ipsec.conf`. Then restart the Docker container.
+
+When connecting via `IPsec/L2TP`, the VPN server has IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`.
 
 ## Advanced usage
 
@@ -152,6 +151,32 @@ To start a Bash session in the running container:
 ```
 docker exec -it ipsec-vpn-server env TERM=xterm bash -l
 ```
+
+(Optional) Install the `nano` editor:
+
+```
+apt-get update && apt-get -y install nano
+```
+
+When finished, exit the container and restart if needed:
+
+```
+exit
+docker restart ipsec-vpn-server
+```
+
+## Technical details
+
+There are two services running: `Libreswan (pluto)` for the IPsec VPN, and `xl2tpd` for L2TP support.
+
+The default IPsec configuration supports:
+
+* IKEv1 with PSK and XAuth ("Cisco IPsec")
+* IPsec/L2TP with PSK
+
+The ports that are exposed for this container to work are:
+
+* 4500/udp and 500/udp for IPsec
 
 ## See also
 

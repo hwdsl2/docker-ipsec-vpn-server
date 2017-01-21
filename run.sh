@@ -243,6 +243,7 @@ Password: $VPN_PASSWORD
 
 Write these down. You'll need them to connect!
 
+Important notes:   https://git.io/vpnnotes2
 Setup VPN clients: https://git.io/vpnclients
 
 ================================================

@@ -38,9 +38,7 @@ VPN_PASSWORD=<VPN Password>
 
 这将创建一个用于 VPN 登录的用户账户。 IPsec PSK (预共享密钥) 由 `VPN_IPSEC_PSK` 环境变量指定。 VPN 用户名和密码分别在 `VPN_USER` 和 `VPN_PASSWORD` 中定义。
 
-**注 1：** 在你的 `env` 文件中，**不要**为变量值添加单引号/双引号，或在 `=` 两边添加空格。**不要**在值中使用这些字符： `\ " '`。
-
-**注 2：** 同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果你需要同时连接在同一个 NAT 后面（比如家用路由器）的多个设备到 VPN 服务器，你必须仅使用 [IPsec/XAuth 模式](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)。
+**注：** 在你的 `env` 文件中，**不要**为变量值添加单引号/双引号，或在 `=` 两边添加空格。**不要**在值中使用这些字符： `\ " '`。
 
 所有这些环境变量对于本镜像都是可选的，也就是说无需定义它们就可以搭建 IPsec VPN 服务器。详情请参见以下部分。
 
@@ -110,22 +108,23 @@ docker exec -it ipsec-vpn-server ipsec status
 
 开始使用自己的专属 VPN !
 
-## 技术细节
+## 重要提示
 
-需要运行以下两个服务： `Libreswan (pluto)` 提供 IPsec VPN， `xl2tpd` 提供 L2TP 支持。
+*其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#important-notes), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#重要提示).*
 
-在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。
+**Windows 用户** 在首次连接之前需要[修改一次注册表](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。
 
-默认的 IPsec 配置支持以下协议：
+同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果你需要同时连接在同一个 NAT 后面（比如家用路由器）的多个设备到 VPN 服务器，你必须仅使用 [IPsec/XAuth 模式](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)。
 
-* IKEv1 with PSK and XAuth ("Cisco IPsec")
-* IPsec/L2TP with PSK
+对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/compute/docs/networking#firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。
 
-为使 VPN 服务器正常工作，将会打开以下端口：
+在编辑任何 VPN 配置文件之前，你必须首先在正在运行的 Docker 容器中 [开始一个 Bash 会话](#在容器中运行-bash-shell)。
 
-* 4500/udp and 500/udp for IPsec
+如果需要添加，修改或者删除 VPN 用户账户，请参见 [管理 VPN 用户](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/manage-users-zh.md)。完成后重启你的 Docker 容器。
 
-对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/compute/docs/networking#firewalls)），请确保打开这两个端口。
+在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，请编辑 `/etc/ppp/options.xl2tpd` 和 `/etc/ipsec.conf` 并替换 `8.8.8.8` 和 `8.8.4.4`。然后重启你的 Docker 容器。
+
+在使用 `IPsec/L2TP` 连接时，VPN 服务器在虚拟网络 `192.168.42.0/24` 内具有 IP `192.168.42.1`。
 
 ## 高级用法
 
@@ -152,6 +151,32 @@ docker build -t hwdsl2/ipsec-vpn-server github.com/hwdsl2/docker-ipsec-vpn-serve
 ```
 docker exec -it ipsec-vpn-server env TERM=xterm bash -l
 ```
+
+（可选步骤） 安装 `nano` 编辑器：
+
+```
+apt-get update && apt-get -y install nano
+```
+
+完成后退出并重启 Docker 容器 （如果需要）：
+
+```
+exit
+docker restart ipsec-vpn-server
+```
+
+## 技术细节
+
+需要运行以下两个服务： `Libreswan (pluto)` 提供 IPsec VPN， `xl2tpd` 提供 L2TP 支持。
+
+默认的 IPsec 配置支持以下协议：
+
+* IKEv1 with PSK and XAuth ("Cisco IPsec")
+* IPsec/L2TP with PSK
+
+为使 VPN 服务器正常工作，将会打开以下端口：
+
+* 4500/udp and 500/udp for IPsec
 
 ## 另见
 
