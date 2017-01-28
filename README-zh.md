@@ -12,7 +12,7 @@
 
 ## 安装 Docker
 
-参照 [这些步骤](https://docs.docker.com/engine/installation/linux/) 在你的 Linux 服务器上安装并运行 Docker。
+首先，在你的 Linux 服务器上 [安装并运行 Docker](https://docs.docker.com/engine/installation/linux/)。
 
 ## 下载
 
@@ -95,6 +95,12 @@ docker cp ipsec-vpn-server:/opt/src/vpn-gen.env ./
 
 ```
 docker exec -it ipsec-vpn-server ipsec status
+```
+
+或者查看当前已建立的 VPN 连接：
+
+```
+docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 ```
 
 ## 下一步

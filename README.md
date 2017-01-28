@@ -8,11 +8,11 @@ Based on Debian Jessie with [Libreswan](https://libreswan.org) (IPsec VPN softwa
 
 [**&raquo; See also: IPsec VPN Server on Ubuntu, Debian and CentOS**](https://github.com/hwdsl2/setup-ipsec-vpn)
 
-*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md), [Chinese (Simplified)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
+*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md), [Chinese](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
 
 ## Install Docker
 
-Follow [these instructions](https://docs.docker.com/engine/installation/linux/) to get Docker running on your Linux server.
+First, [install and run Docker](https://docs.docker.com/engine/installation/linux/) on your Linux server.
 
 ## Download
 
@@ -83,7 +83,7 @@ Username: <VPN Username>
 Password: <VPN Password>
 ```
 
-(Optional) Backup the generated VPN credentials (if any) to the current directory:
+(Optional) Backup the generated VPN login details (if any) to the current directory:
 
 ```
 docker cp ipsec-vpn-server:/opt/src/vpn-gen.env ./
@@ -95,6 +95,12 @@ To check the status of your IPsec VPN server, you can pass `ipsec status` to you
 
 ```
 docker exec -it ipsec-vpn-server ipsec status
+```
+
+Or display current established VPN connections:
+
+```
+docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 ```
 
 ## Next steps
@@ -110,7 +116,7 @@ Enjoy your very own VPN!
 
 ## Important notes
 
-*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#important-notes), [Chinese (Simplified)](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
+*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#important-notes), [Chinese](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
 
 For **Windows users**, this [one-time registry change](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#windows-error-809) is required if the VPN server and/or client is behind NAT (e.g. home router).
 
