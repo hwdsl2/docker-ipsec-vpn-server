@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server.svg?branch=master)](https://travis-ci.org/hwdsl2/docker-ipsec-vpn-server) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/docker-ipsec-vpn-server.svg?maxAge=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?maxAge=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server)
 
-Docker image to run an IPsec VPN server, with both `IPsec/L2TP` and `IPsec/XAuth ("Cisco IPsec")`.
+Docker image to run an IPsec VPN server, with both `IPsec/L2TP` and `Cisco IPsec`.
 
 Based on Debian Jessie with [Libreswan](https://libreswan.org) (IPsec VPN software) and [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP daemon).
 
@@ -28,7 +28,7 @@ Alternatively, you may [build from source code](https://github.com/hwdsl2/docker
 
 ### Environment variables
 
-This Docker image uses the following three environment variables, that can be declared in an `env` file:
+This Docker image uses the following three variables, that can be declared in an `env` file:
 
 ```
 VPN_IPSEC_PSK=<IPsec pre-shared key>
