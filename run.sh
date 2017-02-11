@@ -59,21 +59,18 @@ case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
 esac
 
 echo
-echo 'Trying to auto discover IPs of this server...'
+echo 'Trying to auto discover IP of this server...'
 
-# In case auto IP discovery fails, you may manually enter the public IP
+# In case auto IP discovery fails, manually enter the public IP
 # of this server in your 'env' file, using variable 'VPN_PUBLIC_IP'.
 PUBLIC_IP=${VPN_PUBLIC_IP:-''}
 
-# Try to auto discover IPs of this server
+# Try to auto discover IP of this server
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
-PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
 
-# Check IPs for correct format
+# Check IP for correct format
 check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 check_ip "$PUBLIC_IP" || exiterr "Cannot find valid public IP. Define it in your 'env' file as 'VPN_PUBLIC_IP'."
-check_ip "$PRIVATE_IP" || PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
-check_ip "$PRIVATE_IP" || exiterr "Cannot find valid private IP."
 
 # Create IPsec (Libreswan) config
 cat > /etc/ipsec.conf <<EOF
@@ -87,7 +84,7 @@ config setup
   uniqueids=no
 
 conn shared
-  left=$PRIVATE_IP
+  left=%defaultroute
   leftid=$PUBLIC_IP
   right=%any
   encapsulation=yes
@@ -104,8 +101,6 @@ conn shared
 
 conn l2tp-psk
   auto=add
-  leftsubnet=$PRIVATE_IP/32
-  leftnexthop=%defaultroute
   leftprotoport=17/1701
   rightprotoport=17/%any
   type=transport
@@ -132,7 +127,7 @@ EOF
 
 # Specify IPsec PSK
 cat > /etc/ipsec.secrets <<EOF
-$PUBLIC_IP  %any  : PSK "$VPN_IPSEC_PSK"
+%any  %any  : PSK "$VPN_IPSEC_PSK"
 EOF
 
 # Create xl2tpd config
@@ -222,8 +217,8 @@ iptables -I FORWARD 6 -s 192.168.43.0/24 -o eth+ -j ACCEPT
 # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s 192.168.42.0/24 -d 192.168.42.0/24 -j DROP
 # iptables -I FORWARD 3 -s 192.168.43.0/24 -d 192.168.43.0/24 -j DROP
 iptables -A FORWARD -j DROP
-iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j SNAT --to-source "$PRIVATE_IP"
-iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o eth+ -j SNAT --to-source "$PRIVATE_IP"
+iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o eth+ -m policy --dir out --pol none -j MASQUERADE
+iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o eth+ -j MASQUERADE
 
 # Update file attributes
 chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets /etc/ipsec.d/passwd
