@@ -10,6 +10,19 @@ Based on Debian Jessie with [Libreswan](https://libreswan.org) (IPsec VPN softwa
 
 *Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md), [Chinese](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
 
+#### Table of Contents
+
+- [Install Docker](#install-docker)
+- [Download](#download)
+- [How to use this image](#how-to-use-this-image)
+- [Next steps](#next-steps)
+- [Important notes](#important-notes)
+- [Update Docker image](#update-docker-image)
+- [Advanced usage](#advanced-usage)
+- [Technical details](#technical-details)
+- [See also](#see-also)
+- [License](#license)
+
 ## Install Docker
 
 First, [install and run Docker](https://docs.docker.com/engine/installation/linux/) on your Linux server.
@@ -120,7 +133,7 @@ Enjoy your very own VPN!
 
 For **Windows users**, this [one-time registry change](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#windows-error-809) is required if the VPN server and/or client is behind NAT (e.g. home router).
 
-The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only [IPsec/XAuth mode](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md).
+The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only [IPsec/XAuth mode](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md). Also, your server must run the [latest version](https://github.com/hwdsl2/docker-ipsec-vpn-server#update-docker-image) of this Docker image.
 
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/compute/docs/networking#firewalls)), open UDP ports 500 and 4500 for the VPN.
 
@@ -128,7 +141,23 @@ Before editing any VPN config files, you must first [start a Bash session](https
 
 If you wish to add, edit or remove VPN user accounts, see [Manage VPN Users](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/manage-users.md). Please note: After editing the VPN config files, you must also comment out the relevant sections in `/opt/src/run.sh`, to avoid losing your changes on container restart.
 
-Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN connection is active. If another DNS provider is preferred, replace all `8.8.8.8` and `8.8.4.4` in `/opt/src/run.sh` with the new servers. Then restart the Docker container.
+Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN connection is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in `/opt/src/run.sh` with the new servers. Then restart the Docker container.
+
+## Update Docker image
+
+To update your Docker image and container, follow these steps:
+
+```
+docker pull hwdsl2/ipsec-vpn-server
+```
+
+If the Docker image is already up to date, you should see:
+
+```
+Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
+```
+
+Otherwise, it will download the latest version. To update your Docker container, first write down all your VPN login details (refer to "Retrieve VPN login details" above). Then remove the Docker container with `docker rm -f ipsec-vpn-server`. Finally, re-create it using instructions from the "How to use this image" section.
 
 ## Advanced usage
 

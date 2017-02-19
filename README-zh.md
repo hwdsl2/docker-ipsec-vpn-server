@@ -10,6 +10,19 @@
 
 *其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
 
+#### 目录
+
+- [安装 Docker](#安装-docker)
+- [下载](#下载)
+- [如何使用本镜像](#如何使用本镜像)
+- [下一步](#下一步)
+- [重要提示](#重要提示)
+- [更新 Docker 镜像](#更新-docker-镜像)
+- [高级用法](#高级用法)
+- [技术细节](#技术细节)
+- [另见](#另见)
+- [授权协议](#授权协议)
+
 ## 安装 Docker
 
 首先，在你的 Linux 服务器上 [安装并运行 Docker](https://docs.docker.com/engine/installation/linux/)。
@@ -120,7 +133,7 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 **Windows 用户** 在首次连接之前需要[修改一次注册表](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。
 
-同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT （比如家用路由器）后面的多个设备到 VPN 服务器，你必须仅使用 [IPsec/XAuth 模式](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)。
+同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT （比如家用路由器）后面的多个设备到 VPN 服务器，你必须仅使用 [IPsec/XAuth 模式](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)。另外，你的服务器必须运行 [最新版本](#更新-docker-镜像) 的 Docker 镜像。
 
 对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/compute/docs/networking#firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。
 
@@ -128,7 +141,23 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 如果需要添加，修改或者删除 VPN 用户账户，请参见 [管理 VPN 用户](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/manage-users-zh.md)。请注意：在编辑完 VPN 配置文件之后，你还必须注释掉脚本 `/opt/src/run.sh` 中的相应部分，以避免你的更改在容器重启后丢失。
 
-在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，请编辑 `/opt/src/run.sh` 并将所有的 `8.8.8.8` 和 `8.8.4.4` 替换为你的新服务器。然后重启 Docker 容器。
+在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，请编辑 `/opt/src/run.sh` 并将 `8.8.8.8` 和 `8.8.4.4` 替换为你的新服务器。然后重启 Docker 容器。
+
+## 更新 Docker 镜像
+
+如需更新你的 Docker 镜像和容器，请按以下步骤操作：
+
+```
+docker pull hwdsl2/ipsec-vpn-server
+```
+
+如果 Docker 镜像已经是最新的，你会看到以下提示：
+
+```
+Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
+```
+
+否则将会下载最新版本。要更新你的 Docker 容器，首先在纸上记下你所有的 VPN 登录信息（参见上面的 "获取 VPN 登录信息"）。然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。最后按照 "如何使用本镜像" 的说明来重新创建它。
 
 ## 高级用法
 
