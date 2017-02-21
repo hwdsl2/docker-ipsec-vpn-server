@@ -20,11 +20,6 @@ if [ ! -f /.dockerenv ]; then
   exit 1
 fi
 
-if [ ! -f /sys/class/net/eth0/operstate ]; then
-  echo "Network interface 'eth0' is not available. Aborting."
-  exit 1
-fi
-
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER_CREDENTIAL_LIST" ]; then
   VPN_IPSEC_PSK="$(< /dev/urandom tr -dc 'A-HJ-NPR-Za-km-z2-9' | head -c 16)"
   VPN_PASSWORD="$(< /dev/urandom tr -dc 'A-HJ-NPR-Za-km-z2-9' | head -c 16)"
@@ -35,6 +30,16 @@ if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER_CREDENTIAL_LIST" ]; then
   echo "VPN credentials must be specified. Edit your 'env' file and re-enter them."
   exit 1
 fi
+
+if [ -z "$VPN_IPSEC_INTERFACE" ]; then
+  VPN_IPSEC_INTERFACE="eth0"
+fi
+
+if [ `cat /sys/class/net/$VPN_NETWORK_INTERFACE/operstate` != "1" ]; then
+  echo "Network interface '$VPN_NETWORK_INTERFACE' is not available. Aborting."
+  exit 1
+fi
+
 
 echo
 echo 'Trying to auto discover IPs of this server...'
@@ -48,7 +53,7 @@ PUBLIC_IP=${VPN_PUBLIC_IP:-''}
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
-[ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
+[ -z "$PRIVATE_IP" ] && PRIVATE_IP=$(ifconfig $VPN_NETWORK_INTERFACE | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
 
 # Check IPs for correct format
 IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
@@ -184,11 +189,11 @@ net.ipv4.conf.default.accept_redirects = 0
 net.ipv4.conf.all.send_redirects = 0
 net.ipv4.conf.default.send_redirects = 0
 net.ipv4.conf.lo.send_redirects = 0
-net.ipv4.conf.eth0.send_redirects = 0
+net.ipv4.conf.$VPN_NETWORK_INTERFACE.send_redirects = 0
 net.ipv4.conf.all.rp_filter = 0
 net.ipv4.conf.default.rp_filter = 0
 net.ipv4.conf.lo.rp_filter = 0
-net.ipv4.conf.eth0.rp_filter = 0
+net.ipv4.conf.$VPN_NETWORK_INTERFACE.rp_filter = 0
 net.ipv4.icmp_echo_ignore_broadcasts = 1
 net.ipv4.icmp_ignore_bogus_error_responses = 1
 
