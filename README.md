@@ -12,6 +12,7 @@ This docker image is based on [Lin Song work](https://github.com/hwdsl2/docker-i
 * Multiple VPN users declaration support
 * Native NAT Transversal support
 * No waiting time before a user can reconnect in case of disconnection support
+* Custom network interface support 
 
 ## Install Docker
 
@@ -42,11 +43,12 @@ This Docker image uses the following two environment variables, that can be decl
 ```
 VPN_IPSEC_PSK=<IPsec pre-shared key>
 VPN_USER_CREDENTIAL_LIST=[{"login":"userTest1","password":"test1"},{"login":"userTest2","password":"test2"}]
+VPN_NETWORK_INTERFACE=eth0
 ```
 
-The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable.
-Multiple users feature is supported. VPN user credentials is defined in `VPN_USER_CREDENTIAL_LIST` environnement variable.
-Users login and password must be defined in a json format array. Each user should be define with a "login" and a "password" attribute. 
+* `VPN_IPSEC_PSK` : The IPsec PSK (pre-shared key).
+* `VPN_USER_CREDENTIAL_LIST` : Multiple users VPN credentials list. Users login and password must be defined in a json format array. Each user should be define with a "login" and a "password" attribute.
+* `VPN_NETWORK_INTERFACE` : The network interface name (eth0 by default).
 
 **Note:** In your `env` file, DO NOT put single or double quotes around values, or add space around `=`. Also, DO NOT use these characters within values: `\ " '`
 
