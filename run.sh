@@ -31,8 +31,8 @@ if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER_CREDENTIAL_LIST" ]; then
   exit 1
 fi
 
-if [ -z "$VPN_IPSEC_INTERFACE" ]; then
-  VPN_IPSEC_INTERFACE="eth0"
+if [ -z "$VPN_NETWORK_INTERFACE" ]; then
+  VPN_NETWORK_INTERFACE="eth0"
 fi
 
 if [ `cat /sys/class/net/$VPN_NETWORK_INTERFACE/operstate` != "1" ]; then
