@@ -48,13 +48,27 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
   fi
 fi
 
+# Remove whitespace around VPN variables, if any
+VPN_IPSEC_PSK=$(printf %s "$VPN_IPSEC_PSK" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+VPN_USER=$(printf %s "$VPN_USER" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+VPN_PASSWORD=$(printf %s "$VPN_PASSWORD" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+
+# Remove quotes around VPN variables, if any
+VPN_IPSEC_PSK=$(printf %s "$VPN_IPSEC_PSK" | sed -e 's/^"\(.*\)"$/\1/' -e "s/^'\(.*\)'$/\1/")
+VPN_USER=$(printf %s "$VPN_USER" | sed -e 's/^"\(.*\)"$/\1/' -e "s/^'\(.*\)'$/\1/")
+VPN_PASSWORD=$(printf %s "$VPN_PASSWORD" | sed -e 's/^"\(.*\)"$/\1/' -e "s/^'\(.*\)'$/\1/")
+
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
 fi
 
+if printf %s "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -qs '[^ -~]\+'; then
+  exiterr "VPN credentials must not contain non-ASCII characters."
+fi
+
 case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
   *[\\\"\']*)
-    exiterr "VPN credentials must not contain any of these characters: \\ \" '"
+    exiterr "VPN credentials must not contain the following characters: \\ \" '"
     ;;
 esac
 
