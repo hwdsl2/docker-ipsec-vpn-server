@@ -27,6 +27,18 @@ if [ ! -f "/.dockerenv" ]; then
   exiterr "This script ONLY runs in a Docker container."
 fi
 
+if ip link add dummy0 type dummy 2>&1 | grep -qs "not permitted"; then
+cat 1>&2 <<'EOF'
+Error: This Docker image must be run in privileged mode.
+
+For detailed instructions, please visit:
+https://github.com/hwdsl2/docker-ipsec-vpn-server
+
+EOF
+  exit 1
+fi
+ip link delete dummy0 >/dev/null 2>&1
+
 mkdir -p /opt/src
 vpn_env="/opt/src/vpn-gen.env"
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
