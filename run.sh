@@ -5,6 +5,9 @@
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS ONLY MEANT TO BE RUN
 # IN A DOCKER CONTAINER!
 #
+# This file is part of IPsec VPN Docker image, available at:
+# https://github.com/hwdsl2/docker-ipsec-vpn-server
+#
 # Copyright (C) 2016-2017 Lin Song <linsongui@gmail.com>
 # Based on the work of Thomas Sarlandie (Copyright 2012)
 #
@@ -16,7 +19,9 @@
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-exiterr() { echo "Error: $1" >&2; exit 1; }
+exiterr()  { echo "Error: $1" >&2; exit 1; }
+nospaces() { printf %s "$1" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'; }
+noquotes() { printf %s "$1" | sed -e 's/^"\(.*\)"$/\1/' -e "s/^'\(.*\)'$/\1/"; }
 
 check_ip() {
   IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
@@ -60,15 +65,13 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
   fi
 fi
 
-# Remove whitespace around VPN variables, if any
-VPN_IPSEC_PSK=$(printf %s "$VPN_IPSEC_PSK" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-VPN_USER=$(printf %s "$VPN_USER" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-VPN_PASSWORD=$(printf %s "$VPN_PASSWORD" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-
-# Remove quotes around VPN variables, if any
-VPN_IPSEC_PSK=$(printf %s "$VPN_IPSEC_PSK" | sed -e 's/^"\(.*\)"$/\1/' -e "s/^'\(.*\)'$/\1/")
-VPN_USER=$(printf %s "$VPN_USER" | sed -e 's/^"\(.*\)"$/\1/' -e "s/^'\(.*\)'$/\1/")
-VPN_PASSWORD=$(printf %s "$VPN_PASSWORD" | sed -e 's/^"\(.*\)"$/\1/' -e "s/^'\(.*\)'$/\1/")
+# Remove whitespace and quotes around VPN variables, if any
+VPN_IPSEC_PSK="$(nospaces "$VPN_IPSEC_PSK")"
+VPN_IPSEC_PSK="$(noquotes "$VPN_IPSEC_PSK")"
+VPN_USER="$(nospaces "$VPN_USER")"
+VPN_USER="$(noquotes "$VPN_USER")"
+VPN_PASSWORD="$(nospaces "$VPN_PASSWORD")"
+VPN_PASSWORD="$(noquotes "$VPN_PASSWORD")"
 
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
@@ -215,7 +218,6 @@ $SYST kernel.msgmax=65536
 $SYST kernel.shmmax=68719476736
 $SYST kernel.shmall=4294967296
 $SYST net.ipv4.ip_forward=1
-$SYST net.ipv4.tcp_syncookies=1
 $SYST net.ipv4.conf.all.accept_source_route=0
 $SYST net.ipv4.conf.default.accept_source_route=0
 $SYST net.ipv4.conf.all.accept_redirects=0
@@ -230,10 +232,6 @@ $SYST net.ipv4.conf.lo.rp_filter=0
 $SYST net.ipv4.conf.eth0.rp_filter=0
 $SYST net.ipv4.icmp_echo_ignore_broadcasts=1
 $SYST net.ipv4.icmp_ignore_bogus_error_responses=1
-$SYST net.core.wmem_max=12582912
-$SYST net.core.rmem_max=12582912
-$SYST net.ipv4.tcp_rmem="10240 87380 12582912"
-$SYST net.ipv4.tcp_wmem="10240 87380 12582912"
 
 # Create IPTables rules
 iptables -I INPUT 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
