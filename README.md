@@ -8,20 +8,20 @@ Based on Debian Jessie with [Libreswan](https://libreswan.org) (IPsec VPN softwa
 
 [**&raquo; See also: IPsec VPN Server on Ubuntu, Debian and CentOS**](https://github.com/hwdsl2/setup-ipsec-vpn)
 
-*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
+*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
 
 #### Table of Contents
 
-- [Install Docker](#install-docker)
-- [Download](#download)
-- [How to use this image](#how-to-use-this-image)
-- [Next steps](#next-steps)
-- [Important notes](#important-notes)
-- [Update Docker image](#update-docker-image)
-- [Advanced usage](#advanced-usage)
-- [Technical details](#technical-details)
-- [See also](#see-also)
-- [License](#license)
+- [Install Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server#install-docker)
+- [Download](https://github.com/hwdsl2/docker-ipsec-vpn-server#download)
+- [How to use this image](https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image)
+- [Next steps](https://github.com/hwdsl2/docker-ipsec-vpn-server#next-steps)
+- [Important notes](https://github.com/hwdsl2/docker-ipsec-vpn-server#important-notes)
+- [Update Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server#update-docker-image)
+- [Advanced usage](https://github.com/hwdsl2/docker-ipsec-vpn-server#advanced-usage)
+- [Technical details](https://github.com/hwdsl2/docker-ipsec-vpn-server#technical-details)
+- [See also](https://github.com/hwdsl2/docker-ipsec-vpn-server#see-also)
+- [License](https://github.com/hwdsl2/docker-ipsec-vpn-server#license)
 
 ## Install Docker
 
@@ -129,7 +129,7 @@ Enjoy your very own VPN!
 
 ## Important notes
 
-*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#important-notes), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#重要提示).*
+*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server#important-notes), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#重要提示).*
 
 For **Windows users**, this [one-time registry change](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#windows-error-809) is required if the VPN server and/or client is behind NAT (e.g. home router).
 
@@ -145,7 +145,7 @@ Clients are set to use [Google Public DNS](https://developers.google.com/speed/p
 
 ## Update Docker image
 
-To update your Docker image and container, follow these steps:
+To update your Docker image and container:
 
 ```
 docker pull hwdsl2/ipsec-vpn-server

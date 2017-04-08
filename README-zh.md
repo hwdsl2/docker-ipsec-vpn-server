@@ -8,7 +8,7 @@
 
 [**&raquo; 另见： IPsec VPN Server on Ubuntu, Debian and CentOS**](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)
 
-*其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
+*其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
 
 #### 目录
 
@@ -129,7 +129,7 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 ## 重要提示
 
-*其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#important-notes), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#重要提示).*
+*其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server#important-notes), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#重要提示).*
 
 **Windows 用户** 在首次连接之前需要[修改一次注册表](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。
 
@@ -145,7 +145,7 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 ## 更新 Docker 镜像
 
-如需更新你的 Docker 镜像和容器，请按以下步骤操作：
+如需更新你的 Docker 镜像和容器：
 
 ```
 docker pull hwdsl2/ipsec-vpn-server
