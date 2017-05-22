@@ -32,7 +32,7 @@ if [ ! -f "/.dockerenv" ]; then
   exiterr "This script ONLY runs in a Docker container."
 fi
 
-if ip link add dummy0 type dummy 2>&1 | grep -qs "not permitted"; then
+if ip link add dummy0 type dummy 2>&1 | grep -q "not permitted"; then
 cat 1>&2 <<'EOF'
 Error: This Docker image must be run in privileged mode.
 
@@ -77,7 +77,7 @@ if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
 fi
 
-if printf %s "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -qs '[^ -~]\+'; then
+if printf %s "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -q '[^ -~]\+'; then
   exiterr "VPN credentials must not contain non-ASCII characters."
 fi
 
