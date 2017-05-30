@@ -25,11 +25,11 @@
 
 ## 安装 Docker
 
-首先，在你的 Linux 服务器上 [安装并运行 Docker](https://docs.docker.com/engine/installation/linux/)。
+首先，在你的 Linux 服务器上 [安装并运行 Docker](https://docs.docker.com/engine/installation/)。
 
 ## 下载
 
-预构建的可信任镜像可在 [Docker Hub registry](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server) 下载：
+预构建的可信任镜像可在 [Docker Hub registry](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) 下载：
 
 ```
 docker pull hwdsl2/ipsec-vpn-server
@@ -41,17 +41,17 @@ docker pull hwdsl2/ipsec-vpn-server
 
 ### 环境变量
 
-这个 Docker 镜像使用以下三个变量，可以在一个 `env` 文件中定义：
+这个 Docker 镜像使用以下三个变量，可以在一个 `env` 文件中定义 （[示例](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/vpn.env.example)）：
 
 ```
-VPN_IPSEC_PSK=<IPsec pre-shared key>
-VPN_USER=<VPN Username>
-VPN_PASSWORD=<VPN Password>
+VPN_IPSEC_PSK=your_ipsec_pre_shared_key
+VPN_USER=your_vpn_username
+VPN_PASSWORD=your_vpn_password
 ```
 
 这将创建一个用于 VPN 登录的用户账户。 IPsec PSK (预共享密钥) 由 `VPN_IPSEC_PSK` 环境变量指定。 VPN 用户名和密码分别在 `VPN_USER` 和 `VPN_PASSWORD` 中定义。
 
-**注：** 在你的 `env` 文件中，**不要**为变量值添加单引号/双引号，或在 `=` 两边添加空格。**不要**在值中使用这些字符： `\ " '`。
+**注：** 在你的 `env` 文件中，**不要**为变量值添加 `""` 或者 `''`，或在 `=` 两边添加空格。**不要**在值中使用这些字符： `\ " '`。
 
 所有这些环境变量对于本镜像都是可选的，也就是说无需定义它们就可以搭建 IPsec VPN 服务器。详情请参见以下部分。
 
@@ -90,10 +90,10 @@ docker logs ipsec-vpn-server
 ```
 Connect to your new VPN with these details:
 
-Server IP: <VPN Server IP>
-IPsec PSK: <IPsec pre-shared key>
-Username: <VPN Username>
-Password: <VPN Password>
+Server IP: your_vpn_server_ip
+IPsec PSK: your_ipsec_pre_shared_key
+Username: your_vpn_username
+Password: your_vpn_password
 ```
 
 （可选步骤） 备份自动生成的 VPN 登录信息（如果有）到当前目录：
@@ -135,11 +135,11 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT （比如家用路由器）后面的多个设备到 VPN 服务器，你必须仅使用 [IPsec/XAuth 模式](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)。另外，你的服务器必须运行 [最新版本](#更新-docker-镜像) 的 Docker 镜像。
 
-对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/compute/docs/networking#firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。
+对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/compute/docs/vpc/firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。
 
 在编辑任何 VPN 配置文件之前，你必须首先在正在运行的 Docker 容器中 [开始一个 Bash 会话](#在容器中运行-bash-shell)。
 
-如果需要添加，修改或者删除 VPN 用户账户，请参见 [管理 VPN 用户](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/manage-users-zh.md)。请注意：在编辑完 VPN 配置文件之后，你还必须注释掉脚本 `/opt/src/run.sh` 中的相应部分，以避免你的更改在容器重启后丢失。
+如果需要添加，修改或者删除 VPN 用户账户，请参见 [管理 VPN 用户](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/manage-users-zh.md)。**重要：** 在编辑完 VPN 配置文件之后，你还必须注释掉脚本 `/opt/src/run.sh` 中的相应部分，以避免你的更改在容器重启后丢失。
 
 在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，请编辑 `/opt/src/run.sh` 并将 `8.8.8.8` 和 `8.8.4.4` 替换为你的新服务器。然后重启 Docker 容器。
 

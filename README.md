@@ -25,11 +25,11 @@ Based on Debian Jessie with [Libreswan](https://libreswan.org) (IPsec VPN softwa
 
 ## Install Docker
 
-First, [install and run Docker](https://docs.docker.com/engine/installation/linux/) on your Linux server.
+First, [install and run Docker](https://docs.docker.com/engine/installation/) on your Linux server.
 
 ## Download
 
-Get the trusted build from the [Docker Hub registry](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server):
+Get the trusted build from the [Docker Hub registry](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/):
 
 ```
 docker pull hwdsl2/ipsec-vpn-server
@@ -41,17 +41,17 @@ Alternatively, you may [build from source code](https://github.com/hwdsl2/docker
 
 ### Environment variables
 
-This Docker image uses the following three variables, that can be declared in an `env` file:
+This Docker image uses the following three variables, that can be declared in an `env` file ([example](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/vpn.env.example)):
 
 ```
-VPN_IPSEC_PSK=<IPsec pre-shared key>
-VPN_USER=<VPN Username>
-VPN_PASSWORD=<VPN Password>
+VPN_IPSEC_PSK=your_ipsec_pre_shared_key
+VPN_USER=your_vpn_username
+VPN_PASSWORD=your_vpn_password
 ```
 
 This will create a single user account for VPN login. The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
 
-**Note:** In your `env` file, DO NOT put single or double quotes around values, or add space around `=`. Also, DO NOT use these characters within values: `\ " '`.
+**Note:** In your `env` file, DO NOT put `""` or `''` around values, or add space around `=`. DO NOT use these characters within values: `\ " '`.
 
 All the variables to this image are optional, which means you don't have to type in any environment variable, and you can have an IPsec VPN server out of the box! Read the sections below for details.
 
@@ -90,10 +90,10 @@ Search for these lines in the output:
 ```
 Connect to your new VPN with these details:
 
-Server IP: <VPN Server IP>
-IPsec PSK: <IPsec pre-shared key>
-Username: <VPN Username>
-Password: <VPN Password>
+Server IP: your_vpn_server_ip
+IPsec PSK: your_ipsec_pre_shared_key
+Username: your_vpn_username
+Password: your_vpn_password
 ```
 
 (Optional) Backup the generated VPN login details (if any) to the current directory:
@@ -135,11 +135,11 @@ For **Windows users**, this [one-time registry change](https://github.com/hwdsl2
 
 The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only [IPsec/XAuth mode](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md). Also, your server must run the [latest version](https://github.com/hwdsl2/docker-ipsec-vpn-server#update-docker-image) of this Docker image.
 
-For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/compute/docs/networking#firewalls)), open UDP ports 500 and 4500 for the VPN.
+For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/compute/docs/vpc/firewalls)), open UDP ports 500 and 4500 for the VPN.
 
 Before editing any VPN config files, you must first [start a Bash session](https://github.com/hwdsl2/docker-ipsec-vpn-server#bash-shell-inside-container) in the running container.
 
-If you wish to add, edit or remove VPN user accounts, see [Manage VPN Users](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/manage-users.md). Please note: After editing the VPN config files, you must also comment out the relevant sections in `/opt/src/run.sh`, to avoid losing your changes on container restart.
+If you wish to add, edit or remove VPN user accounts, see [Manage VPN Users](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/manage-users.md). **Important:** After editing the VPN config files, you must also comment out the relevant sections in `/opt/src/run.sh`, to avoid losing your changes on container restart.
 
 Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN connection is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in `/opt/src/run.sh` with the new servers. Then restart the Docker container.
 
