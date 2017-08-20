@@ -1,8 +1,8 @@
 FROM debian:jessie
 MAINTAINER Lin Song <linsongui@gmail.com>
 
-ENV REFRESHED_AT 2017-03-23
-ENV SWAN_VER 3.20
+ENV REFRESHED_AT 2017-08-20
+ENV SWAN_VER 3.21
 
 WORKDIR /opt/src
 
@@ -23,6 +23,7 @@ RUN apt-get -yqq update \
     && rm -f "libreswan.tar.gz" \
     && cd "libreswan-${SWAN_VER}" \
     && echo "WERROR_CFLAGS =" > Makefile.inc.local \
+    && echo "USE_DNSSEC = false" >> Makefile.inc.local \
     && make -s programs \
     && make -s install \
     && cd /opt/src \
