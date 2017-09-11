@@ -143,6 +143,8 @@ conn l2tp-psk
   type=transport
   phase2=esp
   also=shared
+  leftnexthop=%defaultroute
+  rightnexthop=%defaultroute
 
 conn xauth-psk
   auto=add
@@ -160,6 +162,8 @@ conn xauth-psk
   ikev2=never
   cisco-unity=yes
   also=shared
+  leftnexthop=%defaultroute
+  rightnexthop=%defaultroute
 EOF
 
 # Specify IPsec PSK
@@ -197,6 +201,7 @@ proxyarp
 lcp-echo-failure 4
 lcp-echo-interval 30
 connect-delay 5000
+
 EOF
 
 # Create VPN credentials
