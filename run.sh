@@ -185,6 +185,7 @@ EOF
 
 # Set xl2tpd options
 cat > /etc/ppp/options.xl2tpd <<EOF
++mschap-v2
 ipcp-accept-local
 ipcp-accept-remote
 ms-dns $DNS_SRV1
