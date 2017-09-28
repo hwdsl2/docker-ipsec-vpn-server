@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM debian:stretch
 MAINTAINER Lin Song <linsongui@gmail.com>
 
 ENV REFRESHED_AT 2017-09-27
