@@ -49,7 +49,7 @@ VPN_USER=your_vpn_username
 VPN_PASSWORD=your_vpn_password
 ```
 
-This will create a user account for VPN login, which can be used by your multiple devices. The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
+This will create a user account for VPN login, which can be used by your multiple devices[*](https://github.com/hwdsl2/docker-ipsec-vpn-server#multi-device-note) . The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
 
 **Note:** In your `env` file, DO NOT put `""` or `''` around values, or add space around `=`. DO NOT use these characters within values: `\ " '`.
 
@@ -120,8 +120,9 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 Get your computer or device to use the VPN. Please refer to:
 
-[Configure IPsec/L2TP VPN Clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md)   
-[Configure IPsec/XAuth ("Cisco IPsec") VPN Clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md)
+**[Configure IPsec/L2TP VPN Clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md)**
+
+**[Configure IPsec/XAuth ("Cisco IPsec") VPN Clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md)**
 
 If you get an error when trying to connect, see [Troubleshooting](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#troubleshooting).
 
@@ -133,6 +134,7 @@ Enjoy your very own VPN!
 
 For **Windows users**, this [one-time registry change](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#windows-error-809) is required if the VPN server and/or client is behind NAT (e.g. home router).
 
+<a name="multi-device-note"></a>
 The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only [IPsec/XAuth mode](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md).
 
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/compute/docs/vpc/firewalls)), open UDP ports 500 and 4500 for the VPN.
@@ -191,11 +193,35 @@ docker exec -it ipsec-vpn-server env TERM=xterm bash -l
 apt-get update && apt-get -y install nano
 ```
 
-When finished, exit the container and restart if needed:
+Then run your commands inside the container. When finished, exit the container and restart if needed:
 
 ```
 exit
 docker restart ipsec-vpn-server
+```
+
+### Enable Libreswan logs
+
+To keep the Docker image small, Libreswan (IPsec) logs are not enabled by default. If you are an advanced user and wish to enable it for troubleshooting purposes, first start a Bash session in the running container:
+
+```
+docker exec -it ipsec-vpn-server env TERM=xterm bash -l
+```
+
+Then run the following commands:
+
+```
+apt-get update && apt-get -y install rsyslog
+service rsyslog restart
+service ipsec restart
+sed -i '/modprobe/a service rsyslog restart' /opt/src/run.sh
+exit
+```
+
+When finished, you may check Libreswan logs with:
+
+```
+docker exec -it ipsec-vpn-server grep pluto /var/log/auth.log
 ```
 
 ## Technical details

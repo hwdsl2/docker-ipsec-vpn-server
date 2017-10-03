@@ -49,7 +49,7 @@ VPN_USER=your_vpn_username
 VPN_PASSWORD=your_vpn_password
 ```
 
-这将创建一个用于 VPN 登录的用户账户，它可以在你的多个设备上使用。 IPsec PSK (预共享密钥) 由 `VPN_IPSEC_PSK` 环境变量指定。 VPN 用户名和密码分别在 `VPN_USER` 和 `VPN_PASSWORD` 中定义。
+这将创建一个用于 VPN 登录的用户账户，它可以在你的多个设备上使用[*](#multi-device-note) 。 IPsec PSK (预共享密钥) 由 `VPN_IPSEC_PSK` 环境变量指定。 VPN 用户名和密码分别在 `VPN_USER` 和 `VPN_PASSWORD` 中定义。
 
 **注：** 在你的 `env` 文件中，**不要**为变量值添加 `""` 或者 `''`，或在 `=` 两边添加空格。**不要**在值中使用这些字符： `\ " '`。
 
@@ -90,10 +90,10 @@ docker logs ipsec-vpn-server
 ```
 Connect to your new VPN with these details:
 
-Server IP: your_vpn_server_ip
-IPsec PSK: your_ipsec_pre_shared_key
-Username: your_vpn_username
-Password: your_vpn_password
+Server IP: 你的VPN服务器IP
+IPsec PSK: 你的IPsec预共享密钥
+Username: 你的VPN用户名
+Password: 你的VPN密码
 ```
 
 （可选步骤） 备份自动生成的 VPN 登录信息（如果有）到当前目录：
@@ -120,8 +120,9 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 配置你的计算机或其它设备使用 VPN 。请参见：
 
-[配置 IPsec/L2TP VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md)   
-[配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)
+**[配置 IPsec/L2TP VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md)**
+
+**[配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)**
 
 如果在连接过程中遇到错误，请参见 [故障排除](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#故障排除)。
 
@@ -133,6 +134,7 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 **Windows 用户** 在首次连接之前需要[修改一次注册表](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。
 
+<a name="multi-device-note"></a>
 同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT （比如家用路由器）后面的多个设备到 VPN 服务器，你必须仅使用 [IPsec/XAuth 模式](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)。
 
 对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/compute/docs/vpc/firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。
@@ -191,12 +193,37 @@ docker exec -it ipsec-vpn-server env TERM=xterm bash -l
 apt-get update && apt-get -y install nano
 ```
 
-完成后退出并重启 Docker 容器 （如果需要）：
+然后在容器中运行你的命令。完成后退出并重启 Docker 容器 （如果需要）：
 
 ```
 exit
 docker restart ipsec-vpn-server
 ```
+
+### 启用 Libreswan 日志
+
+为了保持较小的 Docker 镜像，Libreswan (IPsec) 日志默认未开启。如果你是高级用户，并且需要启用它以便进行故障排除，首先在正在运行的 Docker 容器中开始一个 Bash 会话：
+
+```
+docker exec -it ipsec-vpn-server env TERM=xterm bash -l
+```
+
+然后运行以下命令：
+
+```
+apt-get update && apt-get -y install rsyslog
+service rsyslog restart
+service ipsec restart
+sed -i '/modprobe/a service rsyslog restart' /opt/src/run.sh
+exit
+```
+
+完成后你可以这样查看 Libreswan 日志：
+
+```
+docker exec -it ipsec-vpn-server grep pluto /var/log/auth.log
+```
+
 
 ## 技术细节
 
