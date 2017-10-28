@@ -213,25 +213,31 @@ EOF
 
 # Update sysctl settings
 SYST='/sbin/sysctl -e -q -w'
+
+if [ "$(getconf LONG_BIT)" = "64" ]; then
+  SHM_MAX=68719476736
+  SHM_ALL=4294967296
+else
+  SHM_MAX=4294967295
+  SHM_ALL=268435456
+fi
+
 $SYST kernel.msgmnb=65536
 $SYST kernel.msgmax=65536
-$SYST kernel.shmmax=68719476736
-$SYST kernel.shmall=4294967296
+$SYST kernel.shmmax=$SHM_MAX
+$SYST kernel.shmall=$SHM_ALL
+
 $SYST net.ipv4.ip_forward=1
 $SYST net.ipv4.conf.all.accept_source_route=0
-$SYST net.ipv4.conf.default.accept_source_route=0
 $SYST net.ipv4.conf.all.accept_redirects=0
-$SYST net.ipv4.conf.default.accept_redirects=0
 $SYST net.ipv4.conf.all.send_redirects=0
-$SYST net.ipv4.conf.default.send_redirects=0
-$SYST net.ipv4.conf.lo.send_redirects=0
-$SYST net.ipv4.conf.eth0.send_redirects=0
 $SYST net.ipv4.conf.all.rp_filter=0
+$SYST net.ipv4.conf.default.accept_source_route=0
+$SYST net.ipv4.conf.default.accept_redirects=0
+$SYST net.ipv4.conf.default.send_redirects=0
 $SYST net.ipv4.conf.default.rp_filter=0
-$SYST net.ipv4.conf.lo.rp_filter=0
+$SYST net.ipv4.conf.eth0.send_redirects=0
 $SYST net.ipv4.conf.eth0.rp_filter=0
-$SYST net.ipv4.icmp_echo_ignore_broadcasts=1
-$SYST net.ipv4.icmp_ignore_bogus_error_responses=1
 
 # Create IPTables rules
 iptables -I INPUT 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
