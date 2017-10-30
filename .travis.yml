@@ -18,7 +18,7 @@ env:
   - TESTID=with-env
 
 script:
-  - export SHELLCHECK_OPTS="-e SC1090,SC1091"
+  - export SHELLCHECK_OPTS="-e SC1090,SC1091,SC1117"
   - shellcheck *.sh
   - sudo sed -i "/debian unstable/d" /etc/apt/sources.list
   - docker build -t vpn .
