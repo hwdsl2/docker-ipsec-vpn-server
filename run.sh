@@ -20,12 +20,12 @@
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 exiterr()  { echo "Error: $1" >&2; exit 1; }
-nospaces() { printf %s "$1" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'; }
-noquotes() { printf %s "$1" | sed -e 's/^"\(.*\)"$/\1/' -e "s/^'\(.*\)'$/\1/"; }
+nospaces() { printf '%s' "$1" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'; }
+noquotes() { printf '%s' "$1" | sed -e 's/^"\(.*\)"$/\1/' -e "s/^'\(.*\)'$/\1/"; }
 
 check_ip() {
   IP_REGEX='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
-  printf %s "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
+  printf '%s' "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
 }
 
 if [ ! -f "/.dockerenv" ]; then
@@ -77,13 +77,13 @@ if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
 fi
 
-if printf %s "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -q '[^ -~]\+'; then
+if printf '%s' "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -q '[^ -~]\+'; then
   exiterr "VPN credentials must not contain non-ASCII characters."
 fi
 
 case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
   *[\\\"\']*)
-    exiterr "VPN credentials must not contain the following characters: \\ \" '"
+    exiterr "VPN credentials must not contain these special characters: \\ \" '"
     ;;
 esac
 
@@ -99,7 +99,7 @@ PUBLIC_IP=${VPN_PUBLIC_IP:-''}
 
 # Check IP for correct format
 check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-check_ip "$PUBLIC_IP" || exiterr "Cannot find valid public IP. Define it in your 'env' file as 'VPN_PUBLIC_IP'."
+check_ip "$PUBLIC_IP" || exiterr "Cannot detect this server's public IP. Define it in your 'env' file as 'VPN_PUBLIC_IP'."
 
 L2TP_NET=${VPN_L2TP_NET:-'192.168.42.0/24'}
 L2TP_LOCAL=${VPN_L2TP_LOCAL:-'192.168.42.1'}
@@ -201,8 +201,6 @@ EOF
 
 # Create VPN credentials
 cat > /etc/ppp/chap-secrets <<EOF
-# Secrets for authentication using CHAP
-# client  server  secret  IP addresses
 "$VPN_USER" l2tpd "$VPN_PASSWORD" *
 EOF
 
@@ -213,7 +211,6 @@ EOF
 
 # Update sysctl settings
 SYST='/sbin/sysctl -e -q -w'
-
 if [ "$(getconf LONG_BIT)" = "64" ]; then
   SHM_MAX=68719476736
   SHM_ALL=4294967296
@@ -221,12 +218,10 @@ else
   SHM_MAX=4294967295
   SHM_ALL=268435456
 fi
-
 $SYST kernel.msgmnb=65536
 $SYST kernel.msgmax=65536
 $SYST kernel.shmmax=$SHM_MAX
 $SYST kernel.shmall=$SHM_ALL
-
 $SYST net.ipv4.ip_forward=1
 $SYST net.ipv4.conf.all.accept_source_route=0
 $SYST net.ipv4.conf.all.accept_redirects=0
