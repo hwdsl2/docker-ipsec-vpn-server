@@ -1,5 +1,5 @@
 FROM debian:stretch
-MAINTAINER Lin Song <linsongui@gmail.com>
+LABEL maintainer="Lin Song <linsongui@gmail.com>"
 
 ENV REFRESHED_AT 2017-10-26
 ENV SWAN_VER 3.22
