@@ -21,6 +21,7 @@ RUN apt-get -yqq update \
     && tar xzf "libreswan.tar.gz" \
     && rm -f "libreswan.tar.gz" \
     && cd "libreswan-${SWAN_VER}" \
+    && sed -i '/^#define LSWBUF_CANARY/s/-2$/((char) -2)/' include/lswlog.h \
     && printf 'WERROR_CFLAGS =\nUSE_DNSSEC = false\nUSE_SYSTEMD_WATCHDOG = false\n' > Makefile.inc.local \
     && make -s base \
     && make -s install-base \
