@@ -55,6 +55,26 @@ This will create a user account for VPN login, which can be used by your multipl
 
 All the variables to this image are optional, which means you don't have to type in any environment variable, and you can have an IPsec VPN server out of the box! Read the sections below for details.
 
+### Environment variables enabling multiple accounts
+
+This image also allows multiple users (with separate credentials) to have the access to the VPN by creating a credentials file that contains the list of the user and their passwords. The username and the password needs to be separated by ```:``` as in the following (example)
+
+```
+user1:password1
+user2:password2
+user3:password3
+```
+
+the path to the file should be set in the environment variable VPN_USER_FILE (example)
+
+```
+VPN_IPSEC_PSK=your_ipsec_pre_shared_key
+VPN_USER_FILE=path_to_your_file
+```
+
+This will create a three accounts for VPN login.
+
+
 ### Start the IPsec VPN server
 
 **Important:** First, load the IPsec `NETKEY` kernel module on the Docker host:
