@@ -135,7 +135,7 @@ Enjoy your very own VPN!
 For **Windows users**, this [one-time registry change](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#windows-error-809) is required if the VPN server and/or client is behind NAT (e.g. home router).
 
 <a name="multi-device-note"></a>
-The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only [IPsec/XAuth mode](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md).
+The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation and an Libreswan [issue](https://github.com/libreswan/libreswan/issues/166), it is not currently possible to connect multiple devices simultaneously from behind the same NAT (e.g. home router).
 
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/compute/docs/vpc/firewalls)), open UDP ports 500 and 4500 for the VPN.
 

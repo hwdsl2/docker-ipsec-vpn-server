@@ -132,10 +132,10 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 *其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server#important-notes), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#重要提示).*
 
-**Windows 用户** 在首次连接之前需要[修改一次注册表](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器 和/或 客户端与 NAT （比如家用路由器）的兼容问题。
+**Windows 用户** 在首次连接之前需要[修改注册表](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器 和/或 客户端与 NAT（比如家用路由器）的兼容问题。
 
 <a name="multi-device-note"></a>
-同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT （比如家用路由器）后面的多个设备到 VPN 服务器，你必须仅使用 [IPsec/XAuth 模式](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)。
+同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性以及一个在 Libreswan 中的[问题](https://github.com/libreswan/libreswan/issues/166)，现在还不支持同时连接在同一个 NAT（比如家用路由器）后面的多个设备。
 
 对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/compute/docs/vpc/firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。
 
