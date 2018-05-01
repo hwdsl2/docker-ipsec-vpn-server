@@ -3,13 +3,6 @@ language: generic
 sudo: required
 dist: trusty
 
-addons:
-  apt:
-    sources:
-    - debian-sid
-    packages:
-    - shellcheck
-
 services:
   - docker
 
@@ -19,8 +12,8 @@ env:
 
 script:
   - export SHELLCHECK_OPTS="-e SC1090,SC1091,SC1117"
+  - shellcheck --version
   - shellcheck *.sh
-  - sudo sed -i "/debian unstable/d" /etc/apt/sources.list
   - docker build -t vpn .
   - 'if [ "$TESTID" = "with-env" ]; then
       docker run
