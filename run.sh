@@ -32,21 +32,6 @@ if [ ! -f "/.dockerenv" ]; then
   exiterr "This script ONLY runs in a Docker container."
 fi
 
-case "$(uname -r)" in
-  4.15*)
-cat 1>&2 <<'EOF'
-
-************************** WARNING **************************
-Your Docker host appears to be running Linux kernel 4.15.
-This kernel version is not supported due to an xl2tpd issue.
-Connecting to the VPN using IPsec/L2TP mode may not work.
-However, you may be able to connect using IPsec/XAuth mode.
-*************************************************************
-
-EOF
-    ;;
-esac
-
 if ip link add dummy0 type dummy 2>&1 | grep -q "not permitted"; then
 cat 1>&2 <<'EOF'
 Error: This Docker image must be run in privileged mode.

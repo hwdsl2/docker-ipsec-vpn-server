@@ -27,8 +27,6 @@ Based on Debian 9 (Stretch) with [Libreswan](https://libreswan.org) (IPsec VPN s
 
 First, [install and run Docker](https://docs.docker.com/install/) on your Linux server.
 
-**Note:** Ubuntu 18.04 is not yet supported due to an xl2tpd [issue](https://github.com/xelerance/xl2tpd/issues/147) with Linux kernel 4.15.
-
 ## Download
 
 Get the trusted build from the [Docker Hub registry](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/):

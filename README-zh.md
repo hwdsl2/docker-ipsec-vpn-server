@@ -27,8 +27,6 @@
 
 首先，在你的 Linux 服务器上 [安装并运行 Docker](https://docs.docker.com/install/)。
 
-**注：** 目前本镜像还不支持 Ubuntu 18.04，因为一个 xl2tpd 与 Linux 内核 4.15 兼容性的 [问题](https://github.com/xelerance/xl2tpd/issues/147)。
-
 ## 下载
 
 预构建的可信任镜像可在 [Docker Hub registry](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) 下载：
