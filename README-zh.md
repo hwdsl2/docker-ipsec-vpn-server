@@ -49,7 +49,7 @@ VPN_USER=your_vpn_username
 VPN_PASSWORD=your_vpn_password
 ```
 
-这将创建一个用于 VPN 登录的用户账户，它可以在你的多个设备上使用[*](#multi-device-note) 。 IPsec PSK (预共享密钥) 由 `VPN_IPSEC_PSK` 环境变量指定。 VPN 用户名和密码分别在 `VPN_USER` 和 `VPN_PASSWORD` 中定义。
+这将创建一个用于 VPN 登录的用户账户，它可以在你的多个设备上使用[*](#重要提示)。 IPsec PSK (预共享密钥) 由 `VPN_IPSEC_PSK` 环境变量指定。 VPN 用户名和密码分别在 `VPN_USER` 和 `VPN_PASSWORD` 中定义。
 
 **注：** 在你的 `env` 文件中，**不要**为变量值添加 `""` 或者 `''`，或在 `=` 两边添加空格。**不要**在值中使用这些字符： `\ " '`。
 
@@ -57,11 +57,13 @@ VPN_PASSWORD=your_vpn_password
 
 ### 运行 IPsec VPN 服务器
 
-**重要：** 首先在 Docker 主机上加载 IPsec `NETKEY` 内核模块：
+**重要：** 首先需要在 Docker 主机上加载 IPsec `af_key` 内核模块：
 
 ```
 sudo modprobe af_key
 ```
+
+为保证这个内核模块在服务器启动时加载，请参见以下链接： [Ubuntu/Debian](https://help.ubuntu.com/community/Loadable_Modules), [CentOS 6](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-persistent_module_loading), [CentOS 7](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Kernel_Administration_Guide/sec-Persistent_Module_Loading.html) 和 [Fedora](https://docs.fedoraproject.org/f28/system-administrators-guide/kernel-module-driver-configuration/Working_with_Kernel_Modules.html#sec-Persistent_Module_Loading).
 
 使用本镜像创建一个新的 Docker 容器 （将 `./vpn.env` 替换为你自己的 `env` 文件）：
 
@@ -134,7 +136,6 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 **Windows 用户** 在首次连接之前需要[修改注册表](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器 和/或 客户端与 NAT（比如家用路由器）的兼容问题。
 
-<a name="multi-device-note"></a>
 同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性以及一个在 Libreswan 中的[问题](https://github.com/libreswan/libreswan/issues/166)，现在还不支持同时连接在同一个 NAT（比如家用路由器）后面的多个设备。
 
 对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。
