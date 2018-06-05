@@ -16,10 +16,10 @@ RUN apt-get -yqq update \
          libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
          libcap-ng-dev libcap-ng-utils libselinux1-dev \
          libcurl4-nss-dev flex bison gcc make \
-    && wget -t 3 -T 30 -nv -O "libreswan.tar.gz" "https://github.com/libreswan/libreswan/archive/v${SWAN_VER}.tar.gz" \
-    || wget -t 3 -T 30 -nv -O "libreswan.tar.gz" "https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz" \
-    && tar xzf "libreswan.tar.gz" \
-    && rm -f "libreswan.tar.gz" \
+    && wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://github.com/libreswan/libreswan/archive/v${SWAN_VER}.tar.gz" \
+    || wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz" \
+    && tar xzf libreswan.tar.gz \
+    && rm -f libreswan.tar.gz \
     && cd "libreswan-${SWAN_VER}" \
     && sed -i '/docker-targets\.mk/d' Makefile \
     && printf 'WERROR_CFLAGS =\nUSE_DNSSEC = false\nUSE_SYSTEMD_WATCHDOG = false\n' > Makefile.inc.local \
@@ -29,10 +29,10 @@ RUN apt-get -yqq update \
     && rm -rf "/opt/src/libreswan-${SWAN_VER}" \
     && os_arch="$(dpkg --print-architecture)" \
     && deb_url="debian/pool/main/x/xl2tpd/xl2tpd_1.3.12-1_${os_arch}.deb" \
-    && wget -t 3 -T 30 -nv -O "xl2tpd.deb" "https://mirrors.kernel.org/${deb_url}" \
-    || wget -t 3 -T 30 -nv -O "xl2tpd.deb" "https://debian.osuosl.org/${deb_url}" \
-    && apt-get -yqq install "./xl2tpd.deb" \
-    && rm -f "xl2tpd.deb" \
+    && wget -t 3 -T 30 -nv -O xl2tpd.deb "https://mirrors.kernel.org/${deb_url}" \
+    || wget -t 3 -T 30 -nv -O xl2tpd.deb "https://debian.osuosl.org/${deb_url}" \
+    && apt-get -yqq install ./xl2tpd.deb \
+    && rm -f xl2tpd.deb \
     && apt-get -yqq remove \
          libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
          libcap-ng-dev libcap-ng-utils libselinux1-dev \
