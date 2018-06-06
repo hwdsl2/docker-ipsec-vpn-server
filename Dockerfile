@@ -1,8 +1,8 @@
 FROM debian:stretch
 LABEL maintainer="Lin Song <linsongui@gmail.com>"
 
-ENV REFRESHED_AT 2018-05-22
-ENV SWAN_VER 3.23
+ENV REFRESHED_AT 2018-06-05
+ENV SWAN_VER 3.22
 
 WORKDIR /opt/src
 
@@ -21,7 +21,7 @@ RUN apt-get -yqq update \
     && tar xzf libreswan.tar.gz \
     && rm -f libreswan.tar.gz \
     && cd "libreswan-${SWAN_VER}" \
-    && sed -i '/docker-targets\.mk/d' Makefile \
+    && { [ "$SWAN_VER" = "3.22" ] && sed -i '/^#define LSWBUF_CANARY/s/-2$/((char) -2)/' include/lswlog.h || true; } \
     && printf 'WERROR_CFLAGS =\nUSE_DNSSEC = false\nUSE_SYSTEMD_WATCHDOG = false\n' > Makefile.inc.local \
     && make -s base \
     && make -s install-base \
