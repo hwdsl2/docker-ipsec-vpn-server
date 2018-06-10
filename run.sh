@@ -279,12 +279,12 @@ Setup VPN clients: https://git.io/vpnclients
 
 EOF
 
-# Load IPsec NETKEY kernel module
+# Load IPsec kernel module
 modprobe af_key
 
 # Start services
 mkdir -p /run/pluto /var/run/pluto /var/run/xl2tpd
 rm -f /run/pluto/pluto.pid /var/run/pluto/pluto.pid /var/run/xl2tpd.pid
 
-/usr/local/sbin/ipsec start --config /etc/ipsec.conf
+/usr/local/sbin/ipsec start
 exec /usr/sbin/xl2tpd -D -c /etc/xl2tpd/xl2tpd.conf
