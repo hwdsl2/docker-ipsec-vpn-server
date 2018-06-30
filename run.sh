@@ -48,7 +48,7 @@ ip link delete dummy0 >/dev/null 2>&1
 
 mkdir -p /opt/src
 vpn_env="/opt/src/vpn-gen.env"
-if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
+if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ] && [ -z "$VPN_GROUP" ]; then
   if [ -f "$vpn_env" ]; then
     echo
     echo "Retrieving previously generated VPN credentials..."
@@ -59,10 +59,12 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
     VPN_IPSEC_PSK="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 20)"
     VPN_USER=vpnuser
     VPN_PASSWORD="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
+    VPN_GROUP=group
 
     echo "VPN_IPSEC_PSK=$VPN_IPSEC_PSK" > "$vpn_env"
     echo "VPN_USER=$VPN_USER" >> "$vpn_env"
     echo "VPN_PASSWORD=$VPN_PASSWORD" >> "$vpn_env"
+    echo "VPN_GROUP=$VPN_GROUP" >> "$vpn_env"
     chmod 600 "$vpn_env"
   fi
 fi
@@ -74,6 +76,8 @@ VPN_USER="$(nospaces "$VPN_USER")"
 VPN_USER="$(noquotes "$VPN_USER")"
 VPN_PASSWORD="$(nospaces "$VPN_PASSWORD")"
 VPN_PASSWORD="$(noquotes "$VPN_PASSWORD")"
+VPN_GROUP="$(nospaces "$VPN_GROUP")"
+VPN_GROUP="$(noquotes "$VPN_GROUP")"
 
 if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
   VPN_ADDL_USERS="$(nospaces "$VPN_ADDL_USERS")"
@@ -92,16 +96,21 @@ fi
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
 fi
+[ -z "$VPN_GROUP" ] && VPN_GROUP=group
 
-if printf '%s' "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD $VPN_ADDL_USERS $VPN_ADDL_PASSWORDS" | LC_ALL=C grep -q '[^ -~]\+'; then
+if printf '%s' "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD $VPN_ADDL_USERS $VPN_ADDL_PASSWORDS $VPN_GROUP" | LC_ALL=C grep -q '[^ -~]\+'; then
   exiterr "VPN credentials must not contain non-ASCII characters."
 fi
 
-case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD $VPN_ADDL_USERS $VPN_ADDL_PASSWORDS" in
+case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD $VPN_ADDL_USERS $VPN_ADDL_PASSWORDS $VPN_GROUP" in
   *[\\\"\']*)
     exiterr "VPN credentials must not contain these special characters: \\ \" '"
     ;;
 esac
+
+# Create system user for vpnc aggressive mode
+useradd -s /usr/sbin/nologin "$VPN_USER"
+echo "$VPN_USER:$VPN_PASSWORD" | chpasswd
 
 echo
 echo 'Trying to auto discover IP of this server...'
@@ -147,8 +156,8 @@ conn shared
   dpddelay=30
   dpdtimeout=120
   dpdaction=clear
-  ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024
-  phase2alg=aes_gcm-null,aes256-sha2_512,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
+  ike=3des-sha1;modp1024,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024
+  phase2alg=3des-sha1,aes_gcm-null,aes256-sha2_512,aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1
   sha2-truncbug=yes
 
 conn l2tp-psk
@@ -174,6 +183,25 @@ conn xauth-psk
   ikev2=never
   cisco-unity=yes
   also=shared
+
+conn xauth-psk-vpnc
+  auto=add
+  leftsubnet=0.0.0.0/0
+  rightaddresspool=$XAUTH_POOL
+  modecfgdns1=$DNS_SRV1
+  modecfgdns2=$DNS_SRV2
+  leftxauthserver=yes
+  rightxauthclient=yes
+  leftmodecfgserver=yes
+  rightmodecfgclient=yes
+  modecfgpull=yes
+  xauthby=pam
+  ike-frag=yes
+  ikev2=never
+  cisco-unity=yes
+  also=shared
+  rightid=@[$VPN_GROUP]
+  aggrmode=yes
 EOF
 
 if uname -r | grep -qi 'coreos'; then
@@ -306,6 +334,7 @@ Server IP: $PUBLIC_IP
 IPsec PSK: $VPN_IPSEC_PSK
 Username: $VPN_USER
 Password: $VPN_PASSWORD
+Group: $VPN_GROUP
 EOF
 
 if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
