@@ -161,6 +161,12 @@ conn xauth-psk
   also=shared
 EOF
 
+ipsec_ver="$(/usr/local/sbin/ipsec --version 2>/dev/null)"
+if printf '%s' "$ipsec_ver" | grep -qF -e "3.23" -e "3.25"; then
+  sed -i "/modecfgdns/d" /etc/ipsec.conf
+  echo "  modecfgdns=\"$DNS_SRV1, $DNS_SRV2\"" >> /etc/ipsec.conf
+fi
+
 if uname -r | grep -qi 'coreos'; then
   sed -i '/phase2alg/s/,aes256-sha2_512//' /etc/ipsec.conf
 fi
