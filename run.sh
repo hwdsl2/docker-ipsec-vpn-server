@@ -161,6 +161,10 @@ conn xauth-psk
   also=shared
 EOF
 
+if uname -r | grep -qi 'coreos'; then
+  sed -i '/phase2alg/s/,aes256-sha2_512//' /etc/ipsec.conf
+fi
+
 # Specify IPsec PSK
 cat > /etc/ipsec.secrets <<EOF
 %any  %any  : PSK "$VPN_IPSEC_PSK"
