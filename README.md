@@ -144,7 +144,7 @@ Before editing any VPN config files, you must first [start a Bash session](https
 
 If you wish to add, edit or remove VPN user accounts, see [Manage VPN Users](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/manage-users.md). **Important:** After editing the VPN config files, you must also comment out the relevant sections in `/opt/src/run.sh`, to avoid losing your changes on container restart.
 
-Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, replace `8.8.8.8` and `8.8.4.4` in `/opt/src/run.sh` with the new servers. Then restart the Docker container.
+Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, [read below](https://github.com/hwdsl2/docker-ipsec-vpn-server#use-alternative-dns-servers).
 
 ## Update Docker image
 
@@ -163,6 +163,15 @@ Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 Otherwise, it will download the latest version. To update your Docker container, first write down all your VPN login details (refer to "Retrieve VPN login details" above). Then remove the Docker container with `docker rm -f ipsec-vpn-server`. Finally, re-create it using instructions from the "How to use this image" section.
 
 ## Advanced usage
+
+### Use alternative DNS servers
+
+Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, define both `VPN_DNS_SRV1` and `VPN_DNS_SRV2` in your `vpn.env`, then restart (or re-create) the Docker container. For example, if you wish to use [Cloudflare's DNS service](https://1.1.1.1/):
+
+```
+VPN_DNS_SRV1=1.1.1.1
+VPN_DNS_SRV2=1.0.0.1
+```
 
 ### Build from source code
 
