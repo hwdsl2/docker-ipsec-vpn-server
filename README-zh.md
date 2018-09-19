@@ -25,7 +25,9 @@
 
 ## 安装 Docker
 
-首先，在你的 Linux 服务器上 [安装并运行 Docker](https://docs.docker.com/install/)。本镜像不支持 Docker for Mac/Windows。
+首先，在你的 Linux 服务器上 [安装并运行 Docker](https://docs.docker.com/install/)。
+
+**注：** 本镜像不支持 Docker for Mac 或者 Windows。
 
 ## 下载
 
@@ -166,7 +168,7 @@ Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 
 ### 使用其他的 DNS 服务器
 
-在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，你可以在 `vpn.env` 文件中定义变量 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`，然后重启（或者重新创建）Docker 容器。比如你想使用 [Cloudflare 的 DNS 服务](https://1.1.1.1/)：
+在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，你可以在 `vpn.env` 文件中定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`，然后按照上面的说明重新创建 Docker 容器。比如你想使用 [Cloudflare 的 DNS 服务](https://1.1.1.1/)：
 
 ```
 VPN_DNS_SRV1=1.1.1.1

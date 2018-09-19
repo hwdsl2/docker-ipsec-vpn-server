@@ -25,7 +25,9 @@ Based on Debian 9 (Stretch) with [Libreswan](https://libreswan.org) (IPsec VPN s
 
 ## Install Docker
 
-First, [install and run Docker](https://docs.docker.com/install/) on your Linux server. This image does not support Docker for Mac/Windows.
+First, [install and run Docker](https://docs.docker.com/install/) on your Linux server.
+
+**Note:** This image does not support Docker for Mac or Windows.
 
 ## Download
 
@@ -166,7 +168,7 @@ Otherwise, it will download the latest version. To update your Docker container,
 
 ### Use alternative DNS servers
 
-Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, define both `VPN_DNS_SRV1` and `VPN_DNS_SRV2` in your `vpn.env`, then restart (or re-create) the Docker container. For example, if you wish to use [Cloudflare's DNS service](https://1.1.1.1/):
+Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, define both `VPN_DNS_SRV1` and `VPN_DNS_SRV2` in your `vpn.env`, then follow instructions above to re-create the Docker container. For example, if you wish to use [Cloudflare's DNS service](https://1.1.1.1/):
 
 ```
 VPN_DNS_SRV1=1.1.1.1
