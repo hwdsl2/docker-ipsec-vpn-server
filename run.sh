@@ -147,8 +147,7 @@ conn xauth-psk
   auto=add
   leftsubnet=0.0.0.0/0
   rightaddresspool=$XAUTH_POOL
-  modecfgdns1=$DNS_SRV1
-  modecfgdns2=$DNS_SRV2
+  modecfgdns="$DNS_SRV1, $DNS_SRV2"
   leftxauthserver=yes
   rightxauthclient=yes
   leftmodecfgserver=yes
@@ -160,12 +159,6 @@ conn xauth-psk
   cisco-unity=yes
   also=shared
 EOF
-
-ipsec_ver="$(/usr/local/sbin/ipsec --version 2>/dev/null)"
-if printf '%s' "$ipsec_ver" | grep -qF -e "3.23" -e "3.25"; then
-  sed -i "/modecfgdns/d" /etc/ipsec.conf
-  echo "  modecfgdns=\"$DNS_SRV1, $DNS_SRV2\"" >> /etc/ipsec.conf
-fi
 
 if uname -r | grep -qi 'coreos'; then
   sed -i '/phase2alg/s/,aes256-sha2_512//' /etc/ipsec.conf
