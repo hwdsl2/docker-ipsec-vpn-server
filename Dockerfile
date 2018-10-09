@@ -1,8 +1,8 @@
 FROM debian:stretch
 LABEL maintainer="Lin Song <linsongui@gmail.com>"
 
-ENV REFRESHED_AT 2018-09-22
-ENV SWAN_VER 3.26
+ENV REFRESHED_AT 2018-10-09
+ENV SWAN_VER 3.27
 
 WORKDIR /opt/src
 
@@ -21,8 +21,6 @@ RUN apt-get -yqq update \
     && tar xzf libreswan.tar.gz \
     && rm -f libreswan.tar.gz \
     && cd "libreswan-${SWAN_VER}" \
-    && sed -i 's/-lfreebl //' mk/config.mk \
-    && sed -i '/blapi\.h/d' programs/pluto/keys.c \
     && printf 'WERROR_CFLAGS =\nUSE_DNSSEC = false\nUSE_DH31 = false\n' > Makefile.inc.local \
     && printf 'USE_GLIBC_KERN_FLIP_HEADERS = true\nUSE_SYSTEMD_WATCHDOG = false\n' >> Makefile.inc.local \
     && make -s base \
