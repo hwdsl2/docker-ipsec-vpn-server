@@ -109,6 +109,12 @@ XAUTH_POOL=${VPN_XAUTH_POOL:-'192.168.43.10-192.168.43.250'}
 DNS_SRV1=${VPN_DNS_SRV1:-'8.8.8.8'}
 DNS_SRV2=${VPN_DNS_SRV2:-'8.8.4.4'}
 
+# If is not IP, try to resolve DNS servers hostnames to ip
+check_ip "$DNS_SRV1" || DNS_SRV1=$(dig +short $DNS_SRV1)
+check_ip "$DNS_SRV2" || DNS_SRV2=$(dig +short $DNS_SRV2)
+check_ip "$DNS_SRV1" || exiterr "Cannot resolve 'VPN_DNS_SRV1' variable content. Please check it if it was correctly defined in your 'env' file."
+check_ip "$DNS_SRV2" || exiterr "Cannot resolve 'VPN_DNS_SRV2' variable content. Please check it if it was correctly defined in your 'env' file."
+
 # Create IPsec (Libreswan) config
 cat > /etc/ipsec.conf <<EOF
 version 2.0
