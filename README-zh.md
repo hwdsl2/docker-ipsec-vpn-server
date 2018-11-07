@@ -43,7 +43,7 @@ docker pull hwdsl2/ipsec-vpn-server
 
 ### 环境变量
 
-这个 Docker 镜像使用以下三个变量，可以在一个 `env` 文件中定义 （[示例](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/vpn.env.example)）：
+这个 Docker 镜像使用以下几个变量，可以在一个 `env` 文件中定义 （[示例](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/vpn.env.example)）：
 
 ```
 VPN_IPSEC_PSK=your_ipsec_pre_shared_key
@@ -52,6 +52,13 @@ VPN_PASSWORD=your_vpn_password
 ```
 
 这将创建一个用于 VPN 登录的用户账户，它可以在你的多个设备上使用[*](#重要提示)。 IPsec PSK (预共享密钥) 由 `VPN_IPSEC_PSK` 环境变量指定。 VPN 用户名和密码分别在 `VPN_USER` 和 `VPN_PASSWORD` 中定义。
+
+本镜像支持创建更多的 VPN 账户。如果需要，可以像下面这样在你的 `env` 文件中定义。用户名和密码必须分别使用空格进行分隔。所有的 VPN 账户将共享同一个 IPsec PSK。
+
+```
+VPN_ADDL_USERS=additional_username_1 additional_username_2
+VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
+```
 
 **注：** 在你的 `env` 文件中，**不要**为变量值添加 `""` 或者 `''`，或在 `=` 两边添加空格。**不要**在值中使用这些字符： `\ " '`。一个安全的 IPsec PSK 应该至少包含 20 个随机字符。
 
@@ -142,9 +149,9 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。阿里云用户请参见 [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433)。
 
-在编辑任何 VPN 配置文件之前，你必须首先在正在运行的 Docker 容器中 [开始一个 Bash 会话](#在容器中运行-bash-shell)。
+如果需要编辑 VPN 配置文件，你必须首先在正在运行的 Docker 容器中 [开始一个 Bash 会话](#在容器中运行-bash-shell)。
 
-如果需要添加，修改或者删除 VPN 用户账户，请参见 [管理 VPN 用户](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/manage-users-zh.md)。**重要：** 在编辑完 VPN 配置文件之后，你还必须注释掉脚本 `/opt/src/run.sh` 中的相应部分，以避免你的更改在容器重启后丢失。
+如需添加，修改或者删除 VPN 用户账户，首先更新你的 `env` 文件，然后按照下面 "更新 Docker 镜像" 的说明来重新创建 Docker 容器。
 
 在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，请看[这里](#使用其他的-dns-服务器)。
 

@@ -43,7 +43,7 @@ Alternatively, you may [build from source code](https://github.com/hwdsl2/docker
 
 ### Environment variables
 
-This Docker image uses the following three variables, that can be declared in an `env` file ([example](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/vpn.env.example)):
+This Docker image uses the following variables, that can be declared in an `env` file ([example](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/vpn.env.example)):
 
 ```
 VPN_IPSEC_PSK=your_ipsec_pre_shared_key
@@ -52,6 +52,13 @@ VPN_PASSWORD=your_vpn_password
 ```
 
 This will create a user account for VPN login, which can be used by your multiple devices[*](https://github.com/hwdsl2/docker-ipsec-vpn-server#important-notes). The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
+
+Additional VPN accounts are supported by this image and can be optionally declared in your `env` file like this. Usernames and passwords must be separated by spaces. All VPN accounts will share the same IPsec PSK.
+
+```
+VPN_ADDL_USERS=additional_username_1 additional_username_2
+VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
+```
 
 **Note:** In your `env` file, DO NOT put `""` or `''` around values, or add space around `=`. DO NOT use these special characters within values: `\ " '`. A secure IPsec PSK should consist of at least 20 random characters.
 
@@ -142,9 +149,9 @@ The same VPN account can be used by your multiple devices. However, due to an IP
 
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN. Aliyun users, see [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
 
-Before editing any VPN config files, you must first [start a Bash session](https://github.com/hwdsl2/docker-ipsec-vpn-server#bash-shell-inside-container) in the running container.
+If you need to edit VPN config files, you must first [start a Bash session](https://github.com/hwdsl2/docker-ipsec-vpn-server#bash-shell-inside-container) in the running container.
 
-If you wish to add, edit or remove VPN user accounts, see [Manage VPN Users](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/manage-users.md). **Important:** After editing the VPN config files, you must also comment out the relevant sections in `/opt/src/run.sh`, to avoid losing your changes on container restart.
+If you wish to add, edit or remove VPN user accounts, first update your `env` file, then re-create the Docker container using instructions from the "Update Docker image" section below.
 
 Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, [read below](https://github.com/hwdsl2/docker-ipsec-vpn-server#use-alternative-dns-servers).
 

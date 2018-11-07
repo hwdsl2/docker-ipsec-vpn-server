@@ -73,15 +73,27 @@ VPN_USER="$(noquotes "$VPN_USER")"
 VPN_PASSWORD="$(nospaces "$VPN_PASSWORD")"
 VPN_PASSWORD="$(noquotes "$VPN_PASSWORD")"
 
+if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
+  VPN_ADDL_USERS="$(nospaces "$VPN_ADDL_USERS")"
+  VPN_ADDL_USERS="$(noquotes "$VPN_ADDL_USERS")"
+  VPN_ADDL_USERS="$(printf '%s' "$VPN_ADDL_USERS" | tr -s ' ')"
+  VPN_ADDL_PASSWORDS="$(nospaces "$VPN_ADDL_PASSWORDS")"
+  VPN_ADDL_PASSWORDS="$(noquotes "$VPN_ADDL_PASSWORDS")"
+  VPN_ADDL_PASSWORDS="$(printf '%s' "$VPN_ADDL_PASSWORDS" | tr -s ' ')"
+else
+  VPN_ADDL_USERS=""
+  VPN_ADDL_PASSWORDS=""
+fi
+
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
 fi
 
-if printf '%s' "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -q '[^ -~]\+'; then
+if printf '%s' "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD $VPN_ADDL_USERS $VPN_ADDL_PASSWORDS" | LC_ALL=C grep -q '[^ -~]\+'; then
   exiterr "VPN credentials must not contain non-ASCII characters."
 fi
 
-case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
+case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD $VPN_ADDL_USERS $VPN_ADDL_PASSWORDS" in
   *[\\\"\']*)
     exiterr "VPN credentials must not contain these special characters: \\ \" '"
     ;;
@@ -212,6 +224,24 @@ cat > /etc/ipsec.d/passwd <<EOF
 $VPN_USER:$VPN_PASSWORD_ENC:xauth-psk
 EOF
 
+if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
+  count=1
+  addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -d ' ' -f 1)
+  addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -d ' ' -f 1)
+  while [ -n "$addl_user" ] && [ -n "$addl_password" ]; do
+    addl_password_enc=$(openssl passwd -1 "$addl_password")
+cat >> /etc/ppp/chap-secrets <<EOF
+"$addl_user" l2tpd "$addl_password" *
+EOF
+cat >> /etc/ipsec.d/passwd <<EOF
+$addl_user:$addl_password_enc:xauth-psk
+EOF
+    count=$((count+1))
+    addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -d ' ' -f "$count")
+    addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -d ' ' -f "$count")
+  done
+fi
+
 # Update sysctl settings
 SYST='/sbin/sysctl -e -q -w'
 if [ "$(getconf LONG_BIT)" = "64" ]; then
@@ -272,6 +302,27 @@ Server IP: $PUBLIC_IP
 IPsec PSK: $VPN_IPSEC_PSK
 Username: $VPN_USER
 Password: $VPN_PASSWORD
+EOF
+
+if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
+  count=1
+  addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -d ' ' -f 1)
+  addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -d ' ' -f 1)
+cat <<'EOF'
+
+Additional VPN accounts (username / password):
+EOF
+  while [ -n "$addl_user" ] && [ -n "$addl_password" ]; do
+cat <<EOF
+$addl_user / $addl_password
+EOF
+    count=$((count+1))
+    addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -d ' ' -f "$count")
+    addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -d ' ' -f "$count")
+  done
+fi
+
+cat <<'EOF'
 
 Write these down. You'll need them to connect!
 
