@@ -53,7 +53,7 @@ VPN_PASSWORD=your_vpn_password
 
 This will create a user account for VPN login, which can be used by your multiple devices[*](https://github.com/hwdsl2/docker-ipsec-vpn-server#important-notes). The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
 
-Additional VPN accounts are supported by this image and can be optionally declared in your `env` file like this. Usernames and passwords must be separated by spaces. All VPN accounts will share the same IPsec PSK.
+Additional VPN users are supported by this image and can be optionally declared in your `env` file like this. Usernames and passwords must be separated by spaces. All VPN users will share the same IPsec PSK.
 
 ```
 VPN_ADDL_USERS=additional_username_1 additional_username_2
@@ -72,7 +72,7 @@ All the variables to this image are optional, which means you don't have to type
 sudo modprobe af_key
 ```
 
-To ensure that this kernel module is loaded on boot, please refer to: [Ubuntu/Debian](https://help.ubuntu.com/community/Loadable_Modules), [CentOS 6](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-persistent_module_loading), [CentOS 7](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Kernel_Administration_Guide/sec-Persistent_Module_Loading.html) and [Fedora](https://docs.fedoraproject.org/f28/system-administrators-guide/kernel-module-driver-configuration/Working_with_Kernel_Modules.html#sec-Persistent_Module_Loading).
+To ensure that this kernel module is loaded on boot, please refer to: [Ubuntu/Debian](https://help.ubuntu.com/community/Loadable_Modules), [CentOS 6](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-persistent_module_loading), [CentOS 7](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Kernel_Administration_Guide/sec-Persistent_Module_Loading.html), [Fedora](https://docs.fedoraproject.org/en-US/fedora/f28/system-administrators-guide/kernel-module-driver-configuration/Working_with_Kernel_Modules/index.html#sec-Persistent_Module_Loading) and [CoreOS](https://coreos.com/os/docs/latest/other-settings.html).
 
 Create a new Docker container from this image (replace `./vpn.env` with your own `env` file):
 
@@ -175,7 +175,7 @@ Otherwise, it will download the latest version. To update your Docker container,
 
 ### Use alternative DNS servers
 
-Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, define both `VPN_DNS_SRV1` and `VPN_DNS_SRV2` in your `vpn.env`, then follow instructions above to re-create the Docker container. For example, if you wish to use [Cloudflare's DNS service](https://1.1.1.1/):
+Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, define both `VPN_DNS_SRV1` and `VPN_DNS_SRV2` in your `env` file, then follow instructions above to re-create the Docker container. For example, if you wish to use [Cloudflare's DNS service](https://1.1.1.1/):
 
 ```
 VPN_DNS_SRV1=1.1.1.1
@@ -242,6 +242,8 @@ When finished, you may check Libreswan logs with:
 ```
 docker exec -it ipsec-vpn-server grep pluto /var/log/auth.log
 ```
+
+To check xl2tpd logs, run `docker logs ipsec-vpn-server`.
 
 ## Technical details
 

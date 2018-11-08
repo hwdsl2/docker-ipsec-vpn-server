@@ -53,7 +53,7 @@ VPN_PASSWORD=your_vpn_password
 
 这将创建一个用于 VPN 登录的用户账户，它可以在你的多个设备上使用[*](#重要提示)。 IPsec PSK (预共享密钥) 由 `VPN_IPSEC_PSK` 环境变量指定。 VPN 用户名和密码分别在 `VPN_USER` 和 `VPN_PASSWORD` 中定义。
 
-本镜像支持创建更多的 VPN 账户。如果需要，可以像下面这样在你的 `env` 文件中定义。用户名和密码必须分别使用空格进行分隔。所有的 VPN 账户将共享同一个 IPsec PSK。
+本镜像支持创建额外的 VPN 用户，如果需要，可以像下面这样在你的 `env` 文件中定义。用户名和密码必须分别使用空格进行分隔。所有的 VPN 用户将共享同一个 IPsec PSK。
 
 ```
 VPN_ADDL_USERS=additional_username_1 additional_username_2
@@ -66,13 +66,13 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 ### 运行 IPsec VPN 服务器
 
-**重要：** 首先需要在 Docker 主机上加载 IPsec `af_key` 内核模块：
+**重要：** 首先，在 Docker 主机上加载 IPsec `af_key` 内核模块：
 
 ```
 sudo modprobe af_key
 ```
 
-为保证这个内核模块在服务器启动时加载，请参见以下链接： [Ubuntu/Debian](https://help.ubuntu.com/community/Loadable_Modules), [CentOS 6](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-persistent_module_loading), [CentOS 7](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Kernel_Administration_Guide/sec-Persistent_Module_Loading.html) 和 [Fedora](https://docs.fedoraproject.org/f28/system-administrators-guide/kernel-module-driver-configuration/Working_with_Kernel_Modules.html#sec-Persistent_Module_Loading).
+为保证这个内核模块在服务器启动时加载，请参见以下链接： [Ubuntu/Debian](https://help.ubuntu.com/community/Loadable_Modules), [CentOS 6](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-persistent_module_loading), [CentOS 7](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Kernel_Administration_Guide/sec-Persistent_Module_Loading.html), [Fedora](https://docs.fedoraproject.org/en-US/fedora/f28/system-administrators-guide/kernel-module-driver-configuration/Working_with_Kernel_Modules/index.html#sec-Persistent_Module_Loading) 和 [CoreOS](https://coreos.com/os/docs/latest/other-settings.html)。
 
 使用本镜像创建一个新的 Docker 容器 （将 `./vpn.env` 替换为你自己的 `env` 文件）：
 
@@ -107,7 +107,7 @@ Username: 你的VPN用户名
 Password: 你的VPN密码
 ```
 
-（可选步骤） 备份自动生成的 VPN 登录信息（如果有）到当前目录：
+（可选步骤）备份自动生成的 VPN 登录信息（如果有）到当前目录：
 
 ```
 docker cp ipsec-vpn-server:/opt/src/vpn-gen.env ./
@@ -175,7 +175,7 @@ Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 
 ### 使用其他的 DNS 服务器
 
-在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，你可以在 `vpn.env` 文件中定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`，然后按照上面的说明重新创建 Docker 容器。比如你想使用 [Cloudflare 的 DNS 服务](https://1.1.1.1/)：
+在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，你可以在 `env` 文件中定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`，然后按照上面的说明重新创建 Docker 容器。比如你想使用 [Cloudflare 的 DNS 服务](https://1.1.1.1/)：
 
 ```
 VPN_DNS_SRV1=1.1.1.1
@@ -243,6 +243,7 @@ exit
 docker exec -it ipsec-vpn-server grep pluto /var/log/auth.log
 ```
 
+如需查看 xl2tpd 日志，请运行 `docker logs ipsec-vpn-server`。
 
 ## 技术细节
 
