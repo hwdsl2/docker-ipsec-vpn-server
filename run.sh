@@ -241,8 +241,10 @@ cat >> /etc/ipsec.d/passwd <<EOF
 $addl_user:$addl_password_enc:xauth-psk
 EOF
     count=$((count+1))
+    addl_user_prev="$addl_user"
     addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -d ' ' -f "$count")
     addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -d ' ' -f "$count")
+    [ "$addl_user_prev" = "$addl_user" ] && break
   done
 fi
 
@@ -321,8 +323,10 @@ cat <<EOF
 $addl_user | $addl_password
 EOF
     count=$((count+1))
+    addl_user_prev="$addl_user"
     addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -d ' ' -f "$count")
     addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -d ' ' -f "$count")
+    [ "$addl_user_prev" = "$addl_user" ] && break
   done
 fi
 

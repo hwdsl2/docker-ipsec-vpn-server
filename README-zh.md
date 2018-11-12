@@ -53,7 +53,7 @@ VPN_PASSWORD=your_vpn_password
 
 这将创建一个用于 VPN 登录的用户账户，它可以在你的多个设备上使用[*](#重要提示)。 IPsec PSK (预共享密钥) 由 `VPN_IPSEC_PSK` 环境变量指定。 VPN 用户名和密码分别在 `VPN_USER` 和 `VPN_PASSWORD` 中定义。
 
-本镜像支持创建额外的 VPN 用户，如果需要，可以像下面这样在你的 `env` 文件中定义。用户名和密码必须分别使用空格进行分隔。所有的 VPN 用户将共享同一个 IPsec PSK。
+本镜像支持创建额外的 VPN 用户，如果需要，可以像下面这样在你的 `env` 文件中定义。用户名和密码必须分别使用空格进行分隔，并且所有的用户名不能有重复。所有的 VPN 用户将共享同一个 IPsec PSK。
 
 ```
 VPN_ADDL_USERS=additional_username_1 additional_username_2
