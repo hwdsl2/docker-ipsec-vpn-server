@@ -21,7 +21,9 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 exiterr()  { echo "Error: $1" >&2; exit 1; }
 nospaces() { printf '%s' "$1" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'; }
+onespace() { printf '%s' "$1" | tr -s ' '; }
 noquotes() { printf '%s' "$1" | sed -e 's/^"\(.*\)"$/\1/' -e "s/^'\(.*\)'$/\1/"; }
+noquotes2() { printf '%s' "$1" | sed -e 's/" "/ /g' -e "s/' '/ /g"; }
 
 check_ip() {
   IP_REGEX='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
@@ -76,10 +78,12 @@ VPN_PASSWORD="$(noquotes "$VPN_PASSWORD")"
 if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
   VPN_ADDL_USERS="$(nospaces "$VPN_ADDL_USERS")"
   VPN_ADDL_USERS="$(noquotes "$VPN_ADDL_USERS")"
-  VPN_ADDL_USERS="$(printf '%s' "$VPN_ADDL_USERS" | tr -s ' ')"
+  VPN_ADDL_USERS="$(onespace "$VPN_ADDL_USERS")"
+  VPN_ADDL_USERS="$(noquotes2 "$VPN_ADDL_USERS")"
   VPN_ADDL_PASSWORDS="$(nospaces "$VPN_ADDL_PASSWORDS")"
   VPN_ADDL_PASSWORDS="$(noquotes "$VPN_ADDL_PASSWORDS")"
-  VPN_ADDL_PASSWORDS="$(printf '%s' "$VPN_ADDL_PASSWORDS" | tr -s ' ')"
+  VPN_ADDL_PASSWORDS="$(onespace "$VPN_ADDL_PASSWORDS")"
+  VPN_ADDL_PASSWORDS="$(noquotes2 "$VPN_ADDL_PASSWORDS")"
 else
   VPN_ADDL_USERS=""
   VPN_ADDL_PASSWORDS=""
@@ -310,11 +314,11 @@ if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
   addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -d ' ' -f 1)
 cat <<'EOF'
 
-Additional VPN accounts (username / password):
+Additional VPN users (username | password):
 EOF
   while [ -n "$addl_user" ] && [ -n "$addl_password" ]; do
 cat <<EOF
-$addl_user / $addl_password
+$addl_user | $addl_password
 EOF
     count=$((count+1))
     addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -d ' ' -f "$count")
