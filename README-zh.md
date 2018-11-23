@@ -198,6 +198,10 @@ docker build -t hwdsl2/ipsec-vpn-server .
 docker build -t hwdsl2/ipsec-vpn-server github.com/hwdsl2/docker-ipsec-vpn-server.git
 ```
 
+### 在 Raspberry Pi 上使用
+
+如需在 Raspberry Pi （ARM架构）上使用，你必须首先在你的 RPi 上按照 [从源代码构建](#从源代码构建) 中的说明自己构建这个 Docker 镜像，而不是从 Docker Hub 下载。然后按照本文档的其它步骤操作。
+
 ### 在容器中运行 Bash shell
 
 在正在运行的 Docker 容器中开始一个 Bash 会话：

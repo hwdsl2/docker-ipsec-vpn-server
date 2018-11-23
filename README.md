@@ -198,6 +198,10 @@ Or use this if not modifying the source code:
 docker build -t hwdsl2/ipsec-vpn-server github.com/hwdsl2/docker-ipsec-vpn-server.git
 ```
 
+### Use on Raspberry Pis
+
+For use on Raspberry Pis (ARM architecture), you must first build this Docker image on your RPi using instructions from [Build from source code](#build-from-source-code), instead of pulling from Docker Hub. Then follow the other instructions in this document.
+
 ### Bash shell inside container
 
 To start a Bash session in the running container:
