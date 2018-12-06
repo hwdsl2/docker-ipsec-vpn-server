@@ -37,7 +37,7 @@ Get the trusted build from the [Docker Hub registry](https://hub.docker.com/r/hw
 docker pull hwdsl2/ipsec-vpn-server
 ```
 
-Alternatively, you may [build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code) on GitHub.
+Alternatively, you may [build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code) on GitHub. Raspberry Pi users, see [here](https://github.com/hwdsl2/docker-ipsec-vpn-server#use-on-raspberry-pis).
 
 ## How to use this image
 
@@ -53,7 +53,7 @@ VPN_PASSWORD=your_vpn_password
 
 This will create a user account for VPN login, which can be used by your multiple devices[*](https://github.com/hwdsl2/docker-ipsec-vpn-server#important-notes). The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
 
-Additional VPN users are supported by this image and can be optionally declared in your `env` file like this. Usernames and passwords must be separated by spaces, and all usernames cannot contain duplicates. All VPN users will share the same IPsec PSK.
+Additional VPN users are supported, and can be optionally declared in your `env` file like this. Usernames and passwords must be separated by spaces, and usernames cannot contain duplicates. All VPN users will share the same IPsec PSK.
 
 ```
 VPN_ADDL_USERS=additional_username_1 additional_username_2
@@ -66,7 +66,7 @@ All the variables to this image are optional, which means you don't have to type
 
 ### Start the IPsec VPN server
 
-**Important:** First, load the IPsec `af_key` kernel module on the Docker host:
+**Important:** First, load the IPsec `af_key` kernel module on the Docker host. This step is optional for Ubuntu and Debian.
 
 ```
 sudo modprobe af_key
@@ -182,6 +182,10 @@ VPN_DNS_SRV1=1.1.1.1
 VPN_DNS_SRV2=1.0.0.1
 ```
 
+### Use on Raspberry Pis
+
+For use on Raspberry Pis (ARM architecture), you must first build this Docker image on your RPi using instructions from [Build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code), instead of pulling from Docker Hub. Then follow the other instructions in this document.
+
 ### Build from source code
 
 Advanced users can download and compile the source code from GitHub:
@@ -197,10 +201,6 @@ Or use this if not modifying the source code:
 ```
 docker build -t hwdsl2/ipsec-vpn-server github.com/hwdsl2/docker-ipsec-vpn-server.git
 ```
-
-### Use on Raspberry Pis
-
-For use on Raspberry Pis (ARM architecture), you must first build this Docker image on your RPi using instructions from [Build from source code](#build-from-source-code), instead of pulling from Docker Hub. Then follow the other instructions in this document.
 
 ### Bash shell inside container
 

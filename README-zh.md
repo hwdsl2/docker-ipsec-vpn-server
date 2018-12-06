@@ -37,7 +37,7 @@
 docker pull hwdsl2/ipsec-vpn-server
 ```
 
-或者，你也可以自己从 GitHub [编译源代码](#从源代码构建)。
+或者，你也可以自己从 GitHub [编译源代码](#从源代码构建)。Raspberry Pi 用户请看 [这里](#在-raspberry-pi-上使用)。
 
 ## 如何使用本镜像
 
@@ -53,7 +53,7 @@ VPN_PASSWORD=your_vpn_password
 
 这将创建一个用于 VPN 登录的用户账户，它可以在你的多个设备上使用[*](#重要提示)。 IPsec PSK (预共享密钥) 由 `VPN_IPSEC_PSK` 环境变量指定。 VPN 用户名和密码分别在 `VPN_USER` 和 `VPN_PASSWORD` 中定义。
 
-本镜像支持创建额外的 VPN 用户，如果需要，可以像下面这样在你的 `env` 文件中定义。用户名和密码必须分别使用空格进行分隔，并且所有的用户名不能有重复。所有的 VPN 用户将共享同一个 IPsec PSK。
+支持创建额外的 VPN 用户，如果需要，可以像下面这样在你的 `env` 文件中定义。用户名和密码必须分别使用空格进行分隔，并且用户名不能有重复。所有的 VPN 用户将共享同一个 IPsec PSK。
 
 ```
 VPN_ADDL_USERS=additional_username_1 additional_username_2
@@ -66,7 +66,7 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 ### 运行 IPsec VPN 服务器
 
-**重要：** 首先，在 Docker 主机上加载 IPsec `af_key` 内核模块：
+**重要：** 首先，在 Docker 主机上加载 IPsec `af_key` 内核模块。该步骤在 Ubuntu 和 Debian 上为可选步骤。
 
 ```
 sudo modprobe af_key
@@ -182,6 +182,10 @@ VPN_DNS_SRV1=1.1.1.1
 VPN_DNS_SRV2=1.0.0.1
 ```
 
+### 在 Raspberry Pi 上使用
+
+如需在 Raspberry Pi （ARM架构）上使用，你必须首先在你的 RPi 上按照 [从源代码构建](#从源代码构建) 中的说明自己构建这个 Docker 镜像，而不是从 Docker Hub 下载。然后按照本文档的其它步骤操作。
+
 ### 从源代码构建
 
 高级用户可以从 GitHub 下载并自行编译源代码：
@@ -197,10 +201,6 @@ docker build -t hwdsl2/ipsec-vpn-server .
 ```
 docker build -t hwdsl2/ipsec-vpn-server github.com/hwdsl2/docker-ipsec-vpn-server.git
 ```
-
-### 在 Raspberry Pi 上使用
-
-如需在 Raspberry Pi （ARM架构）上使用，你必须首先在你的 RPi 上按照 [从源代码构建](#从源代码构建) 中的说明自己构建这个 Docker 镜像，而不是从 Docker Hub 下载。然后按照本文档的其它步骤操作。
 
 ### 在容器中运行 Bash shell
 
