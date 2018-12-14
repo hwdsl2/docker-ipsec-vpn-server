@@ -177,6 +177,7 @@ conn xauth-psk
   leftmodecfgserver=yes
   rightmodecfgclient=yes
   modecfgpull=yes
+  mark=-1
   xauthby=file
   ike-frag=yes
   ikev2=never
