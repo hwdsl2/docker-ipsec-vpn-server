@@ -43,7 +43,8 @@ RUN apt-get -yqq update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY ./run.sh /opt/src/run.sh
-RUN chmod 755 /opt/src/run.sh
+COPY ./useradd.sh /opt/src/useradd.sh
+RUN chmod 755 /opt/src/*.sh
 
 EXPOSE 500/udp 4500/udp
 

@@ -14,3 +14,11 @@ services:
     container_name: ipsec-vpn-server
     volumes:
       - /lib/modules:/lib/modules:ro
+      # for local credentials:
+      #   1) Create placeholder files:
+      #     $> touch chap-secrets passwd
+      #   2) create the mounts by uncommenting the following two lines:
+      #- ./chap-secrets:/etc/ppp/chap-secrets
+      #- ./passwd:/etc/ipsec.d/passwd
+      #   3) Add users by
+      #     $> docker-compose run ./useradd.sh username password

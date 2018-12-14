@@ -46,9 +46,16 @@ EOF
 fi
 ip link delete dummy0 >/dev/null 2>&1
 
+# look for prebuilt credentials databases
+if [ -e /etc/ipsec.d/passwd ]; then
+  VPN_PRECREDS=1
+  echo 
+  echo "Found /etc/ipsec.d/passwd, assuming prebuilt credentials."
+fi
+
 mkdir -p /opt/src
 vpn_env="/opt/src/vpn-gen.env"
-if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
+if [ -z "$VPN_PRECREDS" ] && [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
   if [ -f "$vpn_env" ]; then
     echo
     echo "Retrieving previously generated VPN credentials..."
@@ -67,41 +74,43 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
   fi
 fi
 
-# Remove whitespace and quotes around VPN variables, if any
-VPN_IPSEC_PSK="$(nospaces "$VPN_IPSEC_PSK")"
-VPN_IPSEC_PSK="$(noquotes "$VPN_IPSEC_PSK")"
-VPN_USER="$(nospaces "$VPN_USER")"
-VPN_USER="$(noquotes "$VPN_USER")"
-VPN_PASSWORD="$(nospaces "$VPN_PASSWORD")"
-VPN_PASSWORD="$(noquotes "$VPN_PASSWORD")"
+if [ -z "$VPN_PRECREDS" ]; then
+  # Remove whitespace and quotes around VPN variables, if any
+  VPN_IPSEC_PSK="$(nospaces "$VPN_IPSEC_PSK")"
+  VPN_IPSEC_PSK="$(noquotes "$VPN_IPSEC_PSK")"
+  VPN_USER="$(nospaces "$VPN_USER")"
+  VPN_USER="$(noquotes "$VPN_USER")"
+  VPN_PASSWORD="$(nospaces "$VPN_PASSWORD")"
+  VPN_PASSWORD="$(noquotes "$VPN_PASSWORD")"
 
-if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
-  VPN_ADDL_USERS="$(nospaces "$VPN_ADDL_USERS")"
-  VPN_ADDL_USERS="$(noquotes "$VPN_ADDL_USERS")"
-  VPN_ADDL_USERS="$(onespace "$VPN_ADDL_USERS")"
-  VPN_ADDL_USERS="$(noquotes2 "$VPN_ADDL_USERS")"
-  VPN_ADDL_PASSWORDS="$(nospaces "$VPN_ADDL_PASSWORDS")"
-  VPN_ADDL_PASSWORDS="$(noquotes "$VPN_ADDL_PASSWORDS")"
-  VPN_ADDL_PASSWORDS="$(onespace "$VPN_ADDL_PASSWORDS")"
-  VPN_ADDL_PASSWORDS="$(noquotes2 "$VPN_ADDL_PASSWORDS")"
-else
-  VPN_ADDL_USERS=""
-  VPN_ADDL_PASSWORDS=""
+  if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
+    VPN_ADDL_USERS="$(nospaces "$VPN_ADDL_USERS")"
+    VPN_ADDL_USERS="$(noquotes "$VPN_ADDL_USERS")"
+    VPN_ADDL_USERS="$(onespace "$VPN_ADDL_USERS")"
+    VPN_ADDL_USERS="$(noquotes2 "$VPN_ADDL_USERS")"
+    VPN_ADDL_PASSWORDS="$(nospaces "$VPN_ADDL_PASSWORDS")"
+    VPN_ADDL_PASSWORDS="$(noquotes "$VPN_ADDL_PASSWORDS")"
+    VPN_ADDL_PASSWORDS="$(onespace "$VPN_ADDL_PASSWORDS")"
+    VPN_ADDL_PASSWORDS="$(noquotes2 "$VPN_ADDL_PASSWORDS")"
+  else
+    VPN_ADDL_USERS=""
+    VPN_ADDL_PASSWORDS=""
+  fi
+
+  if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
+    exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
+  fi
+
+  if printf '%s' "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD $VPN_ADDL_USERS $VPN_ADDL_PASSWORDS" | LC_ALL=C grep -q '[^ -~]\+'; then
+    exiterr "VPN credentials must not contain non-ASCII characters."
+  fi
+
+  case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD $VPN_ADDL_USERS $VPN_ADDL_PASSWORDS" in
+    *[\\\"\']*)
+      exiterr "VPN credentials must not contain these special characters: \\ \" '"
+      ;;
+  esac
 fi
-
-if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-  exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
-fi
-
-if printf '%s' "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD $VPN_ADDL_USERS $VPN_ADDL_PASSWORDS" | LC_ALL=C grep -q '[^ -~]\+'; then
-  exiterr "VPN credentials must not contain non-ASCII characters."
-fi
-
-case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD $VPN_ADDL_USERS $VPN_ADDL_PASSWORDS" in
-  *[\\\"\']*)
-    exiterr "VPN credentials must not contain these special characters: \\ \" '"
-    ;;
-esac
 
 echo
 echo 'Trying to auto discover IP of this server...'
@@ -236,32 +245,34 @@ if [ -n "VPN_DNS_DOMAINS" ]; then
   sed -i "/ipcp-accept-remote/a domain ${DNS_ADOMAINS[0]}" /etc/ppp/options.xl2tpd
 fi
 
-# Create VPN credentials
-cat > /etc/ppp/chap-secrets <<EOF
+if [ -z "$VPN_PRECREDS" ]; then
+  # Create VPN credentials
+  cat > /etc/ppp/chap-secrets <<EOF
 "$VPN_USER" l2tpd "$VPN_PASSWORD" *
 EOF
 
-VPN_PASSWORD_ENC=$(openssl passwd -1 "$VPN_PASSWORD")
-cat > /etc/ipsec.d/passwd <<EOF
+  VPN_PASSWORD_ENC=$(openssl passwd -1 "$VPN_PASSWORD")
+  cat > /etc/ipsec.d/passwd <<EOF
 $VPN_USER:$VPN_PASSWORD_ENC:xauth-psk
 EOF
 
-if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
-  count=1
-  addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -d ' ' -f 1)
-  addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -d ' ' -f 1)
-  while [ -n "$addl_user" ] && [ -n "$addl_password" ]; do
-    addl_password_enc=$(openssl passwd -1 "$addl_password")
-cat >> /etc/ppp/chap-secrets <<EOF
+  if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
+    count=1
+    addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -d ' ' -f 1)
+    addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -d ' ' -f 1)
+    while [ -n "$addl_user" ] && [ -n "$addl_password" ]; do
+      addl_password_enc=$(openssl passwd -1 "$addl_password")
+    cat >> /etc/ppp/chap-secrets <<EOF
 "$addl_user" l2tpd "$addl_password" *
 EOF
-cat >> /etc/ipsec.d/passwd <<EOF
+    cat >> /etc/ipsec.d/passwd <<EOF
 $addl_user:$addl_password_enc:xauth-psk
 EOF
-    count=$((count+1))
-    addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -s -d ' ' -f "$count")
-    addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -s -d ' ' -f "$count")
-  done
+      count=$((count+1))
+      addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -s -d ' ' -f "$count")
+      addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -s -d ' ' -f "$count")
+    done
+  fi
 fi
 
 # Update sysctl settings
