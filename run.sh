@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Docker script to configure and start an IPsec VPN server
 #
@@ -122,8 +122,16 @@ L2TP_LOCAL=${VPN_L2TP_LOCAL:-'192.168.42.1'}
 L2TP_POOL=${VPN_L2TP_POOL:-'192.168.42.10-192.168.42.250'}
 XAUTH_NET=${VPN_XAUTH_NET:-'192.168.43.0/24'}
 XAUTH_POOL=${VPN_XAUTH_POOL:-'192.168.43.10-192.168.43.250'}
-DNS_SRV1=${VPN_DNS_SRV1:-'8.8.8.8'}
-DNS_SRV2=${VPN_DNS_SRV2:-'8.8.4.4'}
+
+if [ -n "$VPN_DNS_SRV" ]; then
+  DNS_SRV="$VPN_DNS_SRV"
+elif [ -n "$VPN_DNS_SRV1" ]; then
+  DNS_SRV="$VPN_DNS_SRV1 $VPN_DNS_SRV2"
+else
+  DNS_SRV='8.8.8.8,8.8.4.4'
+fi
+
+DNS_SRVS=($(echo "${DNS_SRV}" | sed -E 's/[ ,]+/ /g'))
 
 # Create IPsec (Libreswan) config
 cat > /etc/ipsec.conf <<EOF
@@ -163,7 +171,7 @@ conn xauth-psk
   auto=add
   leftsubnet=0.0.0.0/0
   rightaddresspool=$XAUTH_POOL
-  modecfgdns="$DNS_SRV1, $DNS_SRV2"
+  modecfgdns="$DNS_SRV"
   leftxauthserver=yes
   rightxauthclient=yes
   leftmodecfgserver=yes
@@ -206,8 +214,7 @@ cat > /etc/ppp/options.xl2tpd <<EOF
 +mschap-v2
 ipcp-accept-local
 ipcp-accept-remote
-ms-dns $DNS_SRV1
-ms-dns $DNS_SRV2
+ms-dns ${DNS_SRVS[0]}
 noccp
 auth
 mtu 1280
@@ -217,6 +224,16 @@ lcp-echo-failure 4
 lcp-echo-interval 30
 connect-delay 5000
 EOF
+
+if [ -n "${DNS_SRVS[1]}" ]; then
+  sed -i "/ms-dns/a ms-dns ${DNS_SRVS[1]}" /etc/ppp/options.xl2tpd
+fi
+
+if [ -n "VPN_DNS_DOMAINS" ]; then
+  sed -i "/modecfgdns/a \  modecfgdomains=${VPN_DNS_DOMAINS}" /etc/ipsec.conf
+  DNS_ADOMAINS=($(echo "${VPN_DNS_DOMAINS}" | sed -E 's/[ ,]+/ /g'))
+  sed -i "/ipcp-accept-remote/a domain ${DNS_ADOMAINS[0]}" /etc/ppp/options.xl2tpd
+fi
 
 # Create VPN credentials
 cat > /etc/ppp/chap-secrets <<EOF
