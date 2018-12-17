@@ -151,7 +151,7 @@ For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AW
 
 If you need to edit VPN config files, you must first [start a Bash session](https://github.com/hwdsl2/docker-ipsec-vpn-server#bash-shell-inside-container) in the running container.
 
-If you wish to add, edit or remove VPN user accounts, first update your `env` file, then re-create the Docker container using instructions from the "Update Docker image" section below.
+If you wish to add, edit or remove VPN user accounts, first update your `env` file, then you must re-create the Docker container using instructions in the [next section](https://github.com/hwdsl2/docker-ipsec-vpn-server#update-docker-image).
 
 Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, [read below](https://github.com/hwdsl2/docker-ipsec-vpn-server#use-alternative-dns-servers).
 
@@ -175,7 +175,7 @@ Otherwise, it will download the latest version. To update your Docker container,
 
 ### Use alternative DNS servers
 
-Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, define both `VPN_DNS_SRV1` and `VPN_DNS_SRV2` in your `env` file, then follow instructions above to re-create the Docker container. For example, if you wish to use [Cloudflare's DNS service](https://1.1.1.1/):
+Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` in your `env` file, then follow instructions above to re-create the Docker container. For example, if you wish to use [Cloudflare's DNS service](https://1.1.1.1):
 
 ```
 VPN_DNS_SRV1=1.1.1.1

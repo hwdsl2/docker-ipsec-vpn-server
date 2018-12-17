@@ -151,7 +151,7 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 如果需要编辑 VPN 配置文件，你必须首先在正在运行的 Docker 容器中 [开始一个 Bash 会话](#在容器中运行-bash-shell)。
 
-如需添加，修改或者删除 VPN 用户账户，首先更新你的 `env` 文件，然后按照下面 "更新 Docker 镜像" 的说明来重新创建 Docker 容器。
+如需添加，修改或者删除 VPN 用户账户，首先更新你的 `env` 文件，然后你必须按照[下一节](#更新-docker-镜像)的说明来重新创建 Docker 容器。
 
 在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，请看[这里](#使用其他的-dns-服务器)。
 
@@ -175,7 +175,7 @@ Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 
 ### 使用其他的 DNS 服务器
 
-在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，你可以在 `env` 文件中定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`，然后按照上面的说明重新创建 Docker 容器。比如你想使用 [Cloudflare 的 DNS 服务](https://1.1.1.1/)：
+在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，你可以在 `env` 文件中定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`（可选），然后按照上面的说明重新创建 Docker 容器。比如你想使用 [Cloudflare 的 DNS 服务](https://1.1.1.1)：
 
 ```
 VPN_DNS_SRV1=1.1.1.1
