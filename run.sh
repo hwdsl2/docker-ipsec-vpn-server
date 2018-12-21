@@ -47,12 +47,17 @@ fi
 ip link delete dummy0 >/dev/null 2>&1
 
 mkdir -p /opt/src
-vpn_env="/opt/src/vpn-gen.env"
+vpn_env="/opt/src/vpn.env"
+vpn_gen_env="/opt/src/vpn-gen.env"
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
   if [ -f "$vpn_env" ]; then
     echo
-    echo "Retrieving previously generated VPN credentials..."
+    echo "Retrieving VPN credentials..."
     . "$vpn_env"
+  elif [ -f "$vpn_gen_env" ]; then
+    echo
+    echo "Retrieving previously generated VPN credentials..."
+    . "$vpn_gen_env"
   else
     echo
     echo "VPN credentials not set by user. Generating random PSK and password..."
@@ -60,10 +65,10 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
     VPN_USER=vpnuser
     VPN_PASSWORD="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
 
-    echo "VPN_IPSEC_PSK=$VPN_IPSEC_PSK" > "$vpn_env"
-    echo "VPN_USER=$VPN_USER" >> "$vpn_env"
-    echo "VPN_PASSWORD=$VPN_PASSWORD" >> "$vpn_env"
-    chmod 600 "$vpn_env"
+    echo "VPN_IPSEC_PSK=$VPN_IPSEC_PSK" > "$vpn_gen_env"
+    echo "VPN_USER=$VPN_USER" >> "$vpn_gen_env"
+    echo "VPN_PASSWORD=$VPN_PASSWORD" >> "$vpn_gen_env"
+    chmod 600 "$vpn_gen_env"
   fi
 fi
 

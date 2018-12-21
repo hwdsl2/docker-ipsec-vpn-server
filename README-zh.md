@@ -151,7 +151,7 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 如果需要编辑 VPN 配置文件，你必须首先在正在运行的 Docker 容器中 [开始一个 Bash 会话](#在容器中运行-bash-shell)。
 
-如需添加，修改或者删除 VPN 用户账户，首先更新你的 `env` 文件，然后你必须按照[下一节](#更新-docker-镜像)的说明来重新创建 Docker 容器。
+如需添加，修改或者删除 VPN 用户账户，首先更新你的 `env` 文件，然后你必须按照 [下一节](#更新-docker-镜像) 的说明来删除并重新创建 Docker 容器。高级用户可以 [绑定挂载](#绑定挂载-env-文件) `env` 文件。
 
 在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，请看[这里](#使用其他的-dns-服务器)。
 
@@ -221,6 +221,22 @@ apt-get update && apt-get -y install nano
 ```
 exit
 docker restart ipsec-vpn-server
+```
+
+### 绑定挂载 env 文件
+
+作为 `--env-file` 选项的替代方案，高级用户可以绑定挂载 `env` 文件。该方法的好处是你在更新 `env` 文件之后可以重启 Docker 容器以生效，而不需要重新创建它。要使用这个方法，你必须首先编辑你的 `env` 文件并将所有的变量值用单引号 `''` 括起来。然后（重新）创建 Docker 容器（将第一个 `vpn.env` 替换为你自己的 `env` 文件）：
+
+```
+docker run \
+    --name ipsec-vpn-server \
+    --restart=always \
+    -p 500:500/udp \
+    -p 4500:4500/udp \
+    -v "$(pwd)/vpn.env:/opt/src/vpn.env:ro" \
+    -v /lib/modules:/lib/modules:ro \
+    -d --privileged \
+    hwdsl2/ipsec-vpn-server
 ```
 
 ### 启用 Libreswan 日志

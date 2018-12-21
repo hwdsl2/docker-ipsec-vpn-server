@@ -151,7 +151,7 @@ For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AW
 
 If you need to edit VPN config files, you must first [start a Bash session](https://github.com/hwdsl2/docker-ipsec-vpn-server#bash-shell-inside-container) in the running container.
 
-If you wish to add, edit or remove VPN user accounts, first update your `env` file, then you must re-create the Docker container using instructions in the [next section](https://github.com/hwdsl2/docker-ipsec-vpn-server#update-docker-image).
+If you wish to add, edit or remove VPN user accounts, first update your `env` file, then you must remove and re-create the Docker container using instructions from the [next section](https://github.com/hwdsl2/docker-ipsec-vpn-server#update-docker-image). Advanced users can [bind mount](https://github.com/hwdsl2/docker-ipsec-vpn-server#bind-mount-the-env-file) the `env` file.
 
 Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, [read below](https://github.com/hwdsl2/docker-ipsec-vpn-server#use-alternative-dns-servers).
 
@@ -221,6 +221,22 @@ Then run your commands inside the container. When finished, exit the container a
 ```
 exit
 docker restart ipsec-vpn-server
+```
+
+### Bind mount the env file
+
+As an alternative to the `--env-file` option, advanced users can bind mount the `env` file. The advantage of this method is that after updating the `env` file, you can restart the Docker container to take effect instead of re-creating it. To use this method, you must first edit your `env` file and use single quotes `''` to enclose the values of all variables. Then (re-)create the Docker container (replace the first `vpn.env` with your own `env` file):
+
+```
+docker run \
+    --name ipsec-vpn-server \
+    --restart=always \
+    -p 500:500/udp \
+    -p 4500:4500/udp \
+    -v "$(pwd)/vpn.env:/opt/src/vpn.env:ro" \
+    -v /lib/modules:/lib/modules:ro \
+    -d --privileged \
+    hwdsl2/ipsec-vpn-server
 ```
 
 ### Enable Libreswan logs
