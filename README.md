@@ -8,20 +8,20 @@ Based on Debian 9 (Stretch) with [Libreswan](https://libreswan.org) (IPsec VPN s
 
 [**&raquo; See also: IPsec VPN Server on Ubuntu, Debian and CentOS**](https://github.com/hwdsl2/setup-ipsec-vpn)
 
-*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
+*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
 
 #### Table of Contents
 
-- [Install Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server#install-docker)
-- [Download](https://github.com/hwdsl2/docker-ipsec-vpn-server#download)
-- [How to use this image](https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image)
-- [Next steps](https://github.com/hwdsl2/docker-ipsec-vpn-server#next-steps)
-- [Important notes](https://github.com/hwdsl2/docker-ipsec-vpn-server#important-notes)
-- [Update Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server#update-docker-image)
-- [Advanced usage](https://github.com/hwdsl2/docker-ipsec-vpn-server#advanced-usage)
-- [Technical details](https://github.com/hwdsl2/docker-ipsec-vpn-server#technical-details)
-- [See also](https://github.com/hwdsl2/docker-ipsec-vpn-server#see-also)
-- [License](https://github.com/hwdsl2/docker-ipsec-vpn-server#license)
+- [Install Docker](#install-docker)
+- [Download](#download)
+- [How to use this image](#how-to-use-this-image)
+- [Next steps](#next-steps)
+- [Important notes](#important-notes)
+- [Update Docker image](#update-docker-image)
+- [Advanced usage](#advanced-usage)
+- [Technical details](#technical-details)
+- [See also](#see-also)
+- [License](#license)
 
 ## Install Docker
 
@@ -37,7 +37,7 @@ Get the trusted build from the [Docker Hub registry](https://hub.docker.com/r/hw
 docker pull hwdsl2/ipsec-vpn-server
 ```
 
-Alternatively, you may [build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code) on GitHub. Raspberry Pi users, see [here](https://github.com/hwdsl2/docker-ipsec-vpn-server#use-on-raspberry-pis).
+Alternatively, you may [build from source code](#build-from-source-code) on GitHub. Raspberry Pi users, see [here](#use-on-raspberry-pis).
 
 ## How to use this image
 
@@ -51,7 +51,7 @@ VPN_USER=your_vpn_username
 VPN_PASSWORD=your_vpn_password
 ```
 
-This will create a user account for VPN login, which can be used by your multiple devices[*](https://github.com/hwdsl2/docker-ipsec-vpn-server#important-notes). The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
+This will create a user account for VPN login, which can be used by your multiple devices[*](#important-notes). The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
 
 Additional VPN users are supported, and can be optionally declared in your `env` file like this. Usernames and passwords must be separated by spaces, and usernames cannot contain duplicates. All VPN users will share the same IPsec PSK.
 
@@ -141,7 +141,7 @@ Enjoy your very own VPN!
 
 ## Important notes
 
-*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server#important-notes), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#重要提示).*
+*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#important-notes), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#重要提示).*
 
 For **Windows users**, this [one-time registry change](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#windows-error-809) is required if the VPN server and/or client is behind NAT (e.g. home router).
 
@@ -149,11 +149,11 @@ The same VPN account can be used by your multiple devices. However, due to an IP
 
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN. Aliyun users, see [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
 
-If you need to edit VPN config files, you must first [start a Bash session](https://github.com/hwdsl2/docker-ipsec-vpn-server#bash-shell-inside-container) in the running container.
+If you need to edit VPN config files, you must first [start a Bash session](#bash-shell-inside-container) in the running container.
 
-If you wish to add, edit or remove VPN user accounts, first update your `env` file, then you must remove and re-create the Docker container using instructions from the [next section](https://github.com/hwdsl2/docker-ipsec-vpn-server#update-docker-image). Advanced users can [bind mount](https://github.com/hwdsl2/docker-ipsec-vpn-server#bind-mount-the-env-file) the `env` file.
+If you wish to add, edit or remove VPN user accounts, first update your `env` file, then you must remove and re-create the Docker container using instructions from the [next section](#update-docker-image). Advanced users can [bind mount](#bind-mount-the-env-file) the `env` file.
 
-Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, [read below](https://github.com/hwdsl2/docker-ipsec-vpn-server#use-alternative-dns-servers).
+Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, [read below](#use-alternative-dns-servers).
 
 ## Update Docker image
 
@@ -184,7 +184,7 @@ VPN_DNS_SRV2=1.0.0.1
 
 ### Use on Raspberry Pis
 
-For use on Raspberry Pis (ARM architecture), you must first build this Docker image on your RPi using instructions from [Build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code), instead of pulling from Docker Hub. Then follow the other instructions in this document.
+For use on Raspberry Pis (ARM architecture), you must first build this Docker image on your RPi using instructions from [Build from source code](#build-from-source-code), instead of pulling from Docker Hub. Then follow the other instructions in this document.
 
 ### Build from source code
 
