@@ -108,6 +108,21 @@ case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD $VPN_ADDL_USERS $VPN_ADDL_PASSWORDS
     ;;
 esac
 
+# Check DNS servers and try to resolve hostnames to IPs
+if [ -n "$VPN_DNS_SRV1" ]; then
+  VPN_DNS_SRV1="$(nospaces "$VPN_DNS_SRV1")"
+  VPN_DNS_SRV1="$(noquotes "$VPN_DNS_SRV1")"
+  check_ip "$VPN_DNS_SRV1" || VPN_DNS_SRV1="$(dig -t A -4 +short "$VPN_DNS_SRV1")"
+  check_ip "$VPN_DNS_SRV1" || exiterr "Invalid DNS server 'VPN_DNS_SRV1'. Please check your 'env' file."
+fi
+
+if [ -n "$VPN_DNS_SRV2" ]; then
+  VPN_DNS_SRV2="$(nospaces "$VPN_DNS_SRV2")"
+  VPN_DNS_SRV2="$(noquotes "$VPN_DNS_SRV2")"
+  check_ip "$VPN_DNS_SRV2" || VPN_DNS_SRV2="$(dig -t A -4 +short "$VPN_DNS_SRV2")"
+  check_ip "$VPN_DNS_SRV2" || exiterr "Invalid DNS server 'VPN_DNS_SRV2'. Please check your 'env' file."
+fi
+
 echo
 echo 'Trying to auto discover IP of this server...'
 
