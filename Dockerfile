@@ -26,8 +26,13 @@ RUN apt-get -yqq update \
     && make -s base \
     && make -s install-base \
     && cd /opt/src \
-    && rm -rf "/opt/src/libreswan-${SWAN_VER}" 
-RUN apt-get -yqq install xl2tpd \
+    && rm -rf "/opt/src/libreswan-${SWAN_VER}" \
+    && os_arch="$(dpkg --print-architecture)" \
+    && deb_url="debian/pool/main/x/xl2tpd/xl2tpd_1.3.12-1_${os_arch}.deb" \
+    && wget -t 3 -T 30 -nv -O xl2tpd.deb "https://mirrors.kernel.org/${deb_url}" \
+    || wget -t 3 -T 30 -nv -O xl2tpd.deb "https://debian.osuosl.org/${deb_url}" \
+    && apt-get -yqq install ./xl2tpd.deb \
+    && rm -f xl2tpd.deb \
     && apt-get -yqq remove \
          libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
          libcap-ng-dev libcap-ng-utils libselinux1-dev \
