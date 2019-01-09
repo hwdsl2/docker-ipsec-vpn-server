@@ -27,7 +27,8 @@ RUN apt-get -yqq update \
     && make -s install-base \
     && cd /opt/src \
     && rm -rf "/opt/src/libreswan-${SWAN_VER}" 
-RUN os_arch="$(dpkg --print-architecture)" \
+RUN echo "install xl2tp" \
+    && os_arch="$(dpkg --print-architecture)" \
     && deb_url="debian/pool/main/x/xl2tpd/xl2tpd_1.3.12-1.1_${os_arch}.deb" \
     && wget -t 3 -T 30 -nv -O xl2tpd.deb "https://mirrors.kernel.org/${deb_url}" \
     || wget -t 3 -T 30 -nv -O xl2tpd.deb "https://debian.osuosl.org/${deb_url}" \
