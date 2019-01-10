@@ -1,7 +1,7 @@
 FROM debian:stretch
 LABEL maintainer="Lin Song <linsongui@gmail.com>"
 
-ENV REFRESHED_AT 2018-10-09
+ENV REFRESHED_AT 2019-01-09
 ENV SWAN_VER 3.27
 
 WORKDIR /opt/src
@@ -28,9 +28,9 @@ RUN apt-get -yqq update \
     && cd /opt/src \
     && rm -rf "/opt/src/libreswan-${SWAN_VER}" \
     && os_arch="$(dpkg --print-architecture)" \
-    && deb_url="debian/pool/main/x/xl2tpd/xl2tpd_1.3.12-1_${os_arch}.deb" \
-    && wget -t 3 -T 30 -nv -O xl2tpd.deb "https://mirrors.kernel.org/${deb_url}" \
-    || wget -t 3 -T 30 -nv -O xl2tpd.deb "https://debian.osuosl.org/${deb_url}" \
+    && deb_url="debian/pool/main/x/xl2tpd/xl2tpd_1.3.12-1.1_${os_arch}.deb" \
+    && wget -t 3 -T 30 -nv -O xl2tpd.deb "https://debian.osuosl.org/${deb_url}" \
+    || wget -t 3 -T 30 -nv -O xl2tpd.deb "https://mirrors.kernel.org/${deb_url}" \
     && apt-get -yqq install ./xl2tpd.deb \
     && rm -f xl2tpd.deb \
     && apt-get -yqq remove \
