@@ -61,9 +61,9 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
   else
     echo
     echo 'VPN credentials not set by user. Generating random PSK and password...'
-    VPN_IPSEC_PSK="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 20)"
+    VPN_IPSEC_PSK=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 20)
     VPN_USER=vpnuser
-    VPN_PASSWORD="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
+    VPN_PASSWORD=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)
 
     printf '%s\n' "VPN_IPSEC_PSK='$VPN_IPSEC_PSK'" > "$vpn_gen_env"
     printf '%s\n' "VPN_USER='$VPN_USER'" >> "$vpn_gen_env"
@@ -73,22 +73,22 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
 fi
 
 # Remove whitespace and quotes around VPN variables, if any
-VPN_IPSEC_PSK="$(nospaces "$VPN_IPSEC_PSK")"
-VPN_IPSEC_PSK="$(noquotes "$VPN_IPSEC_PSK")"
-VPN_USER="$(nospaces "$VPN_USER")"
-VPN_USER="$(noquotes "$VPN_USER")"
-VPN_PASSWORD="$(nospaces "$VPN_PASSWORD")"
-VPN_PASSWORD="$(noquotes "$VPN_PASSWORD")"
+VPN_IPSEC_PSK=$(nospaces "$VPN_IPSEC_PSK")
+VPN_IPSEC_PSK=$(noquotes "$VPN_IPSEC_PSK")
+VPN_USER=$(nospaces "$VPN_USER")
+VPN_USER=$(noquotes "$VPN_USER")
+VPN_PASSWORD=$(nospaces "$VPN_PASSWORD")
+VPN_PASSWORD=$(noquotes "$VPN_PASSWORD")
 
 if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
-  VPN_ADDL_USERS="$(nospaces "$VPN_ADDL_USERS")"
-  VPN_ADDL_USERS="$(noquotes "$VPN_ADDL_USERS")"
-  VPN_ADDL_USERS="$(onespace "$VPN_ADDL_USERS")"
-  VPN_ADDL_USERS="$(noquotes2 "$VPN_ADDL_USERS")"
-  VPN_ADDL_PASSWORDS="$(nospaces "$VPN_ADDL_PASSWORDS")"
-  VPN_ADDL_PASSWORDS="$(noquotes "$VPN_ADDL_PASSWORDS")"
-  VPN_ADDL_PASSWORDS="$(onespace "$VPN_ADDL_PASSWORDS")"
-  VPN_ADDL_PASSWORDS="$(noquotes2 "$VPN_ADDL_PASSWORDS")"
+  VPN_ADDL_USERS=$(nospaces "$VPN_ADDL_USERS")
+  VPN_ADDL_USERS=$(noquotes "$VPN_ADDL_USERS")
+  VPN_ADDL_USERS=$(onespace "$VPN_ADDL_USERS")
+  VPN_ADDL_USERS=$(noquotes2 "$VPN_ADDL_USERS")
+  VPN_ADDL_PASSWORDS=$(nospaces "$VPN_ADDL_PASSWORDS")
+  VPN_ADDL_PASSWORDS=$(noquotes "$VPN_ADDL_PASSWORDS")
+  VPN_ADDL_PASSWORDS=$(onespace "$VPN_ADDL_PASSWORDS")
+  VPN_ADDL_PASSWORDS=$(noquotes2 "$VPN_ADDL_PASSWORDS")
 else
   VPN_ADDL_USERS=""
   VPN_ADDL_PASSWORDS=""
@@ -110,16 +110,16 @@ esac
 
 # Check DNS servers and try to resolve hostnames to IPs
 if [ -n "$VPN_DNS_SRV1" ]; then
-  VPN_DNS_SRV1="$(nospaces "$VPN_DNS_SRV1")"
-  VPN_DNS_SRV1="$(noquotes "$VPN_DNS_SRV1")"
-  check_ip "$VPN_DNS_SRV1" || VPN_DNS_SRV1="$(dig -t A -4 +short "$VPN_DNS_SRV1")"
+  VPN_DNS_SRV1=$(nospaces "$VPN_DNS_SRV1")
+  VPN_DNS_SRV1=$(noquotes "$VPN_DNS_SRV1")
+  check_ip "$VPN_DNS_SRV1" || VPN_DNS_SRV1=$(dig -t A -4 +short "$VPN_DNS_SRV1")
   check_ip "$VPN_DNS_SRV1" || exiterr "Invalid DNS server 'VPN_DNS_SRV1'. Please check your 'env' file."
 fi
 
 if [ -n "$VPN_DNS_SRV2" ]; then
-  VPN_DNS_SRV2="$(nospaces "$VPN_DNS_SRV2")"
-  VPN_DNS_SRV2="$(noquotes "$VPN_DNS_SRV2")"
-  check_ip "$VPN_DNS_SRV2" || VPN_DNS_SRV2="$(dig -t A -4 +short "$VPN_DNS_SRV2")"
+  VPN_DNS_SRV2=$(nospaces "$VPN_DNS_SRV2")
+  VPN_DNS_SRV2=$(noquotes "$VPN_DNS_SRV2")
+  check_ip "$VPN_DNS_SRV2" || VPN_DNS_SRV2=$(dig -t A -4 +short "$VPN_DNS_SRV2")
   check_ip "$VPN_DNS_SRV2" || exiterr "Invalid DNS server 'VPN_DNS_SRV2'. Please check your 'env' file."
 fi
 
