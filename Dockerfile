@@ -1,8 +1,9 @@
 FROM debian:stretch
 LABEL maintainer="Lin Song <linsongui@gmail.com>"
 
-ENV REFRESHED_AT 2019-01-09
+ENV REFRESHED_AT 2019-01-30
 ENV SWAN_VER 3.27
+ENV L2TP_VER 1.3.12
 
 WORKDIR /opt/src
 
@@ -15,7 +16,7 @@ RUN apt-get -yqq update \
          libnss3-tools libevent-dev libcap-ng0 xl2tpd \
          libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
          libcap-ng-dev libcap-ng-utils libselinux1-dev \
-         libcurl4-nss-dev flex bison gcc make \
+         libcurl4-nss-dev libpcap0.8-dev flex bison gcc make \
     && wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://github.com/libreswan/libreswan/archive/v${SWAN_VER}.tar.gz" \
     || wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz" \
     && tar xzf libreswan.tar.gz \
@@ -27,16 +28,19 @@ RUN apt-get -yqq update \
     && make -s install-base \
     && cd /opt/src \
     && rm -rf "/opt/src/libreswan-${SWAN_VER}" \
-    && os_arch=$(dpkg --print-architecture) \
-    && deb_url="debian/pool/main/x/xl2tpd/xl2tpd_1.3.12-1.1_${os_arch}.deb" \
-    && wget -t 3 -T 30 -nv -O xl2tpd.deb "https://debian.osuosl.org/${deb_url}" \
-    || wget -t 3 -T 30 -nv -O xl2tpd.deb "https://mirrors.kernel.org/${deb_url}" \
-    && apt-get -yqq install ./xl2tpd.deb \
-    && rm -f xl2tpd.deb \
+    && wget -t 3 -T 30 -nv -O xl2tpd.tar.gz "https://github.com/xelerance/xl2tpd/archive/v${L2TP_VER}.tar.gz" \
+    || wget -t 3 -T 30 -nv -O xl2tpd.tar.gz "https://debian.osuosl.org/debian/pool/main/x/xl2tpd/xl2tpd_${L2TP_VER}.orig.tar.gz" \
+    && tar xzf xl2tpd.tar.gz \
+    && rm -f xl2tpd.tar.gz \
+    && cd "xl2tpd-${L2TP_VER}" \
+    && make -s \
+    && PREFIX=/usr make -s install \
+    && cd /opt/src \
+    && rm -rf "/opt/src/xl2tpd-${L2TP_VER}" \
     && apt-get -yqq remove \
          libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
          libcap-ng-dev libcap-ng-utils libselinux1-dev \
-         libcurl4-nss-dev flex bison gcc make \
+         libcurl4-nss-dev libpcap0.8-dev flex bison gcc make \
          perl-modules perl \
     && apt-get -yqq autoremove \
     && apt-get -y clean \
