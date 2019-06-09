@@ -1,8 +1,8 @@
 FROM debian:stretch
 LABEL maintainer="Lin Song <linsongui@gmail.com>"
 
-ENV REFRESHED_AT 2019-01-30
-ENV SWAN_VER 3.27
+ENV REFRESHED_AT 2019-06-09
+ENV SWAN_VER 3.28
 ENV L2TP_VER 1.3.12
 
 WORKDIR /opt/src
@@ -16,13 +16,19 @@ RUN apt-get -yqq update \
          libnss3-tools libevent-dev libcap-ng0 xl2tpd \
          libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
          libcap-ng-dev libcap-ng-utils libselinux1-dev \
-         libcurl4-nss-dev libpcap0.8-dev flex bison gcc make \
+         libcurl4-nss-dev libpcap0.8-dev \
+         flex bison gcc make patch \
     && wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://github.com/libreswan/libreswan/archive/v${SWAN_VER}.tar.gz" \
     || wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz" \
     && tar xzf libreswan.tar.gz \
     && rm -f libreswan.tar.gz \
     && cd "libreswan-${SWAN_VER}" \
+    && wget -t 3 -T 30 -nv -O programs/barf/barf.in "https://raw.githubusercontent.com/libreswan/libreswan/37c4736/programs/barf/barf.in" \
+    && wget -t 3 -T 30 -nv -O xfrm.patch "https://github.com/libreswan/libreswan/commit/716f4b7.patch" \
+    && patch -s -p1 < xfrm.patch \
+    && rm -f xfrm.patch \
     && printf 'WERROR_CFLAGS =\nUSE_DNSSEC = false\nUSE_DH31 = false\n' > Makefile.inc.local \
+    && printf 'USE_NSS_AVA_COPY = true\nUSE_NSS_IPSEC_PROFILE = false\n' >> Makefile.inc.local \
     && printf 'USE_GLIBC_KERN_FLIP_HEADERS = true\nUSE_SYSTEMD_WATCHDOG = false\n' >> Makefile.inc.local \
     && make -s base \
     && make -s install-base \
