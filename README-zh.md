@@ -66,14 +66,6 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 ### 运行 IPsec VPN 服务器
 
-**重要：** 首先，在 Docker 主机上加载 IPsec `af_key` 内核模块。该步骤在 Ubuntu 和 Debian 上为可选步骤。
-
-```
-sudo modprobe af_key
-```
-
-为保证这个内核模块在服务器启动时加载，请参见以下链接： [Ubuntu/Debian](https://help.ubuntu.com/community/Loadable_Modules), [CentOS 6](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-persistent_module_loading), [CentOS 7](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Kernel_Administration_Guide/sec-Persistent_Module_Loading.html), [Fedora](https://docs.fedoraproject.org/en-US/fedora/f28/system-administrators-guide/kernel-module-driver-configuration/Working_with_Kernel_Modules/index.html#sec-Persistent_Module_Loading) 和 [CoreOS](https://coreos.com/os/docs/latest/other-settings.html)。
-
 使用本镜像创建一个新的 Docker 容器 （将 `./vpn.env` 替换为你自己的 `env` 文件）：
 
 ```
@@ -83,7 +75,6 @@ docker run \
     --restart=always \
     -p 500:500/udp \
     -p 4500:4500/udp \
-    -v /lib/modules:/lib/modules:ro \
     -d --privileged \
     hwdsl2/ipsec-vpn-server
 ```
@@ -234,7 +225,6 @@ docker run \
     -p 500:500/udp \
     -p 4500:4500/udp \
     -v "$(pwd)/vpn.env:/opt/src/vpn.env:ro" \
-    -v /lib/modules:/lib/modules:ro \
     -d --privileged \
     hwdsl2/ipsec-vpn-server
 ```
@@ -253,7 +243,7 @@ docker exec -it ipsec-vpn-server env TERM=xterm bash -l
 apt-get update && apt-get -y install rsyslog
 service rsyslog restart
 service ipsec restart
-sed -i '/modprobe/a service rsyslog restart' /opt/src/run.sh
+sed -i '/pluto\.pid/a service rsyslog restart' /opt/src/run.sh
 exit
 ```
 

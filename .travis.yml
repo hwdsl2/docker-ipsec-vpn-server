@@ -22,7 +22,6 @@ script:
       --restart=always
       -p 500:500/udp
       -p 4500:4500/udp
-      -v /lib/modules:/lib/modules:ro
       -d --privileged vpn;
     elif [ "$TESTID" = "no-env" ]; then
       docker run
@@ -30,7 +29,6 @@ script:
       --restart=always
       -p 500:500/udp
       -p 4500:4500/udp
-      -v /lib/modules:/lib/modules:ro
       -d --privileged vpn;
     fi'
   - sleep 15

@@ -57,6 +57,4 @@ RUN chmod 755 /opt/src/run.sh
 
 EXPOSE 500/udp 4500/udp
 
-VOLUME ["/lib/modules"]
-
 CMD ["/opt/src/run.sh"]
