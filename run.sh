@@ -301,6 +301,7 @@ $SYST net.ipv4.conf.default.send_redirects=0
 $SYST net.ipv4.conf.default.rp_filter=0
 $SYST net.ipv4.conf.eth0.send_redirects=0
 $SYST net.ipv4.conf.eth0.rp_filter=0
+$SYST net.ipv4.conf.lo.rp_filter=0
 
 # Create IPTables rules
 iptables -I INPUT 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
