@@ -134,7 +134,9 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 *其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#important-notes), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#重要提示).*
 
-**Windows 用户** 在首次连接之前需要[修改注册表](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器 和/或 客户端与 NAT（比如家用路由器）的兼容问题。
+**Windows 用户** 在首次连接之前需要[修改注册表](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器和/或客户端与 NAT（比如家用路由器）的兼容问题。
+
+**Android 6 和 7 用户**：如果你遇到连接问题，请尝试 [这些步骤](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#android-6-和-7)。如需在 `/etc/ipsec.conf` 中设置 `sha2-truncbug=yes`（默认为 `no`），你可以在你的 `env` 文件中添加 `VPN_SHA2_TRUNCBUG=yes`，然后重新创建 Docker 容器。
 
 同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT （比如家用路由器）后面的多个设备到 VPN 服务器，你必须仅使用 [IPsec/XAuth 模式](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)。
 
