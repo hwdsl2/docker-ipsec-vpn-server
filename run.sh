@@ -151,6 +151,15 @@ DNS_SRV2=${VPN_DNS_SRV2:-'8.8.4.4'}
 DNS_SRVS="\"$DNS_SRV1 $DNS_SRV2\""
 [ -n "$VPN_DNS_SRV1" ] && [ -z "$VPN_DNS_SRV2" ] && DNS_SRVS="$DNS_SRV1"
 
+case $VPN_SHA2_TRUNCBUG in
+  [yY][eE][sS])
+    SHA2_TRUNCBUG=yes
+    ;;
+  *)
+    SHA2_TRUNCBUG=no
+    ;;
+esac
+
 # Create IPsec (Libreswan) config
 cat > /etc/ipsec.conf <<EOF
 version 2.0
@@ -176,7 +185,7 @@ conn shared
   ikev2=never
   ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024
   phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes256-sha2_512,aes128-sha2,aes256-sha2
-  sha2-truncbug=no
+  sha2-truncbug=$SHA2_TRUNCBUG
 
 conn l2tp-psk
   auto=add
