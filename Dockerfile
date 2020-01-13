@@ -1,7 +1,7 @@
 FROM debian:stretch
 LABEL maintainer="Lin Song <linsongui@gmail.com>"
 
-ENV REFRESHED_AT 2019-06-10
+ENV REFRESHED_AT 2020-01-12
 ENV SWAN_VER 3.29
 ENV L2TP_VER 1.3.12
 
