@@ -30,8 +30,8 @@ check_ip() {
   printf '%s' "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
 }
 
-if [ ! -f "/.dockerenv" ]; then
-  exiterr "This script ONLY runs in a Docker container."
+if [ ! -f "/.dockerenv" ] && [ ! -f "/run/.containerenv" ]; then
+  exiterr "This script ONLY runs in a Docker or Podman container."
 fi
 
 if ip link add dummy0 type dummy 2>&1 | grep -q "not permitted"; then
