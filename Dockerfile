@@ -1,7 +1,7 @@
 FROM debian:stretch
 LABEL maintainer="Lin Song <linsongui@gmail.com>"
 
-ENV REFRESHED_AT 2020-04-26
+ENV REFRESHED_AT 2020-04-29
 ENV SWAN_VER 3.31
 ENV L2TP_VER 1.3.12
 
@@ -26,7 +26,7 @@ RUN apt-get -yqq update \
     && { [ "$SWAN_VER" = "3.31" ] && { sed -i '916iif (!st->st_seen_fragvid) { return FALSE; }' programs/pluto/ikev2.c; \
        sed -i '1033s/if (/if (LIN(POLICY_IKE_FRAG_ALLOW, sk->ike->sa.st_connection->policy) \&\& sk->ike->sa.st_seen_fragvid \&\& /' \
        programs/pluto/ikev2_message.c; } || true; } \
-    && printf 'WERROR_CFLAGS =\nUSE_DNSSEC = false\nUSE_DH31 = false\n' > Makefile.inc.local \
+    && printf 'WERROR_CFLAGS = -w\nUSE_DNSSEC = false\nUSE_DH31 = false\n' > Makefile.inc.local \
     && printf 'USE_NSS_AVA_COPY = true\nUSE_NSS_IPSEC_PROFILE = false\n' >> Makefile.inc.local \
     && printf 'USE_GLIBC_KERN_FLIP_HEADERS = true\nUSE_SYSTEMD_WATCHDOG = false\n' >> Makefile.inc.local \
     && printf 'USE_DH2 = true\nUSE_XFRM_INTERFACE_IFLA_HEADER = true\n' >> Makefile.inc.local \
