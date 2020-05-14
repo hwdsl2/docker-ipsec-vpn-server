@@ -1,7 +1,7 @@
-FROM debian:buster
+FROM debian:buster-slim
 LABEL maintainer="Lin Song <linsongui@gmail.com>"
 
-ENV REFRESHED_AT 2020-05-11
+ENV REFRESHED_AT 2020-05-14
 ENV SWAN_VER 3.32
 
 WORKDIR /opt/src
