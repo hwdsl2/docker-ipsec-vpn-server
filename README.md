@@ -25,7 +25,7 @@ Based on Debian 10 (Buster) with [Libreswan](https://libreswan.org) (IPsec VPN s
 
 ## Install Docker
 
-First, [install and run Docker](https://docs.docker.com/install/) on your Linux server.
+First, [install and run Docker](https://docs.docker.com/engine/install/) on your Linux server.
 
 **Note:** This image does not support Docker for Mac or Windows.
 

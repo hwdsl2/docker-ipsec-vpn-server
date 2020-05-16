@@ -25,7 +25,7 @@
 
 ## 安装 Docker
 
-首先，在你的 Linux 服务器上 [安装并运行 Docker](https://docs.docker.com/install/)。
+首先，在你的 Linux 服务器上 [安装并运行 Docker](https://docs.docker.com/engine/install/)。
 
 **注：** 本镜像不支持 Docker for Mac 或者 Windows。
 
