@@ -1,7 +1,7 @@
 FROM debian:buster-slim
 LABEL maintainer="Lin Song <linsongui@gmail.com>"
 
-ENV REFRESHED_AT 2020-05-14
+ENV REFRESHED_AT 2020-05-19
 ENV SWAN_VER 3.32
 
 WORKDIR /opt/src
@@ -9,10 +9,9 @@ WORKDIR /opt/src
 RUN apt-get -yqq update \
     && DEBIAN_FRONTEND=noninteractive \
        apt-get -yqq --no-install-recommends install \
-         wget dnsutils openssl ca-certificates kmod \
-         iproute2 gawk grep sed net-tools iptables \
-         bsdmainutils libcurl3-nss \
-         libnss3-tools libevent-dev libcap-ng0 xl2tpd \
+         wget dnsutils openssl ca-certificates kmod iproute2 \
+         gawk net-tools iptables bsdmainutils libcurl3-nss \
+         libnss3-tools libevent-dev xl2tpd \
          libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
          libcap-ng-dev libcap-ng-utils libselinux1-dev \
          libcurl4-nss-dev flex bison gcc make \
@@ -32,7 +31,7 @@ RUN apt-get -yqq update \
     && apt-get -yqq remove \
          libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
          libcap-ng-dev libcap-ng-utils libselinux1-dev \
-         libcurl4-nss-dev flex bison gcc make perl-modules perl \
+         libcurl4-nss-dev flex bison gcc make \
     && apt-get -yqq autoremove \
     && apt-get -y clean \
     && rm -rf /var/lib/apt/lists/* \
