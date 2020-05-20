@@ -37,9 +37,8 @@ fi
 if ip link add dummy0 type dummy 2>&1 | grep -q "not permitted"; then
 cat 1>&2 <<'EOF'
 Error: This Docker image must be run in privileged mode.
-
-For detailed instructions, please visit:
-https://github.com/hwdsl2/docker-ipsec-vpn-server
+    For detailed instructions, please visit:
+    https://github.com/hwdsl2/docker-ipsec-vpn-server
 
 EOF
   exit 1
@@ -94,6 +93,21 @@ else
   VPN_ADDL_PASSWORDS=""
 fi
 
+if [ -n "$VPN_DNS_SRV1" ]; then
+  VPN_DNS_SRV1=$(nospaces "$VPN_DNS_SRV1")
+  VPN_DNS_SRV1=$(noquotes "$VPN_DNS_SRV1")
+fi
+
+if [ -n "$VPN_DNS_SRV2" ]; then
+  VPN_DNS_SRV2=$(nospaces "$VPN_DNS_SRV2")
+  VPN_DNS_SRV2=$(noquotes "$VPN_DNS_SRV2")
+fi
+
+if [ -n "$VPN_PUBLIC_IP" ]; then
+  VPN_PUBLIC_IP=$(nospaces "$VPN_PUBLIC_IP")
+  VPN_PUBLIC_IP=$(noquotes "$VPN_PUBLIC_IP")
+fi
+
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
 fi
@@ -114,15 +128,11 @@ fi
 
 # Check DNS servers and try to resolve hostnames to IPs
 if [ -n "$VPN_DNS_SRV1" ]; then
-  VPN_DNS_SRV1=$(nospaces "$VPN_DNS_SRV1")
-  VPN_DNS_SRV1=$(noquotes "$VPN_DNS_SRV1")
   check_ip "$VPN_DNS_SRV1" || VPN_DNS_SRV1=$(dig -t A -4 +short "$VPN_DNS_SRV1")
   check_ip "$VPN_DNS_SRV1" || exiterr "Invalid DNS server 'VPN_DNS_SRV1'. Please check your 'env' file."
 fi
 
 if [ -n "$VPN_DNS_SRV2" ]; then
-  VPN_DNS_SRV2=$(nospaces "$VPN_DNS_SRV2")
-  VPN_DNS_SRV2=$(noquotes "$VPN_DNS_SRV2")
   check_ip "$VPN_DNS_SRV2" || VPN_DNS_SRV2=$(dig -t A -4 +short "$VPN_DNS_SRV2")
   check_ip "$VPN_DNS_SRV2" || exiterr "Invalid DNS server 'VPN_DNS_SRV2'. Please check your 'env' file."
 fi
