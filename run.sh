@@ -3,7 +3,7 @@
 # Docker script to configure and start an IPsec VPN server
 #
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS ONLY MEANT TO BE RUN
-# IN A DOCKER CONTAINER!
+# IN A CONTAINER!
 #
 # This file is part of IPsec VPN Docker image, available at:
 # https://github.com/hwdsl2/docker-ipsec-vpn-server
@@ -30,8 +30,8 @@ check_ip() {
   printf '%s' "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
 }
 
-if [ ! -f "/.dockerenv" ] && [ ! -f "/run/.containerenv" ]; then
-  exiterr "This script ONLY runs in a Docker or Podman container."
+if [ ! -f "/.dockerenv" ] && [ ! -f "/run/.containerenv" ] && ! head -n 1 /proc/1/sched | grep -q '^run\.sh '; then
+  exiterr "This script ONLY runs in a container (e.g. Docker, Podman)."
 fi
 
 if ip link add dummy0 type dummy 2>&1 | grep -q "not permitted"; then
@@ -163,6 +163,8 @@ DNS_SRVS="\"$DNS_SRV1 $DNS_SRV2\""
 
 case $VPN_SHA2_TRUNCBUG in
   [yY][eE][sS])
+    echo
+    echo "Setting sha2-truncbug to yes in ipsec.conf..."
     SHA2_TRUNCBUG=yes
     ;;
   *)
@@ -170,7 +172,7 @@ case $VPN_SHA2_TRUNCBUG in
     ;;
 esac
 
-# Create IPsec (Libreswan) config
+# Create IPsec config
 cat > /etc/ipsec.conf <<EOF
 version 2.0
 
@@ -334,7 +336,7 @@ iptables -I FORWARD 3 -i ppp+ -o eth+ -j ACCEPT
 iptables -I FORWARD 4 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j ACCEPT
 iptables -I FORWARD 5 -i eth+ -d "$XAUTH_NET" -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 iptables -I FORWARD 6 -s "$XAUTH_NET" -o eth+ -j ACCEPT
-# Uncomment if you wish to disallow traffic between VPN clients themselves
+# Uncomment to disallow traffic between VPN clients
 # iptables -I FORWARD 2 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j DROP
 # iptables -I FORWARD 3 -s "$XAUTH_NET" -d "$XAUTH_NET" -j DROP
 iptables -A FORWARD -j DROP
