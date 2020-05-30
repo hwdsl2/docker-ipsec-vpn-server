@@ -129,12 +129,20 @@ fi
 # Check DNS servers and try to resolve hostnames to IPs
 if [ -n "$VPN_DNS_SRV1" ]; then
   check_ip "$VPN_DNS_SRV1" || VPN_DNS_SRV1=$(dig -t A -4 +short "$VPN_DNS_SRV1")
-  check_ip "$VPN_DNS_SRV1" || exiterr "Invalid DNS server 'VPN_DNS_SRV1'. Please check your 'env' file."
+  if ! check_ip "$VPN_DNS_SRV1"; then
+    echo >&2
+    echo "Error: Invalid DNS server. Check VPN_DNS_SRV1 in your 'env' file." >&2
+    VPN_DNS_SRV1=""
+  fi
 fi
 
 if [ -n "$VPN_DNS_SRV2" ]; then
   check_ip "$VPN_DNS_SRV2" || VPN_DNS_SRV2=$(dig -t A -4 +short "$VPN_DNS_SRV2")
-  check_ip "$VPN_DNS_SRV2" || exiterr "Invalid DNS server 'VPN_DNS_SRV2'. Please check your 'env' file."
+  if ! check_ip "$VPN_DNS_SRV2"; then
+    echo >&2
+    echo "Error: Invalid DNS server. Check VPN_DNS_SRV2 in your 'env' file." >&2
+    VPN_DNS_SRV2=""
+  fi
 fi
 
 echo
@@ -160,6 +168,14 @@ DNS_SRV1=${VPN_DNS_SRV1:-'8.8.8.8'}
 DNS_SRV2=${VPN_DNS_SRV2:-'8.8.4.4'}
 DNS_SRVS="\"$DNS_SRV1 $DNS_SRV2\""
 [ -n "$VPN_DNS_SRV1" ] && [ -z "$VPN_DNS_SRV2" ] && DNS_SRVS="$DNS_SRV1"
+
+if [ -n "$VPN_DNS_SRV1" ] && [ -n "$VPN_DNS_SRV2" ]; then
+  echo
+  echo "Setting DNS servers to $VPN_DNS_SRV1 and $VPN_DNS_SRV2..."
+elif [ -n "$VPN_DNS_SRV1" ]; then
+  echo
+  echo "Setting DNS server to $VPN_DNS_SRV1..."
+fi
 
 case $VPN_SHA2_TRUNCBUG in
   [yY][eE][sS])
