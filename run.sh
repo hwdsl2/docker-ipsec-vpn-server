@@ -343,6 +343,20 @@ iptables -A FORWARD -j DROP
 iptables -t nat -I POSTROUTING -s "$XAUTH_NET" -o eth+ -m policy --dir out --pol none -j MASQUERADE
 iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o eth+ -j MASQUERADE
 
+case $VPN_ANDROID_MTU_FIX in
+  [yY][eE][sS])
+    echo
+    echo "Applying fix for Android MTU/MSS issues..."
+    iptables -t mangle -A FORWARD -m policy --pol ipsec --dir in \
+      -p tcp -m tcp --tcp-flags SYN,RST SYN -m tcpmss --mss 1361:1536 \
+      -j TCPMSS --set-mss 1360
+    iptables -t mangle -A FORWARD -m policy --pol ipsec --dir out \
+      -p tcp -m tcp --tcp-flags SYN,RST SYN -m tcpmss --mss 1361:1536 \
+      -j TCPMSS --set-mss 1360
+    echo 1 > /proc/sys/net/ipv4/ip_no_pmtu_disc
+    ;;
+esac
+
 # Update file attributes
 chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets /etc/ipsec.d/passwd
 
