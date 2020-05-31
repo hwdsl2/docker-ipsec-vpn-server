@@ -179,6 +179,60 @@ VPN_DNS_SRV2=1.0.0.1
 
 For use on Raspberry Pis (ARM architecture), you must first build this Docker image on your RPi using instructions from [Build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code), instead of pulling from Docker Hub. Then follow the other instructions in this document.
 
+### Configure and use IKEv2 VPN
+
+Using this Docker image, advanced users can configure and use IKEv2. This mode has improvements over IPsec/L2TP and IPsec/XAuth ("Cisco IPsec"), and does not require an IPsec PSK, username or password. Read more [here](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md). After setup, you will be able to connect using any of the three modes.
+
+Please follow these steps:
+
+1. [Download the latest version](https://github.com/hwdsl2/docker-ipsec-vpn-server#update-docker-image) of this Docker image, write down all your [VPN login details](https://github.com/hwdsl2/docker-ipsec-vpn-server#retrieve-vpn-login-details), then remove the Docker container with `docker rm -f ipsec-vpn-server`.
+
+   ```
+   docker pull hwdsl2/ipsec-vpn-server
+   ```
+
+1. Create a new Docker container (replace `./vpn.env` with your own `env` file).
+
+   ```
+   docker run \
+       --name ipsec-vpn-server \
+       --env-file ./vpn.env \
+       --restart=always \
+       -v ikev2-vpn-data:/etc/ipsec.d \
+       -p 500:500/udp \
+       -p 4500:4500/udp \
+       -d --privileged \
+       hwdsl2/ipsec-vpn-server
+   ```
+
+   In this command, we use the `-v` option of `docker run` to create a new [Docker volume](https://docs.docker.com/storage/volumes/) named `ikev2-vpn-data`, and mount the volume into `/etc/ipsec.d/` in the container. Data will persist in the volume, and later when you need to re-create the Docker container, just specify the same volume again.
+
+1. Check [Docker logs](https://github.com/hwdsl2/docker-ipsec-vpn-server#retrieve-vpn-login-details) to make sure the VPN container started successfully.
+
+   ```
+   docker logs ipsec-vpn-server
+   ```
+
+1. [Start a Bash session](https://github.com/hwdsl2/docker-ipsec-vpn-server#bash-shell-inside-container) in the running container.
+
+   ```
+   docker exec -it ipsec-vpn-server env TERM=xterm bash -l
+   ```
+
+1. Download and run the [IKEv2 setup helper script](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#using-helper-scripts), and follow the prompts.
+
+   ```
+   wget https://git.io/ikev2setup -O ikev2.sh && bash ikev2.sh
+   ```
+
+1. When finished, `exit` the container and continue to [configure IKEv2 VPN clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#configure-ikev2-vpn-clients). To copy the generated `.p12` file to the current directory on the Docker host, you may use, e.g.:
+
+   ```
+   docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient-date-time.p12 ./
+   ```
+
+   If you want to generate certificates for additional VPN clients, refer to step 4 from [here](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#manually-set-up-ikev2-on-the-vpn-server).
+
 ### Build from source code
 
 Advanced users can download and compile the source code from GitHub:

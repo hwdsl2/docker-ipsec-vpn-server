@@ -179,6 +179,59 @@ VPN_DNS_SRV2=1.0.0.1
 
 如需在 Raspberry Pi （ARM架构）上使用，你必须首先在你的 RPi 上按照 [从源代码构建](#从源代码构建) 中的说明自己构建这个 Docker 镜像，而不是从 Docker Hub 下载。然后按照本文档的其它步骤操作。
 
+### 配置并使用 IKEv2 VPN
+
+使用这个 Docker 镜像，高级用户可以配置并使用 IKEv2。它是比 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 更佳的连接模式，该模式无需 IPsec PSK, 用户名或密码。更多信息请看[这里](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md)。在配置之后，你将可以选择三种模式中的任意一种连接。
+
+请按照以下步骤操作：
+
+1. [下载最新版本](#更新-docker-镜像)的 Docker 镜像。在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)，然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。
+
+   ```
+   docker pull hwdsl2/ipsec-vpn-server
+   ```
+
+1. 创建一个新的 Docker 容器 （将 `./vpn.env` 替换为你自己的 `env` 文件）。
+
+   ```
+   docker run \
+       --name ipsec-vpn-server \
+       --env-file ./vpn.env \
+       --restart=always \
+       -v ikev2-vpn-data:/etc/ipsec.d \
+       -p 500:500/udp \
+       -p 4500:4500/udp \
+       -d --privileged \
+       hwdsl2/ipsec-vpn-server
+   ```
+   在该命令中，我们使用 `docker run` 的 `-v` 选项来创建一个名为 `ikev2-vpn-data` 的新 [Docker 卷](https://docs.docker.com/storage/volumes/)，并且将它挂载到容器内的 `/etc/ipsec.d/` 目录下。数据在该卷中保存，之后当你需要重新创建 Docker 容器的时候，只需指定同一个卷。
+
+1. 检查 [Docker 日志](#获取-vpn-登录信息) 以确认 VPN 容器已成功启动。
+
+   ```
+   docker logs ipsec-vpn-server
+   ```
+
+1. 在正在运行的 Docker 容器中 [开始一个 Bash 会话](#在容器中运行-bash-shell)。
+
+   ```
+   docker exec -it ipsec-vpn-server env TERM=xterm bash -l
+   ```
+
+1. 下载并运行 [IKEv2 配置辅助脚本](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#使用辅助脚本)，并按提示操作。
+
+   ```
+   wget https://git.io/ikev2setup -O ikev2.sh && bash ikev2.sh
+   ```
+
+1. 在完成之后，退出容器 `exit` 并转到 [配置 IKEv2 VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。要将生成的 `.p12` 文件复制到 Docker 主机当前目录，你可以使用比如：
+
+   ```
+   docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient-日期-时间.p12 ./
+   ```
+
+   如需为更多的客户端生成证书，请参见 [这里](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
+
 ### 从源代码构建
 
 高级用户可以从 GitHub 下载并自行编译源代码：

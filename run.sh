@@ -237,6 +237,8 @@ conn xauth-psk
   ike-frag=yes
   cisco-unity=yes
   also=shared
+
+include /etc/ipsec.d/*.conf
 EOF
 
 if uname -r | grep -qi 'coreos'; then
