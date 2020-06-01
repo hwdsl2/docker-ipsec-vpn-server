@@ -126,6 +126,8 @@ Get your computer or device to use the VPN. Please refer to:
 
 **[Configure IPsec/XAuth ("Cisco IPsec") VPN Clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md)**
 
+**[Advanced usage: Configure and use IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server#configure-and-use-ikev2-vpn)**
+
 If you get an error when trying to connect, see [Troubleshooting](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#troubleshooting).
 
 Enjoy your very own VPN!
@@ -177,7 +179,7 @@ VPN_DNS_SRV2=1.0.0.1
 
 ### Use on Raspberry Pis
 
-For use on Raspberry Pis (ARM architecture), you must first build this Docker image on your RPi using instructions from [Build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code), instead of pulling from Docker Hub. Then follow the other instructions in this document.
+For use on Raspberry Pis (ARM architecture), you must first build this Docker image on your device using instructions from [Build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code), instead of pulling from Docker Hub. Then follow other instructions in this document. Similarly, this also applies to other architectures that are not `x86_64`.
 
 ### Configure and use IKEv2 VPN
 

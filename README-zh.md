@@ -126,6 +126,8 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 **[配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)**
 
+**[高级用法：配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)**
+
 如果在连接过程中遇到错误，请参见 [故障排除](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#故障排除)。
 
 开始使用自己的专属 VPN !
@@ -177,7 +179,7 @@ VPN_DNS_SRV2=1.0.0.1
 
 ### 在 Raspberry Pi 上使用
 
-如需在 Raspberry Pi （ARM架构）上使用，你必须首先在你的 RPi 上按照 [从源代码构建](#从源代码构建) 中的说明自己构建这个 Docker 镜像，而不是从 Docker Hub 下载。然后按照本文档的其它步骤操作。
+如需在 Raspberry Pi （ARM 架构）上使用，你必须首先在你的设备上按照 [从源代码构建](#从源代码构建) 中的说明自己构建这个 Docker 镜像，而不是从 Docker Hub 下载。然后按照本文档的其它步骤操作。这一条也同样适用于其他的非 `x86_64` 架构的系统。
 
 ### 配置并使用 IKEv2 VPN
 
