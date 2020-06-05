@@ -226,13 +226,13 @@ VPN_DNS_SRV2=1.0.0.1
    wget https://git.io/ikev2setup -O ikev2.sh && bash ikev2.sh
    ```
 
+   **注：** 如果要为更多的客户端生成证书，只需重新运行辅助脚本。
+
 1. 在完成之后，退出容器 `exit` 并转到 [配置 IKEv2 VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。要将生成的 `.p12` 文件复制到 Docker 主机当前目录，你可以使用比如：
 
    ```
    docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient-日期-时间.p12 ./
    ```
-
-   如需为更多的客户端生成证书，请参见 [这里](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#手动在-vpn-服务器上配置-ikev2) 的第 4 步。
 
 ### 从源代码构建
 
