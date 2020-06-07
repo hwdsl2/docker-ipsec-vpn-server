@@ -183,14 +183,21 @@ VPN_DNS_SRV2=1.0.0.1
 
 ### 配置并使用 IKEv2 VPN
 
+*其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn).*
+
 使用这个 Docker 镜像，高级用户可以配置并使用 IKEv2。它是比 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 更佳的连接模式，该模式无需 IPsec PSK, 用户名或密码。更多信息请看[这里](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md)。在配置之后，你将可以选择三种模式中的任意一种连接。
 
 请按照以下步骤操作：
 
-1. [下载最新版本](#更新-docker-镜像)的 Docker 镜像。在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)，然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。
+1. [下载最新版本](#更新-docker-镜像)的 Docker 镜像。在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)，然后删除 Docker 容器。
 
    ```
+   # 下载最新版本的 Docker 镜像
    docker pull hwdsl2/ipsec-vpn-server
+
+   # 首先在纸上记下你所有的 VPN 登录信息
+   # 然后删除 Docker 容器
+   docker rm -f ipsec-vpn-server
    ```
 
 1. 创建一个新的 Docker 容器 （将 `./vpn.env` 替换为你自己的 `env` 文件）。

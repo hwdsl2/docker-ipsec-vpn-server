@@ -183,14 +183,21 @@ For use on Raspberry Pis (ARM architecture), you must first build this Docker im
 
 ### Configure and use IKEv2 VPN
 
+*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn).*
+
 Using this Docker image, advanced users can configure and use IKEv2. This mode has improvements over IPsec/L2TP and IPsec/XAuth ("Cisco IPsec"), and does not require an IPsec PSK, username or password. Read more [here](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md). After setup, you will be able to connect using any of the three modes.
 
 Please follow these steps:
 
-1. [Download the latest version](https://github.com/hwdsl2/docker-ipsec-vpn-server#update-docker-image) of this Docker image, write down all your [VPN login details](https://github.com/hwdsl2/docker-ipsec-vpn-server#retrieve-vpn-login-details), then remove the Docker container with `docker rm -f ipsec-vpn-server`.
+1. [Download the latest version](https://github.com/hwdsl2/docker-ipsec-vpn-server#update-docker-image) of this Docker image, write down all your [VPN login details](https://github.com/hwdsl2/docker-ipsec-vpn-server#retrieve-vpn-login-details), then remove the Docker container.
 
    ```
+   # Download the latest version of Docker image
    docker pull hwdsl2/ipsec-vpn-server
+
+   # First, write down all your VPN login details
+   # Then remove the Docker container
+   docker rm -f ipsec-vpn-server
    ```
 
 1. Create a new Docker container (replace `./vpn.env` with your own `env` file).
