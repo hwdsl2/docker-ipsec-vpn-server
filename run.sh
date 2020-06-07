@@ -416,6 +416,7 @@ Write these down. You'll need them to connect!
 
 Important notes:   https://git.io/vpnnotes2
 Setup VPN clients: https://git.io/vpnclients
+IKEv2 guide:       https://git.io/ikev2docker
 
 ================================================
 
