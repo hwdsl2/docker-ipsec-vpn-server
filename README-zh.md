@@ -164,7 +164,7 @@ docker pull hwdsl2/ipsec-vpn-server
 Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 ```
 
-否则，将会下载最新版本。要更新你的 Docker 容器，首先在纸上记下你所有的 VPN 登录信息（参见上面的 "获取 VPN 登录信息"）。然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。最后按照 "如何使用本镜像" 的说明来重新创建它。
+否则，将会下载最新版本。要更新你的 Docker 容器，首先在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)。然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。最后按照 [这一小节](#如何使用本镜像) 的说明来重新创建它。
 
 ## 高级用法
 
@@ -200,7 +200,7 @@ VPN_DNS_SRV2=1.0.0.1
    docker rm -f ipsec-vpn-server
    ```
 
-1. 创建一个新的 Docker 容器 （将 `./vpn.env` 替换为你自己的 `env` 文件）。
+1. 创建一个新的 Docker 容器（将 `./vpn.env` 替换为你自己的 [env 文件](#如何使用本镜像)）。
 
    ```
    docker run \
@@ -233,7 +233,7 @@ VPN_DNS_SRV2=1.0.0.1
    wget https://git.io/ikev2setup -O ikev2.sh && bash ikev2.sh
    ```
 
-   **注：** 如果要为更多的客户端生成证书，只需重新运行辅助脚本。
+   **注：** 如果要为更多的客户端生成证书，只需重新运行辅助脚本。要吊销一个客户端证书，参见[这里](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#吊销一个客户端证书)。
 
 1. 在完成之后，退出容器 `exit` 并转到 [配置 IKEv2 VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。要将生成的 `.p12` 文件复制到 Docker 主机当前目录，你可以使用比如：
 
