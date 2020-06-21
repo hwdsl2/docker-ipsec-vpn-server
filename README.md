@@ -37,7 +37,9 @@ Get the trusted build from the [Docker Hub registry](https://hub.docker.com/r/hw
 docker pull hwdsl2/ipsec-vpn-server
 ```
 
-Alternatively, you may [build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code) on GitHub. Raspberry Pi users, see [here](https://github.com/hwdsl2/docker-ipsec-vpn-server#use-on-raspberry-pis).
+Supported platforms: `linux/amd64`, `linux/386`, `linux/arm64`, `linux/arm/v7` and `linux/arm/v6`.
+
+Alternatively, you may [build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code) on GitHub.
 
 ## How to use this image
 
@@ -176,10 +178,6 @@ Clients are set to use [Google Public DNS](https://developers.google.com/speed/p
 VPN_DNS_SRV1=1.1.1.1
 VPN_DNS_SRV2=1.0.0.1
 ```
-
-### Use on Raspberry Pis
-
-For use on Raspberry Pis (ARM architecture), you must first build this Docker image on your device using instructions from [Build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code), instead of pulling from Docker Hub. Then follow other instructions in this document. Similarly, this also applies to other architectures that are not `x86_64`.
 
 ### Configure and use IKEv2 VPN
 

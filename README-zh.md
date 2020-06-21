@@ -37,7 +37,9 @@
 docker pull hwdsl2/ipsec-vpn-server
 ```
 
-或者，你也可以自己从 GitHub [编译源代码](#从源代码构建)。Raspberry Pi 用户请看 [这里](#在-raspberry-pi-上使用)。
+支持以下架构系统：`linux/amd64`, `linux/386`, `linux/arm64`, `linux/arm/v7`, `linux/arm/v6`。
+
+或者，你也可以自己从 GitHub [编译源代码](#从源代码构建)。
 
 ## 如何使用本镜像
 
@@ -176,10 +178,6 @@ Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 VPN_DNS_SRV1=1.1.1.1
 VPN_DNS_SRV2=1.0.0.1
 ```
-
-### 在 Raspberry Pi 上使用
-
-如需在 Raspberry Pi （ARM 架构）上使用，你必须首先在你的设备上按照 [从源代码构建](#从源代码构建) 中的说明自己构建这个 Docker 镜像，而不是从 Docker Hub 下载。然后按照本文档的其它步骤操作。这一条也同样适用于其他的非 `x86_64` 架构的系统。
 
 ### 配置并使用 IKEv2 VPN
 
