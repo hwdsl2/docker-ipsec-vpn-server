@@ -4,6 +4,7 @@ on:
   push:
     branches: [master]
     paths-ignore:
+      - .github/workflows/buildx-latest-debian-updates.yml
       - .gitignore
       - .travis.yml
       - docker-compose.yml
