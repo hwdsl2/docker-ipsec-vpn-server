@@ -1,0 +1,90 @@
+name: buildx latest on Debian updates
+
+on:
+  schedule:
+    - cron: '25 10,22 * * *'
+
+jobs:
+  check_update:
+    runs-on: ubuntu-latest
+    outputs:
+      debian_updated: ${{ steps.check.outputs.debian_updated }}
+    steps:
+      - name: Prepare
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get -yq update
+          sudo apt-get -yq install docker.io
+          sudo systemctl list-unit-files docker.service docker.socket
+          sudo systemctl unmask docker.service
+          sudo systemctl unmask docker.socket
+          sudo systemctl start docker.service
+      - name: Check
+        id: check
+        if: success()
+        run: |
+          DEBIAN_UPDATED=false
+
+          sudo docker pull debian:buster-slim
+          sudo docker pull hwdsl2/ipsec-vpn-server
+
+          debian_update_time=$(sudo docker inspect --format='{{.Created}}' debian:buster-slim)
+          image_update_time=$(sudo docker inspect --format='{{.Created}}' hwdsl2/ipsec-vpn-server)
+
+          if [ -n "$debian_update_time" ] && [ -n "$image_update_time" ]; then
+            debian_update_time_s=$(date -d "$debian_update_time" +%s)
+            image_update_time_s=$(date -d "$image_update_time" +%s)
+            current_time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            current_time_s=$(date -d "$current_time" +%s)
+            diff_time_s=$((current_time_s - debian_update_time_s))
+
+            echo "Debian update time:     $debian_update_time"
+            echo "Debian update time (s): $debian_update_time_s"
+            echo "Image update time:      $image_update_time"
+            echo "Image update time (s):  $image_update_time_s"
+            echo "Current time:           $current_time"
+            echo "Current time (s):       $current_time_s"
+            echo "Time diff (cur-debian): $diff_time_s"
+
+            if [ -n "$debian_update_time_s" ] && [ -n "$image_update_time_s" ] \
+              && [ "$debian_update_time_s" -ge "$image_update_time_s" ] \
+              && [ "$diff_time_s" -ge 14400 ]; then
+              echo "Starting build..."
+              DEBIAN_UPDATED=true
+            else
+              echo "Not starting build."
+            fi
+          fi
+
+          echo ::set-output name=debian_updated::${DEBIAN_UPDATED}
+
+  buildx:
+    needs: check_update
+    if: needs.check_update.outputs.debian_updated == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: crazy-max/ghaction-docker-buildx@v3
+      - name: Docker Hub Login
+        if: success()
+        env:
+          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+        run: echo "$DOCKER_TOKEN" | docker login --username hwdsl2 --password-stdin 2>&1
+      - name: Docker Buildx (build and push)
+        if: success()
+        run: |
+          docker buildx build \
+            --progress plain \
+            --platform=linux/amd64,linux/386,linux/arm64,linux/arm/v7 \
+            --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+            --build-arg VCS_REF=${GITHUB_SHA::8} \
+            --build-arg VERSION=latest \
+            -t hwdsl2/ipsec-vpn-server:latest \
+            --push \
+            .
+      - name: Clear
+        if: always()
+        run: |
+          shred -u "${HOME}/.docker/config.json"
+          rm -f "${HOME}/.docker/config.json"

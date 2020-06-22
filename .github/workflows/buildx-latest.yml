@@ -11,13 +11,12 @@ on:
       - README.md
       - README-zh.md
       - vpn.env.example
-  watch:
-    types: [started]
+  repository_dispatch:
+    types: [start-buildx-workflow]
 
 jobs:
   buildx:
     runs-on: ubuntu-latest
-    if: github.actor == github.event.repository.owner.login
     steps:
       - uses: actions/checkout@v2
       - name: Set up Docker Buildx
