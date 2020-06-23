@@ -12,24 +12,16 @@ jobs:
     steps:
       - name: Prepare
         run: |
-          export DEBIAN_FRONTEND=noninteractive
-          sudo apt-get -yq update
-          sudo apt-get -yq install docker.io
-          sudo systemctl list-unit-files docker.service docker.socket
-          sudo systemctl unmask docker.service
-          sudo systemctl unmask docker.socket
-          sudo systemctl start docker.service
+          docker pull debian:buster-slim
+          docker pull hwdsl2/ipsec-vpn-server
       - name: Check
         id: check
         if: success()
         run: |
           DEBIAN_UPDATED=false
 
-          sudo docker pull debian:buster-slim
-          sudo docker pull hwdsl2/ipsec-vpn-server
-
-          debian_update_time=$(sudo docker inspect --format='{{.Created}}' debian:buster-slim)
-          image_update_time=$(sudo docker inspect --format='{{.Created}}' hwdsl2/ipsec-vpn-server)
+          debian_update_time=$(docker inspect --format='{{.Created}}' debian:buster-slim)
+          image_update_time=$(docker inspect --format='{{.Created}}' hwdsl2/ipsec-vpn-server)
 
           if [ -n "$debian_update_time" ] && [ -n "$image_update_time" ]; then
             debian_update_time_s=$(date -d "$debian_update_time" +%s)
