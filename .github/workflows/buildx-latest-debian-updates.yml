@@ -55,11 +55,31 @@ jobs:
     if: needs.check_update.outputs.debian_updated == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@28c7f3d2b5162b5ddd3dfd9a45aa55eaf396478b # @v2.3.1
+      - uses: actions/checkout@v2
         with:
           persist-credentials: false
-      - name: Set up Docker Buildx
-        uses: crazy-max/ghaction-docker-buildx@373dafb963e27afd52567f12584adb676f5fd647 # @v3.1.0
+      - name: Set up Buildx
+        if: success()
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get -yq update
+          sudo apt-get -yq install wget jq
+
+          DOCKER_DIR="${HOME}/.docker/cli-plugins"
+          BUILDX_VER=$(wget -t 3 -T 30 -qO- "https://api.github.com/repos/docker/buildx/releases/latest" | jq -r ".tag_name")
+          [ -z "${BUILDX_VER}" ] && exit 1
+          BUILDX_URL="https://github.com/docker/buildx/releases/download/${BUILDX_VER}/buildx-${BUILDX_VER}.linux-amd64"
+
+          mkdir -p "${DOCKER_DIR}"
+          wget -t 3 -T 30 -nv -O "${DOCKER_DIR}/docker-buildx" "${BUILDX_URL}" || exit 1
+          chmod a+x "${DOCKER_DIR}/docker-buildx"
+
+          docker info
+          docker buildx version
+          docker pull -q multiarch/qemu-user-static:latest
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
+          docker buildx create --name "builder-${GITHUB_SHA::8}" --driver docker-container --use
+          docker buildx inspect --bootstrap
       - name: Docker Hub Login
         if: success()
         env:
@@ -82,3 +102,4 @@ jobs:
         run: |
           shred -u "${HOME}/.docker/config.json"
           rm -f "${HOME}/.docker/config.json"
+          docker buildx rm "builder-${GITHUB_SHA::8}" || true
