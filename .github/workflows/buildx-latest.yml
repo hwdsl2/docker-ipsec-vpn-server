@@ -25,13 +25,17 @@ jobs:
       - name: Set up Buildx
         if: success()
         run: |
-          export DEBIAN_FRONTEND=noninteractive
-          sudo apt-get -yq update
-          sudo apt-get -yq install wget jq
+          [ ! -x /usr/bin/docker ] && exit 1
+          if [ ! -x /usr/bin/wget ] || [ ! -x /usr/bin/jq ]; then
+            export DEBIAN_FRONTEND=noninteractive
+            sudo apt-get -yq update
+            sudo apt-get -yq install wget jq
+          fi
 
           DOCKER_DIR="${HOME}/.docker/cli-plugins"
           BUILDX_VER=$(wget -t 3 -T 30 -qO- "https://api.github.com/repos/docker/buildx/releases/latest" | jq -r ".tag_name")
           [ -z "${BUILDX_VER}" ] && exit 1
+          echo "Buildx version: ${BUILDX_VER}"
           BUILDX_URL="https://github.com/docker/buildx/releases/download/${BUILDX_VER}/buildx-${BUILDX_VER}.linux-amd64"
 
           mkdir -p "${DOCKER_DIR}"
@@ -40,7 +44,7 @@ jobs:
 
           docker info
           docker buildx version
-          docker pull -q multiarch/qemu-user-static:latest
+          docker pull -q multiarch/qemu-user-static
           docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
           docker buildx create --name "builder-${GITHUB_SHA::8}" --driver docker-container --use
           docker buildx inspect --bootstrap
@@ -54,7 +58,7 @@ jobs:
         run: |
           docker buildx build \
             --progress plain \
-            --platform=linux/amd64,linux/386,linux/arm64,linux/arm/v7 \
+            --platform=linux/amd64,linux/arm64,linux/arm/v7 \
             --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
             --build-arg VCS_REF=${GITHUB_SHA::8} \
             --build-arg VERSION=latest \

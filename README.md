@@ -37,7 +37,7 @@ Get the trusted build from the [Docker Hub registry](https://hub.docker.com/r/hw
 docker pull hwdsl2/ipsec-vpn-server
 ```
 
-Supported platforms: `linux/amd64`, `linux/386`, `linux/arm64` and `linux/arm/v7`.
+Supported platforms: `linux/amd64`, `linux/arm64` and `linux/arm/v7`.
 
 Alternatively, you may [build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code) on GitHub.
 

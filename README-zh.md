@@ -37,7 +37,7 @@
 docker pull hwdsl2/ipsec-vpn-server
 ```
 
-支持以下架构系统：`linux/amd64`, `linux/386`, `linux/arm64` 和 `linux/arm/v7`。
+支持以下架构系统：`linux/amd64`, `linux/arm64` 和 `linux/arm/v7`。
 
 或者，你也可以自己从 GitHub [编译源代码](#从源代码构建)。
 
