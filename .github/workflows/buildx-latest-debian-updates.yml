@@ -7,13 +7,16 @@ on:
 jobs:
   check_update:
     runs-on: ubuntu-latest
+    if: github.repository_owner == 'hwdsl2'
+    env:
+      DOCKER_USER: ${{ github.repository_owner }}
     outputs:
       debian_updated: ${{ steps.check.outputs.debian_updated }}
     steps:
       - name: Prepare
         run: |
           docker pull debian:buster-slim
-          docker pull hwdsl2/ipsec-vpn-server
+          docker pull "$DOCKER_USER/ipsec-vpn-server"
       - name: Check
         id: check
         if: success()
@@ -21,7 +24,7 @@ jobs:
           DEBIAN_UPDATED=false
 
           debian_update_time=$(docker inspect --format='{{.Created}}' debian:buster-slim)
-          image_update_time=$(docker inspect --format='{{.Created}}' hwdsl2/ipsec-vpn-server)
+          image_update_time=$(docker inspect --format='{{.Created}}' "$DOCKER_USER/ipsec-vpn-server")
 
           if [ -n "$debian_update_time" ] && [ -n "$image_update_time" ]; then
             debian_update_time_s=$(date -d "$debian_update_time" +%s)
@@ -87,10 +90,13 @@ jobs:
       - name: Docker Hub Login
         if: success()
         env:
+          DOCKER_USER: ${{ github.repository_owner }}
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-        run: echo "$DOCKER_TOKEN" | docker login --username hwdsl2 --password-stdin 2>&1
+        run: echo "$DOCKER_TOKEN" | docker login --username "$DOCKER_USER" --password-stdin 2>&1
       - name: Docker Buildx (build and push)
         if: success()
+        env:
+          DOCKER_USER: ${{ github.repository_owner }}
         run: |
           docker buildx build \
             --progress plain \
@@ -98,7 +104,7 @@ jobs:
             --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
             --build-arg VCS_REF=${GITHUB_SHA::8} \
             --build-arg VERSION=latest \
-            -t hwdsl2/ipsec-vpn-server:latest \
+            -t "$DOCKER_USER/ipsec-vpn-server:latest" \
             --push \
             .
       - name: Clear
