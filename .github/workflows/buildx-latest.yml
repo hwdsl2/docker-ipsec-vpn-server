@@ -27,11 +27,9 @@ jobs:
         if: success()
         run: |
           [ ! -x /usr/bin/docker ] && exit 1
-          if [ ! -x /usr/bin/wget ] || [ ! -x /usr/bin/jq ]; then
-            export DEBIAN_FRONTEND=noninteractive
-            sudo apt-get -yq update
-            sudo apt-get -yq install wget jq
-          fi
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get -yq update
+          sudo apt-get -yq install wget jq
 
           DOCKER_DIR="${HOME}/.docker/cli-plugins"
           BUILDX_VER=$(wget -t 3 -T 30 -qO- "https://api.github.com/repos/docker/buildx/releases/latest" | jq -r ".tag_name")
@@ -60,6 +58,9 @@ jobs:
         env:
           DOCKER_USER: ${{ github.repository_owner }}
         run: |
+          cd "$GITHUB_WORKSPACE"
+          pwd
+          ls -l | grep 'vpn\.env\.example'
           docker buildx build \
             --progress plain \
             --platform=linux/amd64,linux/arm64,linux/arm/v7 \
