@@ -1,7 +1,6 @@
 .git
 .github
 .gitignore
-.travis.yml
 docker-compose.yml
 LICENSE.md
 README.md
