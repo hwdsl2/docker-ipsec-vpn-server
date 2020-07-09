@@ -11,7 +11,7 @@ on:
   schedule:
     - cron: '25 2,14 * * *'
   repository_dispatch:
-    types: [start-main-workflow]
+    types: [start-buildx-workflow]
 
 jobs:
   shellcheck:
@@ -24,16 +24,22 @@ jobs:
       - name: Check
         if: success()
         run: |
-          export DEBIAN_FRONTEND=noninteractive
-          sudo apt-get -yq update
-          sudo apt-get -yq install shellcheck
+          if [ ! -x /usr/bin/shellcheck ]; then
+            export DEBIAN_FRONTEND=noninteractive
+            sudo apt-get -yq update
+            sudo apt-get -yq install shellcheck
+          fi
 
-          export SHELLCHECK_OPTS="-e SC1090,SC1091,SC1117"
           cd "$GITHUB_WORKSPACE"
           pwd
-          ls -l | grep 'vpn\.env\.example'
+          ls -ld vpn.env.example
+
+          export SHELLCHECK_OPTS="-e SC1090,SC1091,SC1117"
           shellcheck --version
-          shellcheck *.sh
+          shopt -s globstar
+          ls -ld -- **/*.sh
+          shellcheck **/*.sh
+          shopt -u globstar
 
   check_update:
     runs-on: ubuntu-latest
@@ -67,6 +73,7 @@ jobs:
               current_time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
               current_time_s=$(date -d "$current_time" +%s)
               diff_time_s=$((current_time_s - debian_update_time_s))
+              diff_time=$(printf '%dd %dh:%dm:%ds\n' $(($diff_time_s/86400)) $(($diff_time_s%86400/3600)) $(($diff_time_s%3600/60)) $(($diff_time_s%60)))
 
               echo "Debian update time:     $debian_update_time"
               echo "Debian update time (s): $debian_update_time_s"
@@ -74,7 +81,7 @@ jobs:
               echo "Image update time (s):  $image_update_time_s"
               echo "Current time:           $current_time"
               echo "Current time (s):       $current_time_s"
-              echo "Time diff (cur-debian): $diff_time_s"
+              echo "Time diff (cur-debian): $diff_time (${diff_time_s}s)"
 
               if [ -n "$debian_update_time_s" ] && [ -n "$image_update_time_s" ] \
                 && [ "$debian_update_time_s" -ge "$image_update_time_s" ] \
@@ -87,6 +94,7 @@ jobs:
             fi
             echo ::set-output name=should_update::${DEBIAN_UPDATED}
           else
+            echo "Starting build..."
             echo ::set-output name=should_update::true
           fi
 
@@ -112,9 +120,10 @@ jobs:
 
           cd "$GITHUB_WORKSPACE"
           pwd
-          ls -l | grep 'vpn\.env\.example'
+          ls -ld vpn.env.example
 
           docker build -t vpn-test .
+
           if [ "$TEST_ID" = "with-env" ]; then
             docker run \
             --name "$TEST_ID" \
@@ -133,6 +142,7 @@ jobs:
             -d --privileged \
             vpn-test
           fi
+
           sleep 15
           docker ps | grep "$TEST_ID"
           docker logs "$TEST_ID"
@@ -149,7 +159,9 @@ jobs:
             docker exec "$TEST_ID" grep "$VPN_PASSWORD" /etc/ppp/chap-secrets
             docker exec "$TEST_ID" grep "$VPN_USER" /etc/ipsec.d/passwd
           fi
+
           docker restart "$TEST_ID"
+
           sleep 15
           docker ps | grep "$TEST_ID"
           docker logs "$TEST_ID"
@@ -183,22 +195,25 @@ jobs:
         if: success()
         run: |
           [ ! -x /usr/bin/docker ] && exit 1
-          export DEBIAN_FRONTEND=noninteractive
-          sudo apt-get -yq update
-          sudo apt-get -yq install wget jq
+          if [ ! -x /usr/bin/wget ] || [ ! -x /usr/bin/jq ]; then
+            export DEBIAN_FRONTEND=noninteractive
+            sudo apt-get -yq update
+            sudo apt-get -yq install wget jq
+          fi
 
           DOCKER_DIR="${HOME}/.docker/cli-plugins"
           BUILDX_VER=$(wget -t 3 -T 30 -qO- "https://api.github.com/repos/docker/buildx/releases/latest" | jq -r ".tag_name")
           [ -z "${BUILDX_VER}" ] && exit 1
           echo "Buildx version: ${BUILDX_VER}"
-          BUILDX_URL="https://github.com/docker/buildx/releases/download/${BUILDX_VER}/buildx-${BUILDX_VER}.linux-amd64"
 
           mkdir -p "${DOCKER_DIR}"
+          BUILDX_URL="https://github.com/docker/buildx/releases/download/${BUILDX_VER}/buildx-${BUILDX_VER}.linux-amd64"
           wget -t 3 -T 30 -nv -O "${DOCKER_DIR}/docker-buildx" "${BUILDX_URL}"
           chmod a+x "${DOCKER_DIR}/docker-buildx"
 
           docker info
           docker buildx version
+
           docker pull -q multiarch/qemu-user-static
           docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
           docker buildx create --name "builder-${GITHUB_SHA::8}" --driver docker-container --use
@@ -216,7 +231,8 @@ jobs:
         run: |
           cd "$GITHUB_WORKSPACE"
           pwd
-          ls -l | grep 'vpn\.env\.example'
+          ls -ld vpn.env.example
+
           docker buildx build \
             --progress plain \
             --platform=linux/amd64,linux/arm64,linux/arm/v7 \
