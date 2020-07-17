@@ -33,7 +33,7 @@ Steps to reproduce the behavior:
 A clear and concise description of what you expected to happen.
 
 **Logs**
-[Enabled logs](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#enable-libreswan-logs), check [VPN status](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#check-logs-and-vpn-status), and add error logs to help explain the problem, if applicable.
+[Enable logs](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#enable-libreswan-logs), check [VPN status](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#check-logs-and-vpn-status), and add error logs to help explain the problem, if applicable.
 
 **Server (please complete the following information)**
 - Docker host OS: [e.g. Ubuntu 20.04]
