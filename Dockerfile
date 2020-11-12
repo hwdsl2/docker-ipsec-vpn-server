@@ -15,8 +15,8 @@ LABEL maintainer="Lin Song <linsongui@gmail.com>" \
     org.opencontainers.image.source="https://github.com/hwdsl2/docker-ipsec-vpn-server" \
     org.opencontainers.image.documentation="https://github.com/hwdsl2/docker-ipsec-vpn-server"
 
-ENV REFRESHED_AT 2020-05-19
-ENV SWAN_VER 3.32
+ENV REFRESHED_AT 2020-11-10
+ENV SWAN_VER 4.1
 
 WORKDIR /opt/src
 
@@ -34,10 +34,11 @@ RUN apt-get -yqq update \
     && tar xzf libreswan.tar.gz \
     && rm -f libreswan.tar.gz \
     && cd "libreswan-${SWAN_VER}" \
-    && printf 'WERROR_CFLAGS = -w\nUSE_DNSSEC = false\nUSE_DH31 = false\n' > Makefile.inc.local \
-    && printf 'USE_NSS_AVA_COPY = true\nUSE_NSS_IPSEC_PROFILE = false\n' >> Makefile.inc.local \
-    && printf 'USE_GLIBC_KERN_FLIP_HEADERS = true\nUSE_SYSTEMD_WATCHDOG = false\n' >> Makefile.inc.local \
-    && printf 'USE_DH2 = true\n' >> Makefile.inc.local \
+    && sed -i 's/ sysv )/ sysvinit )/' programs/setup/setup.in \
+    && printf 'WERROR_CFLAGS=-w\nUSE_DNSSEC=false\nUSE_DH31=false\n' > Makefile.inc.local \
+    && printf 'USE_NSS_AVA_COPY=true\nUSE_NSS_IPSEC_PROFILE=false\n' >> Makefile.inc.local \
+    && printf 'USE_GLIBC_KERN_FLIP_HEADERS=true\nUSE_SYSTEMD_WATCHDOG=false\n' >> Makefile.inc.local \
+    && printf 'USE_DH2=true\nUSE_NSS_KDF=false\nFINALNSSDIR=/etc/ipsec.d\n' >> Makefile.inc.local \
     && make -s base \
     && make -s install-base \
     && cd /opt/src \
