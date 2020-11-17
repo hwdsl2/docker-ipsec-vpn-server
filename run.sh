@@ -45,6 +45,11 @@ EOF
 fi
 ip link delete dummy0 >/dev/null 2>&1
 
+if uname -r | grep -q cloud && [ ! -e /dev/ppp ]; then
+  echo >&2
+  echo "Error: /dev/ppp is missing. Debian 10 users, see: https://git.io/vpndebian10" >&2
+fi
+
 mkdir -p /opt/src
 vpn_env="/opt/src/vpn.env"
 vpn_gen_env="/opt/src/vpn-gen.env"
