@@ -37,9 +37,16 @@
 docker pull hwdsl2/ipsec-vpn-server
 ```
 
+或者，你也可以从 [Quay.io](https://quay.io/repository/hwdsl2/ipsec-vpn-server) 下载这个镜像：
+
+```
+docker pull quay.io/hwdsl2/ipsec-vpn-server
+docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
+```
+
 支持以下架构系统：`linux/amd64`, `linux/arm64` 和 `linux/arm/v7`。
 
-或者，你也可以自己从 GitHub [编译源代码](#从源代码构建)。
+高级用户可以自己从 GitHub [编译源代码](#从源代码构建)。
 
 ## 如何使用本镜像
 
@@ -154,13 +161,7 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 ## 更新 Docker 镜像
 
-如需更新你的 Docker 镜像和容器，请按以下步骤进行：
-
-```
-docker pull hwdsl2/ipsec-vpn-server
-```
-
-如果 Docker 镜像已经是最新的，你会看到提示：
+如需更新你的 Docker 镜像和容器，请首先按照 [下载](#下载) 小节的说明操作。如果 Docker 镜像已经是最新的，你会看到提示：
 
 ```
 Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
@@ -187,16 +188,7 @@ VPN_DNS_SRV2=1.0.0.1
 
 请按照以下步骤操作：
 
-1. [下载最新版本](#更新-docker-镜像)的 Docker 镜像。在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)，然后删除 Docker 容器。
-
-   ```
-   # 下载最新版本的 Docker 镜像
-   docker pull hwdsl2/ipsec-vpn-server
-
-   # 首先在纸上记下你所有的 VPN 登录信息
-   # 然后删除 Docker 容器
-   docker rm -f ipsec-vpn-server
-   ```
+1. [下载最新版本](#下载)的 Docker 镜像。在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)，然后删除 Docker 容器。参见 [更新 Docker 镜像](#更新-docker-镜像) 一节。
 
 1. 创建一个新的 Docker 容器（将 `./vpn.env` 替换为你自己的 [env 文件](#如何使用本镜像)）。
 

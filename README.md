@@ -37,9 +37,16 @@ Get the trusted build from the [Docker Hub registry](https://hub.docker.com/r/hw
 docker pull hwdsl2/ipsec-vpn-server
 ```
 
+Alternatively, you may download this image from [Quay.io](https://quay.io/repository/hwdsl2/ipsec-vpn-server):
+
+```
+docker pull quay.io/hwdsl2/ipsec-vpn-server
+docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
+```
+
 Supported platforms: `linux/amd64`, `linux/arm64` and `linux/arm/v7`.
 
-Alternatively, you may [build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code) on GitHub.
+Advanced users can [build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code) on GitHub.
 
 ## How to use this image
 
@@ -154,13 +161,7 @@ Clients are set to use [Google Public DNS](https://developers.google.com/speed/p
 
 ## Update Docker image
 
-To update your Docker image and container, follow these steps:
-
-```
-docker pull hwdsl2/ipsec-vpn-server
-```
-
-If the Docker image is already up to date, you should see:
+To update your Docker image and container, first follow instructions from the [Download](https://github.com/hwdsl2/docker-ipsec-vpn-server#download) section. If the Docker image is already up to date, you should see:
 
 ```
 Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
@@ -187,16 +188,7 @@ Using this Docker image, advanced users can configure and use IKEv2. This mode h
 
 Please follow these steps:
 
-1. [Download the latest version](https://github.com/hwdsl2/docker-ipsec-vpn-server#update-docker-image) of this Docker image, write down all your [VPN login details](https://github.com/hwdsl2/docker-ipsec-vpn-server#retrieve-vpn-login-details), then remove the Docker container.
-
-   ```
-   # Download the latest version of Docker image
-   docker pull hwdsl2/ipsec-vpn-server
-
-   # First, write down all your VPN login details
-   # Then remove the Docker container
-   docker rm -f ipsec-vpn-server
-   ```
+1. [Download the latest version](https://github.com/hwdsl2/docker-ipsec-vpn-server#download) of this Docker image, write down all your [VPN login details](https://github.com/hwdsl2/docker-ipsec-vpn-server#retrieve-vpn-login-details), then remove the Docker container. Refer to the [Update Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server#update-docker-image) section.
 
 1. Create a new Docker container (replace `./vpn.env` with your own [env file](https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image)).
 
