@@ -183,7 +183,7 @@ jobs:
           docker rm -f "$TEST_ID" || true
           docker rmi vpn-test || true
 
-  buildx-dockerhub:
+  buildx:
     needs: [check_update, vpn_test]
     if: needs.check_update.outputs.should_update == 'true'
     runs-on: ubuntu-20.04
@@ -224,66 +224,6 @@ jobs:
           DOCKER_USER: ${{ github.repository_owner }}
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
         run: echo "$DOCKER_TOKEN" | docker login --username "$DOCKER_USER" --password-stdin 2>&1
-      - name: Docker Buildx (build and push)
-        if: success()
-        env:
-          DOCKER_USER: ${{ github.repository_owner }}
-        run: |
-          cd "$GITHUB_WORKSPACE"
-          pwd
-          ls -ld vpn.env.example
-
-          docker buildx build \
-            --progress plain \
-            --platform=linux/amd64,linux/arm64,linux/arm/v7 \
-            --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
-            --build-arg VCS_REF=${GITHUB_SHA::8} \
-            --build-arg VERSION=latest \
-            -t "$DOCKER_USER/ipsec-vpn-server:latest" \
-            --push \
-            .
-      - name: Clear
-        if: always()
-        run: |
-          shred -u "${HOME}/.docker/config.json"
-          rm -f "${HOME}/.docker/config.json"
-          docker buildx rm "builder-${GITHUB_SHA::8}" || true
-
-  buildx-quayio:
-    needs: [check_update, vpn_test]
-    if: needs.check_update.outputs.should_update == 'true'
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          persist-credentials: false
-      - name: Set up Buildx
-        if: success()
-        run: |
-          [ ! -x /usr/bin/docker ] && exit 1
-          if [ ! -x /usr/bin/wget ] || [ ! -x /usr/bin/jq ]; then
-            export DEBIAN_FRONTEND=noninteractive
-            sudo apt-get -yq update
-            sudo apt-get -yq install wget jq
-          fi
-
-          DOCKER_DIR="${HOME}/.docker/cli-plugins"
-          BUILDX_VER=$(wget -t 3 -T 30 -qO- "https://api.github.com/repos/docker/buildx/releases/latest" | jq -r ".tag_name")
-          [ -z "${BUILDX_VER}" ] && exit 1
-          echo "Buildx version: ${BUILDX_VER}"
-
-          mkdir -p "${DOCKER_DIR}"
-          BUILDX_URL="https://github.com/docker/buildx/releases/download/${BUILDX_VER}/buildx-${BUILDX_VER}.linux-amd64"
-          wget -t 3 -T 30 -nv -O "${DOCKER_DIR}/docker-buildx" "${BUILDX_URL}"
-          chmod a+x "${DOCKER_DIR}/docker-buildx"
-
-          docker info
-          docker buildx version
-
-          docker pull -q multiarch/qemu-user-static
-          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
-          docker buildx create --name "builder-${GITHUB_SHA::8}" --driver docker-container --use
-          docker buildx inspect --bootstrap
       - name: Quay.io Login
         if: success()
         env:
@@ -298,11 +238,22 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           pwd
           ls -ld vpn.env.example
+          current_time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 
           docker buildx build \
             --progress plain \
             --platform=linux/amd64,linux/arm64,linux/arm/v7 \
-            --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+            --build-arg BUILD_DATE=$current_time \
+            --build-arg VCS_REF=${GITHUB_SHA::8} \
+            --build-arg VERSION=latest \
+            -t "$DOCKER_USER/ipsec-vpn-server:latest" \
+            --push \
+            .
+
+          docker buildx build \
+            --progress plain \
+            --platform=linux/amd64,linux/arm64,linux/arm/v7 \
+            --build-arg BUILD_DATE=$current_time \
             --build-arg VCS_REF=${GITHUB_SHA::8} \
             --build-arg VERSION=latest \
             -t "quay.io/$DOCKER_USER/ipsec-vpn-server:latest" \
