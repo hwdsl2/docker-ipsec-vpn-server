@@ -88,6 +88,8 @@ docker run \
     hwdsl2/ipsec-vpn-server
 ```
 
+**Note:** Advanced users can also [run without privileged mode](https://github.com/hwdsl2/docker-ipsec-vpn-server#run-without-privileged-mode).
+
 ### Retrieve VPN login details
 
 If you did not specify an `env` file in the `docker run` command above, `VPN_USER` will default to `vpnuser` and both `VPN_IPSEC_PSK` and `VPN_PASSWORD` will be randomly generated. To retrieve them, view the container logs:
@@ -178,6 +180,35 @@ Clients are set to use [Google Public DNS](https://developers.google.com/speed/p
 ```
 VPN_DNS_SRV1=1.1.1.1
 VPN_DNS_SRV2=1.0.0.1
+```
+
+### Run without privileged mode
+
+Advanced users can create a Docker container from this image without using [privileged mode](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities) (replace `./vpn.env` with your own `env` file):
+
+```
+docker run \
+    --name ipsec-vpn-server \
+    --env-file ./vpn.env \
+    --restart=always \
+    -p 500:500/udp \
+    -p 4500:4500/udp \
+    -d --cap-add=NET_ADMIN \
+    --device=/dev/ppp \
+    hwdsl2/ipsec-vpn-server
+```
+
+When finished, see [Retrieve VPN login details](https://github.com/hwdsl2/docker-ipsec-vpn-server#retrieve-vpn-login-details).
+
+**Note:** Without privileged mode, the Docker container cannot optimize sysctl settings for the VPN. If you encounter issues, try [privileged mode](https://github.com/hwdsl2/docker-ipsec-vpn-server#start-the-ipsec-vpn-server) instead.
+
+Similarly, if using Docker compose, you may replace `privileged: true` in [docker-compose.yml](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docker-compose.yml) with:
+
+```
+  cap_add:
+    - NET_ADMIN
+  devices:
+    - "/dev/ppp:/dev/ppp"
 ```
 
 ### Configure and use IKEv2 VPN

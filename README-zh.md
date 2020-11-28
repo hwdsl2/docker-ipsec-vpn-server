@@ -88,6 +88,8 @@ docker run \
     hwdsl2/ipsec-vpn-server
 ```
 
+**注：** 高级用户也可以 [不启用 privileged 模式运行](#不启用-privileged-模式运行)。
+
 ### 获取 VPN 登录信息
 
 如果你在上述 `docker run` 命令中没有指定 `env` 文件，`VPN_USER` 会默认为 `vpnuser`，并且 `VPN_IPSEC_PSK` 和 `VPN_PASSWORD` 会被自动随机生成。要获取这些登录信息，可以查看容器的日志：
@@ -178,6 +180,35 @@ Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 ```
 VPN_DNS_SRV1=1.1.1.1
 VPN_DNS_SRV2=1.0.0.1
+```
+
+### 不启用 privileged 模式运行
+
+高级用户可以在不启用 [privileged 模式](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities) 的情况下使用本镜像创建一个 Docker 容器 （将 `./vpn.env` 替换为你自己的 `env` 文件）：
+
+```
+docker run \
+    --name ipsec-vpn-server \
+    --env-file ./vpn.env \
+    --restart=always \
+    -p 500:500/udp \
+    -p 4500:4500/udp \
+    -d --cap-add=NET_ADMIN \
+    --device=/dev/ppp \
+    hwdsl2/ipsec-vpn-server
+```
+
+在完成后，请转到 [获取 VPN 登录信息](#获取-vpn-登录信息)。
+
+**注：** 在不启用 privileged 模式的情况下，Docker 容器无法为 VPN 优化 sysctl 相关设置。如果你遇到问题，可以尝试换用 [privileged 模式](#运行-ipsec-vpn-服务器)。
+
+类似地，如果你使用 Docker compose，可以将 [docker-compose.yml](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docker-compose.yml) 中的 `privileged: true` 替换为：
+
+```
+  cap_add:
+    - NET_ADMIN
+  devices:
+    - "/dev/ppp:/dev/ppp"
 ```
 
 ### 配置并使用 IKEv2 VPN

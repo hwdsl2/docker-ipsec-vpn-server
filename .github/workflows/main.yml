@@ -131,7 +131,8 @@ jobs:
             --restart=always \
             -p 500:500/udp \
             -p 4500:4500/udp \
-            -d --privileged \
+            -d --cap-add=NET_ADMIN \
+            --device=/dev/ppp \
             vpn-test
           elif [ "$TEST_ID" = "no-env" ]; then
             docker run \
@@ -139,7 +140,8 @@ jobs:
             --restart=always \
             -p 500:500/udp \
             -p 4500:4500/udp \
-            -d --privileged \
+            -d --cap-add=NET_ADMIN \
+            --device=/dev/ppp \
             vpn-test
           fi
 

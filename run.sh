@@ -36,7 +36,7 @@ fi
 
 if ip link add dummy0 type dummy 2>&1 | grep -q "not permitted"; then
 cat 1>&2 <<'EOF'
-Error: This Docker image must be run in privileged mode.
+Error: This Docker image should be run in privileged mode.
     For detailed instructions, please visit:
     https://github.com/hwdsl2/docker-ipsec-vpn-server
 
@@ -334,21 +334,21 @@ else
   SHM_MAX=4294967295
   SHM_ALL=268435456
 fi
-$SYST kernel.msgmnb=65536
-$SYST kernel.msgmax=65536
-$SYST kernel.shmmax=$SHM_MAX
-$SYST kernel.shmall=$SHM_ALL
-$SYST net.ipv4.ip_forward=1
-$SYST net.ipv4.conf.all.accept_source_route=0
-$SYST net.ipv4.conf.all.accept_redirects=0
-$SYST net.ipv4.conf.all.send_redirects=0
-$SYST net.ipv4.conf.all.rp_filter=0
-$SYST net.ipv4.conf.default.accept_source_route=0
-$SYST net.ipv4.conf.default.accept_redirects=0
-$SYST net.ipv4.conf.default.send_redirects=0
-$SYST net.ipv4.conf.default.rp_filter=0
-$SYST net.ipv4.conf.eth0.send_redirects=0
-$SYST net.ipv4.conf.eth0.rp_filter=0
+$SYST kernel.msgmnb=65536 2>/dev/null
+$SYST kernel.msgmax=65536 2>/dev/null
+$SYST kernel.shmmax=$SHM_MAX 2>/dev/null
+$SYST kernel.shmall=$SHM_ALL 2>/dev/null
+$SYST net.ipv4.ip_forward=1 2>/dev/null
+$SYST net.ipv4.conf.all.accept_source_route=0 2>/dev/null
+$SYST net.ipv4.conf.all.accept_redirects=0 2>/dev/null
+$SYST net.ipv4.conf.all.send_redirects=0 2>/dev/null
+$SYST net.ipv4.conf.all.rp_filter=0 2>/dev/null
+$SYST net.ipv4.conf.default.accept_source_route=0 2>/dev/null
+$SYST net.ipv4.conf.default.accept_redirects=0 2>/dev/null
+$SYST net.ipv4.conf.default.send_redirects=0 2>/dev/null
+$SYST net.ipv4.conf.default.rp_filter=0 2>/dev/null
+$SYST net.ipv4.conf.eth0.send_redirects=0 2>/dev/null
+$SYST net.ipv4.conf.eth0.rp_filter=0 2>/dev/null
 
 # Create IPTables rules
 iptables -I INPUT 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
