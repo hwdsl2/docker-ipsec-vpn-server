@@ -327,23 +327,12 @@ fi
 
 # Update sysctl settings
 SYST='/sbin/sysctl -e -q -w'
-if [ "$(getconf LONG_BIT)" = "64" ]; then
-  SHM_MAX=68719476736
-  SHM_ALL=4294967296
-else
-  SHM_MAX=4294967295
-  SHM_ALL=268435456
-fi
 $SYST kernel.msgmnb=65536 2>/dev/null
 $SYST kernel.msgmax=65536 2>/dev/null
-$SYST kernel.shmmax=$SHM_MAX 2>/dev/null
-$SYST kernel.shmall=$SHM_ALL 2>/dev/null
 $SYST net.ipv4.ip_forward=1 2>/dev/null
-$SYST net.ipv4.conf.all.accept_source_route=0 2>/dev/null
 $SYST net.ipv4.conf.all.accept_redirects=0 2>/dev/null
 $SYST net.ipv4.conf.all.send_redirects=0 2>/dev/null
 $SYST net.ipv4.conf.all.rp_filter=0 2>/dev/null
-$SYST net.ipv4.conf.default.accept_source_route=0 2>/dev/null
 $SYST net.ipv4.conf.default.accept_redirects=0 2>/dev/null
 $SYST net.ipv4.conf.default.send_redirects=0 2>/dev/null
 $SYST net.ipv4.conf.default.rp_filter=0 2>/dev/null
