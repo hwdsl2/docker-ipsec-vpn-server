@@ -195,21 +195,40 @@ docker run \
     -p 4500:4500/udp \
     -d --cap-add=NET_ADMIN \
     --device=/dev/ppp \
+    --sysctl net.ipv4.ip_forward=1 \
+    --sysctl net.ipv4.conf.all.accept_redirects=0 \
+    --sysctl net.ipv4.conf.all.send_redirects=0 \
+    --sysctl net.ipv4.conf.all.rp_filter=0 \
+    --sysctl net.ipv4.conf.default.accept_redirects=0 \
+    --sysctl net.ipv4.conf.default.send_redirects=0 \
+    --sysctl net.ipv4.conf.default.rp_filter=0 \
+    --sysctl net.ipv4.conf.eth0.send_redirects=0 \
+    --sysctl net.ipv4.conf.eth0.rp_filter=0 \
     hwdsl2/ipsec-vpn-server
 ```
 
-When finished, see [Retrieve VPN login details](https://github.com/hwdsl2/docker-ipsec-vpn-server#retrieve-vpn-login-details).
+After creating the Docker container, see [Retrieve VPN login details](https://github.com/hwdsl2/docker-ipsec-vpn-server#retrieve-vpn-login-details).
 
-**Note:** Without privileged mode, the Docker container cannot optimize sysctl settings for the VPN. If you encounter issues, try [privileged mode](https://github.com/hwdsl2/docker-ipsec-vpn-server#start-the-ipsec-vpn-server) instead.
-
-Similarly, if using Docker compose, you may replace `privileged: true` in [docker-compose.yml](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docker-compose.yml) with:
+Similarly, if using [Docker compose](https://docs.docker.com/compose/), you may replace `privileged: true` in [docker-compose.yml](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docker-compose.yml) with:
 
 ```
   cap_add:
     - NET_ADMIN
   devices:
     - "/dev/ppp:/dev/ppp"
+  sysctls:
+    - net.ipv4.ip_forward=1
+    - net.ipv4.conf.all.accept_redirects=0
+    - net.ipv4.conf.all.send_redirects=0
+    - net.ipv4.conf.all.rp_filter=0
+    - net.ipv4.conf.default.accept_redirects=0
+    - net.ipv4.conf.default.send_redirects=0
+    - net.ipv4.conf.default.rp_filter=0
+    - net.ipv4.conf.eth0.send_redirects=0
+    - net.ipv4.conf.eth0.rp_filter=0
 ```
+
+For more information, see [compose file reference](https://docs.docker.com/compose/compose-file/).
 
 ### Configure and use IKEv2 VPN
 

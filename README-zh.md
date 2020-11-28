@@ -195,21 +195,40 @@ docker run \
     -p 4500:4500/udp \
     -d --cap-add=NET_ADMIN \
     --device=/dev/ppp \
+    --sysctl net.ipv4.ip_forward=1 \
+    --sysctl net.ipv4.conf.all.accept_redirects=0 \
+    --sysctl net.ipv4.conf.all.send_redirects=0 \
+    --sysctl net.ipv4.conf.all.rp_filter=0 \
+    --sysctl net.ipv4.conf.default.accept_redirects=0 \
+    --sysctl net.ipv4.conf.default.send_redirects=0 \
+    --sysctl net.ipv4.conf.default.rp_filter=0 \
+    --sysctl net.ipv4.conf.eth0.send_redirects=0 \
+    --sysctl net.ipv4.conf.eth0.rp_filter=0 \
     hwdsl2/ipsec-vpn-server
 ```
 
-在完成后，请转到 [获取 VPN 登录信息](#获取-vpn-登录信息)。
+在创建 Docker 容器之后，请转到 [获取 VPN 登录信息](#获取-vpn-登录信息)。
 
-**注：** 在不启用 privileged 模式的情况下，Docker 容器无法为 VPN 优化 sysctl 相关设置。如果你遇到问题，可以尝试换用 [privileged 模式](#运行-ipsec-vpn-服务器)。
-
-类似地，如果你使用 Docker compose，可以将 [docker-compose.yml](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docker-compose.yml) 中的 `privileged: true` 替换为：
+类似地，如果你使用 [Docker compose](https://docs.docker.com/compose/)，可以将 [docker-compose.yml](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docker-compose.yml) 中的 `privileged: true` 替换为：
 
 ```
   cap_add:
     - NET_ADMIN
   devices:
     - "/dev/ppp:/dev/ppp"
+  sysctls:
+    - net.ipv4.ip_forward=1
+    - net.ipv4.conf.all.accept_redirects=0
+    - net.ipv4.conf.all.send_redirects=0
+    - net.ipv4.conf.all.rp_filter=0
+    - net.ipv4.conf.default.accept_redirects=0
+    - net.ipv4.conf.default.send_redirects=0
+    - net.ipv4.conf.default.rp_filter=0
+    - net.ipv4.conf.eth0.send_redirects=0
+    - net.ipv4.conf.eth0.rp_filter=0
 ```
+
+更多信息请参见 [compose file reference](https://docs.docker.com/compose/compose-file/)。
 
 ### 配置并使用 IKEv2 VPN
 
