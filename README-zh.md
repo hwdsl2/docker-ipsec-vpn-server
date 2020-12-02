@@ -173,6 +173,17 @@ Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 
 ## 高级用法
 
+*其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#advanced-usage), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#高级用法).*
+
+- [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
+- [不启用 privileged 模式运行](#不启用-privileged-模式运行)
+- [使用 host network 模式](#使用-host-network-模式)
+- [配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)
+- [启用 Libreswan 日志](#启用-libreswan-日志)
+- [从源代码构建](#从源代码构建)
+- [在容器中运行 Bash shell](#在容器中运行-bash-shell)
+- [绑定挂载 env 文件](#绑定挂载-env-文件)
+
 ### 使用其他的 DNS 服务器
 
 在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，你可以在 `env` 文件中定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`（可选），然后按照上面的说明重新创建 Docker 容器。比如你想使用 [Cloudflare 的 DNS 服务](https://1.1.1.1)：
@@ -230,6 +241,12 @@ docker run \
 
 更多信息请参见 [compose file reference](https://docs.docker.com/compose/compose-file/)。
 
+### 使用 host network 模式
+
+高级用户可以使用 [host network 模式](https://docs.docker.com/network/host/) 运行本镜像，通过为 `docker run` 命令添加 `--network=host` 参数来实现。
+
+在非必要的情况下，不推荐使用该模式运行本镜像。在 host network 模式下，容器的网络栈未与 Docker 主机隔离，从而在使用 IPsec/L2TP 模式连接之后，VPN 客户端可以使用 Docker 主机的 VPN 内网 IP `192.168.42.1` 访问主机上的端口或服务。请注意，当你不再使用本镜像时，你需要手动清理 [run.sh](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/run.sh) 所更改的 IPTables 规则和 sysctl 设置，或者重启服务器。某些 Docker 主机操作系统，比如 Debian 10，不能使用 host network 模式运行本镜像，因为它们使用 nftables。
+
 ### 配置并使用 IKEv2 VPN
 
 *其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn).*
@@ -280,6 +297,32 @@ docker run \
    ```
    docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient-日期-时间.p12 ./
    ```
+
+### 启用 Libreswan 日志
+
+为了保持较小的 Docker 镜像，Libreswan (IPsec) 日志默认未开启。如果你是高级用户，并且需要启用它以便进行故障排除，首先在正在运行的 Docker 容器中开始一个 Bash 会话：
+
+```
+docker exec -it ipsec-vpn-server env TERM=xterm bash -l
+```
+
+然后运行以下命令：
+
+```
+apt-get update && apt-get -y install rsyslog
+service rsyslog restart
+service ipsec restart
+sed -i '/pluto\.pid/a service rsyslog restart' /opt/src/run.sh
+exit
+```
+
+完成后你可以这样查看 Libreswan 日志：
+
+```
+docker exec -it ipsec-vpn-server grep pluto /var/log/auth.log
+```
+
+如需查看 xl2tpd 日志，请运行 `docker logs ipsec-vpn-server`。
 
 ### 从源代码构建
 
@@ -332,32 +375,6 @@ docker run \
     -d --privileged \
     hwdsl2/ipsec-vpn-server
 ```
-
-### 启用 Libreswan 日志
-
-为了保持较小的 Docker 镜像，Libreswan (IPsec) 日志默认未开启。如果你是高级用户，并且需要启用它以便进行故障排除，首先在正在运行的 Docker 容器中开始一个 Bash 会话：
-
-```
-docker exec -it ipsec-vpn-server env TERM=xterm bash -l
-```
-
-然后运行以下命令：
-
-```
-apt-get update && apt-get -y install rsyslog
-service rsyslog restart
-service ipsec restart
-sed -i '/pluto\.pid/a service rsyslog restart' /opt/src/run.sh
-exit
-```
-
-完成后你可以这样查看 Libreswan 日志：
-
-```
-docker exec -it ipsec-vpn-server grep pluto /var/log/auth.log
-```
-
-如需查看 xl2tpd 日志，请运行 `docker logs ipsec-vpn-server`。
 
 ## 技术细节
 

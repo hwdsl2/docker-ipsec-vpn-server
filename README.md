@@ -173,6 +173,17 @@ Otherwise, it will download the latest version. To update your Docker container,
 
 ## Advanced usage
 
+*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#advanced-usage), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#高级用法).*
+
+- [Use alternative DNS servers](https://github.com/hwdsl2/docker-ipsec-vpn-server#use-alternative-dns-servers)
+- [Run without privileged mode](https://github.com/hwdsl2/docker-ipsec-vpn-server#run-without-privileged-mode)
+- [Use host network mode](https://github.com/hwdsl2/docker-ipsec-vpn-server#use-host-network-mode)
+- [Configure and use IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server#configure-and-use-ikev2-vpn)
+- [Enable Libreswan logs](https://github.com/hwdsl2/docker-ipsec-vpn-server#enable-libreswan-logs)
+- [Build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code)
+- [Bash shell inside container](https://github.com/hwdsl2/docker-ipsec-vpn-server#bash-shell-inside-container)
+- [Bind mount the env file](https://github.com/hwdsl2/docker-ipsec-vpn-server#bind-mount-the-env-file)
+
 ### Use alternative DNS servers
 
 Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` in your `env` file, then follow instructions above to re-create the Docker container. For example, if you wish to use [Cloudflare's DNS service](https://1.1.1.1):
@@ -230,6 +241,12 @@ Similarly, if using [Docker compose](https://docs.docker.com/compose/), you may 
 
 For more information, see [compose file reference](https://docs.docker.com/compose/compose-file/).
 
+### Use host network mode
+
+Advanced users can run this image in [host network mode](https://docs.docker.com/network/host/), by adding `--network=host` to the `docker run` command.
+
+This mode is NOT recommended for this image, unless your use case specifically requires it. In host network mode, the container's network stack is not isolated from the Docker host, and VPN clients may be able to access ports or services on the Docker host using its internal VPN IP `192.168.42.1` after connecting using IPsec/L2TP mode. Note that you will need to manually clean up the changes to IPTables rules and sysctl settings by [run.sh](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/run.sh) (or reboot the server) when you no longer use this image. Some Docker host OS, such as Debian 10, cannot run this image in host network mode due to the use of nftables.
+
 ### Configure and use IKEv2 VPN
 
 *Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn).*
@@ -282,6 +299,32 @@ Please follow these steps:
    docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient-date-time.p12 ./
    ```
 
+### Enable Libreswan logs
+
+To keep the Docker image small, Libreswan (IPsec) logs are not enabled by default. If you are an advanced user and wish to enable it for troubleshooting purposes, first start a Bash session in the running container:
+
+```
+docker exec -it ipsec-vpn-server env TERM=xterm bash -l
+```
+
+Then run the following commands:
+
+```
+apt-get update && apt-get -y install rsyslog
+service rsyslog restart
+service ipsec restart
+sed -i '/pluto\.pid/a service rsyslog restart' /opt/src/run.sh
+exit
+```
+
+When finished, you may check Libreswan logs with:
+
+```
+docker exec -it ipsec-vpn-server grep pluto /var/log/auth.log
+```
+
+To check xl2tpd logs, run `docker logs ipsec-vpn-server`.
+
 ### Build from source code
 
 Advanced users can download and compile the source code from GitHub:
@@ -333,32 +376,6 @@ docker run \
     -d --privileged \
     hwdsl2/ipsec-vpn-server
 ```
-
-### Enable Libreswan logs
-
-To keep the Docker image small, Libreswan (IPsec) logs are not enabled by default. If you are an advanced user and wish to enable it for troubleshooting purposes, first start a Bash session in the running container:
-
-```
-docker exec -it ipsec-vpn-server env TERM=xterm bash -l
-```
-
-Then run the following commands:
-
-```
-apt-get update && apt-get -y install rsyslog
-service rsyslog restart
-service ipsec restart
-sed -i '/pluto\.pid/a service rsyslog restart' /opt/src/run.sh
-exit
-```
-
-When finished, you may check Libreswan logs with:
-
-```
-docker exec -it ipsec-vpn-server grep pluto /var/log/auth.log
-```
-
-To check xl2tpd logs, run `docker logs ipsec-vpn-server`.
 
 ## Technical details
 
