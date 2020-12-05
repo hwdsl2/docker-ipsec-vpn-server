@@ -35,9 +35,7 @@ RUN apt-get -yqq update \
     && rm -f libreswan.tar.gz \
     && cd "libreswan-${SWAN_VER}" \
     && sed -i 's/ sysv )/ sysvinit )/' programs/setup/setup.in \
-    && printf 'WERROR_CFLAGS=-w\nUSE_DNSSEC=false\nUSE_DH31=false\n' > Makefile.inc.local \
-    && printf 'USE_NSS_AVA_COPY=true\nUSE_NSS_IPSEC_PROFILE=false\n' >> Makefile.inc.local \
-    && printf 'USE_GLIBC_KERN_FLIP_HEADERS=true\nUSE_SYSTEMD_WATCHDOG=false\n' >> Makefile.inc.local \
+    && printf 'WERROR_CFLAGS=-w\nUSE_DNSSEC=false\nUSE_SYSTEMD_WATCHDOG=false\n' > Makefile.inc.local \
     && printf 'USE_DH2=true\nUSE_NSS_KDF=false\nFINALNSSDIR=/etc/ipsec.d\n' >> Makefile.inc.local \
     && make -s base \
     && make -s install-base \
