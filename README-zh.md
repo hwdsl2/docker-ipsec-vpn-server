@@ -161,6 +161,8 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，请看[这里](#使用其他的-dns-服务器)。
 
+使用内核支持有助于提高 IPsec/L2TP 性能。如果你的 Docker 主机的操作系统支持该功能，你会在 `docker logs ipsec-vpn-server` 的输出中看到 "Using l2tp kernel support" 字样。
+
 ## 更新 Docker 镜像
 
 如需更新你的 Docker 镜像和容器，请首先按照 [下载](#下载) 小节的说明操作。如果 Docker 镜像已经是最新的，你会看到提示：
@@ -177,7 +179,7 @@ Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 
 - [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
 - [不启用 privileged 模式运行](#不启用-privileged-模式运行)
-- [使用 host network 模式](#使用-host-network-模式)
+- [关于 host network 模式](#关于-host-network-模式)
 - [配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)
 - [启用 Libreswan 日志](#启用-libreswan-日志)
 - [从源代码构建](#从源代码构建)
@@ -241,11 +243,11 @@ docker run \
 
 更多信息请参见 [compose file reference](https://docs.docker.com/compose/compose-file/)。
 
-### 使用 host network 模式
+### 关于 host network 模式
 
 高级用户可以使用 [host network 模式](https://docs.docker.com/network/host/) 运行本镜像，通过为 `docker run` 命令添加 `--network=host` 参数来实现。
 
-在非必要的情况下，不推荐使用该模式运行本镜像。在 host network 模式下，容器的网络栈未与 Docker 主机隔离，从而在使用 IPsec/L2TP 模式连接之后，VPN 客户端可以使用 Docker 主机的 VPN 内网 IP `192.168.42.1` 访问主机上的端口或服务。请注意，当你不再使用本镜像时，你需要手动清理 [run.sh](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/run.sh) 所更改的 IPTables 规则和 sysctl 设置，或者重启服务器。某些 Docker 主机操作系统，比如 Debian 10，不能使用 host network 模式运行本镜像，因为它们使用 nftables。
+在非必要的情况下，**不推荐**使用该模式运行本镜像。在 host network 模式下，容器的网络栈未与 Docker 主机隔离，从而在使用 IPsec/L2TP 模式连接之后，VPN 客户端可以使用 Docker 主机的 VPN 内网 IP `192.168.42.1` 访问主机上的端口或服务。请注意，当你不再使用本镜像时，你需要手动清理 [run.sh](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/run.sh) 所更改的 IPTables 规则和 sysctl 设置，或者重启服务器。某些 Docker 主机操作系统，比如 Debian 10，不能使用 host network 模式运行本镜像，因为它们使用 nftables。
 
 ### 配置并使用 IKEv2 VPN
 

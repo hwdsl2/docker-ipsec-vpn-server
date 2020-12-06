@@ -161,6 +161,8 @@ If you wish to add, edit or remove VPN user accounts, first update your `env` fi
 
 Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, [read below](https://github.com/hwdsl2/docker-ipsec-vpn-server#use-alternative-dns-servers).
 
+Using kernel support could improve IPsec/L2TP performance. If your Docker host's OS supports it, you should see "Using l2tp kernel support" in the output of `docker logs ipsec-vpn-server`.
+
 ## Update Docker image
 
 To update your Docker image and container, first follow instructions from the [Download](https://github.com/hwdsl2/docker-ipsec-vpn-server#download) section. If the Docker image is already up to date, you should see:
@@ -177,7 +179,7 @@ Otherwise, it will download the latest version. To update your Docker container,
 
 - [Use alternative DNS servers](https://github.com/hwdsl2/docker-ipsec-vpn-server#use-alternative-dns-servers)
 - [Run without privileged mode](https://github.com/hwdsl2/docker-ipsec-vpn-server#run-without-privileged-mode)
-- [Use host network mode](https://github.com/hwdsl2/docker-ipsec-vpn-server#use-host-network-mode)
+- [About host network mode](https://github.com/hwdsl2/docker-ipsec-vpn-server#about-host-network-mode)
 - [Configure and use IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server#configure-and-use-ikev2-vpn)
 - [Enable Libreswan logs](https://github.com/hwdsl2/docker-ipsec-vpn-server#enable-libreswan-logs)
 - [Build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code)
@@ -241,7 +243,7 @@ Similarly, if using [Docker compose](https://docs.docker.com/compose/), you may 
 
 For more information, see [compose file reference](https://docs.docker.com/compose/compose-file/).
 
-### Use host network mode
+### About host network mode
 
 Advanced users can run this image in [host network mode](https://docs.docker.com/network/host/), by adding `--network=host` to the `docker run` command.
 
