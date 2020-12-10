@@ -220,6 +220,8 @@ docker run \
     hwdsl2/ipsec-vpn-server
 ```
 
+在不启用 privileged 模式运行时，容器不能更改 `sysctl` 设置。这可能会影响本镜像的某些功能。一个已知问题是 [Android MTU/MSS fix](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#android-mtumss-问题) 不可用。如果你遇到任何问题，可以尝试换用 [privileged 模式](#运行-ipsec-vpn-服务器) 重新创建容器。
+
 在创建 Docker 容器之后，请转到 [获取 VPN 登录信息](#获取-vpn-登录信息)。
 
 类似地，如果你使用 [Docker compose](https://docs.docker.com/compose/)，可以将 [docker-compose.yml](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docker-compose.yml) 中的 `privileged: true` 替换为：
@@ -245,9 +247,11 @@ docker run \
 
 ### 关于 host network 模式
 
-高级用户可以使用 [host network 模式](https://docs.docker.com/network/host/) 运行本镜像，通过为 `docker run` 命令添加 `--network=host` 参数来实现。
+高级用户可以使用 [host network 模式](https://docs.docker.com/network/host/) 运行本镜像，通过为 `docker run` 命令添加 `--network=host` 参数来实现。另外，如果 [不启用 privileged 模式运行](#不启用-privileged-模式运行)，你可能还需要将 `eth0` 替换为你的 Docker 主机的网络接口名称。
 
-在非必要的情况下，**不推荐**使用该模式运行本镜像。在 host network 模式下，容器的网络栈未与 Docker 主机隔离，从而在使用 IPsec/L2TP 模式连接之后，VPN 客户端可以使用 Docker 主机的 VPN 内网 IP `192.168.42.1` 访问主机上的端口或服务。请注意，当你不再使用本镜像时，你需要手动清理 [run.sh](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/run.sh) 所更改的 IPTables 规则和 sysctl 设置，或者重启服务器。某些 Docker 主机操作系统，比如 Debian 10，不能使用 host network 模式运行本镜像，因为它们使用 nftables。
+在非必要的情况下，**不推荐**使用 host network 模式运行本镜像。在该模式下，容器的网络栈未与 Docker 主机隔离，从而在使用 IPsec/L2TP 模式连接之后，VPN 客户端可以使用 Docker 主机的 VPN 内网 IP `192.168.42.1` 访问主机上的端口或服务。请注意，当你不再使用本镜像时，你需要手动清理 [run.sh](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/run.sh) 所更改的 IPTables 规则和 sysctl 设置，或者重启服务器。
+
+某些 Docker 主机操作系统，比如 Debian 10，不能使用 host network 模式运行本镜像，因为它们使用 nftables。
 
 ### 配置并使用 IKEv2 VPN
 

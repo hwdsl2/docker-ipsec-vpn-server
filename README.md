@@ -220,6 +220,8 @@ docker run \
     hwdsl2/ipsec-vpn-server
 ```
 
+When running without privileged mode, the container is unable to change `sysctl` settings. This could affect certain features of this image. A known limitation is that the [Android MTU/MSS fix](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#android-mtumss-issues) does not work. If you encounter any issues, try re-creating the container using [privileged mode](https://github.com/hwdsl2/docker-ipsec-vpn-server#start-the-ipsec-vpn-server).
+
 After creating the Docker container, see [Retrieve VPN login details](https://github.com/hwdsl2/docker-ipsec-vpn-server#retrieve-vpn-login-details).
 
 Similarly, if using [Docker compose](https://docs.docker.com/compose/), you may replace `privileged: true` in [docker-compose.yml](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docker-compose.yml) with:
@@ -245,9 +247,11 @@ For more information, see [compose file reference](https://docs.docker.com/compo
 
 ### About host network mode
 
-Advanced users can run this image in [host network mode](https://docs.docker.com/network/host/), by adding `--network=host` to the `docker run` command.
+Advanced users can run this image in [host network mode](https://docs.docker.com/network/host/), by adding `--network=host` to the `docker run` command. In addition, if [running without privileged mode](https://github.com/hwdsl2/docker-ipsec-vpn-server#run-without-privileged-mode), you may also need to replace `eth0` with the network interface name of your Docker host.
 
-This mode is NOT recommended for this image, unless your use case specifically requires it. In host network mode, the container's network stack is not isolated from the Docker host, and VPN clients may be able to access ports or services on the Docker host using its internal VPN IP `192.168.42.1` after connecting using IPsec/L2TP mode. Note that you will need to manually clean up the changes to IPTables rules and sysctl settings by [run.sh](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/run.sh) (or reboot the server) when you no longer use this image. Some Docker host OS, such as Debian 10, cannot run this image in host network mode due to the use of nftables.
+Host network mode is NOT recommended for this image, unless your use case requires it. In this mode, the container's network stack is not isolated from the Docker host, and VPN clients may be able to access ports or services on the Docker host using its internal VPN IP `192.168.42.1` after connecting using IPsec/L2TP mode. Note that you will need to manually clean up the changes to IPTables rules and sysctl settings by [run.sh](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/run.sh) or reboot the server when you no longer use this image.
+
+Some Docker host OS, such as Debian 10, cannot run this image in host network mode due to the use of nftables.
 
 ### Configure and use IKEv2 VPN
 
