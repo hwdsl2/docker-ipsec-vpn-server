@@ -220,7 +220,7 @@ docker run \
     hwdsl2/ipsec-vpn-server
 ```
 
-在不启用 privileged 模式运行时，容器不能更改 `sysctl` 设置。这可能会影响本镜像的某些功能。一个已知问题是 [Android MTU/MSS fix](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#android-mtumss-问题) 不可用。如果你遇到任何问题，可以尝试换用 [privileged 模式](#运行-ipsec-vpn-服务器) 重新创建容器。
+在不启用 privileged 模式运行时，容器不能更改 `sysctl` 设置。这可能会影响本镜像的某些功能。一个已知问题是 [Android MTU/MSS fix](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#android-mtumss-问题) 需要另外在 `docker run` 命令添加 `--sysctl net.ipv4.ip_no_pmtu_disc=1` 才有效。如果你遇到任何问题，可以尝试换用 [privileged 模式](#运行-ipsec-vpn-服务器) 重新创建容器。
 
 在创建 Docker 容器之后，请转到 [获取 VPN 登录信息](#获取-vpn-登录信息)。
 
