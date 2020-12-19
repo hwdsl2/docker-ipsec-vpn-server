@@ -25,7 +25,7 @@
 
 ## 安装 Docker
 
-首先，在你的 Linux 服务器上 [安装并运行 Docker](https://docs.docker.com/engine/install/)。
+首先，在你的 Linux 服务器上 [安装并运行 Docker](https://docs.docker.com/engine/install/)。高级用户也可以使用 [Podman](https://podman.io) 来替代 Docker 运行本镜像，需要首先为 `docker` 命令 [创建一个别名](https://podman.io/whatis.html)。
 
 **注：** 本镜像不支持 Docker for Mac 或者 Windows。
 
