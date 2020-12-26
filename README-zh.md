@@ -293,7 +293,7 @@ docker run \
 1. 下载并运行 [IKEv2 配置辅助脚本](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#使用辅助脚本)，并按提示操作。
 
    ```
-   wget https://git.io/ikev2setup -O ikev2.sh && bash ikev2.sh
+   wget https://bit.ly/ikev2setup -O ikev2.sh && bash ikev2.sh
    ```
 
    **注：** 如果要为更多的客户端生成证书，只需重新运行辅助脚本。要吊销一个客户端证书，参见[这里](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#吊销一个客户端证书)。

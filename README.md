@@ -294,7 +294,7 @@ Please follow these steps:
 1. Download and run the [IKEv2 setup helper script](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#using-helper-scripts), and follow the prompts.
 
    ```
-   wget https://git.io/ikev2setup -O ikev2.sh && bash ikev2.sh
+   wget https://bit.ly/ikev2setup -O ikev2.sh && bash ikev2.sh
    ```
 
    **Note:** If you want to generate certificates for additional VPN clients, just run the helper script again. To revoke a client certificate, see [here](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#revoke-a-client-certificate).
