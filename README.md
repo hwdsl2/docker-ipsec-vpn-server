@@ -399,7 +399,6 @@ The ports that are exposed for this container to work are:
 ## See also
 
 * [IPsec VPN Server on Ubuntu, Debian and CentOS](https://github.com/hwdsl2/setup-ipsec-vpn)
-* [IKEv2 VPN Server on Docker](https://github.com/gaomd/docker-ikev2-vpn-server)
 
 ## License
 

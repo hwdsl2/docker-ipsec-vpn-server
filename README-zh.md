@@ -398,7 +398,6 @@ docker run \
 ## 另见
 
 * [IPsec VPN Server on Ubuntu, Debian and CentOS](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)
-* [IKEv2 VPN Server on Docker](https://github.com/gaomd/docker-ikev2-vpn-server)
 
 ## 授权协议
 
