@@ -382,6 +382,30 @@ esac
 # Update file attributes
 chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets /etc/ipsec.d/passwd
 
+# Check for new Libreswan version
+swan_ver_ts="/opt/src/swan_ver_ts"
+swan_ver_old="/opt/src/swan_ver_old"
+if [ ! -f "$swan_ver_ts" ] || [ "$(find $swan_ver_ts -mmin +10080)" ]; then
+  touch "$swan_ver_ts"
+  os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
+  swan_ver_cur=4.1
+  swan_ver_url="https://dl.ls20.com/v1/docker/$os_arch/swanver?ver=$swan_ver_cur"
+  swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
+  if ! printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$'; then
+    swan_ver_latest=$swan_ver_cur
+  fi
+  if [ "$swan_ver_cur" != "$swan_ver_latest" ]; then
+    touch "$swan_ver_old"
+  else
+    [ -f "$swan_ver_old" ] && rm -f "$swan_ver_old"
+  fi
+fi
+if [ -f "$swan_ver_old" ]; then
+  echo
+  echo "Note: A newer Libreswan version $swan_ver_latest is available."
+  echo "To update this Docker image, see: https://git.io/updatedockervpn"
+fi
+
 cat <<EOF
 
 ================================================
