@@ -15,7 +15,7 @@ LABEL maintainer="Lin Song <linsongui@gmail.com>" \
     org.opencontainers.image.source="https://github.com/hwdsl2/docker-ipsec-vpn-server" \
     org.opencontainers.image.documentation="https://github.com/hwdsl2/docker-ipsec-vpn-server"
 
-ENV REFRESHED_AT 2020-11-10
+ENV IMAGE_VER $BUILD_DATE
 ENV SWAN_VER 4.1
 
 WORKDIR /opt/src
