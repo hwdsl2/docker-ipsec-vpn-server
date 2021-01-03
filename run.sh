@@ -203,7 +203,6 @@ version 2.0
 
 config setup
   virtual-private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!$L2TP_NET,%v4:!$XAUTH_NET
-  protostack=netkey
   interfaces=%defaultroute
   uniqueids=no
 
@@ -391,12 +390,10 @@ if [ ! -f "$swan_ver_ts" ] || [ "$(find $swan_ver_ts -mmin +10080)" ]; then
   swan_ver_cur=4.1
   swan_ver_url="https://dl.ls20.com/v1/docker/$os_arch/swanver?ver=$swan_ver_cur&ver2=$IMAGE_VER&f=$first_run"
   swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
-  if ! printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$'; then
-    swan_ver_latest=$swan_ver_cur
-  fi
-  if [ "$swan_ver_cur" != "$swan_ver_latest" ]; then
+  if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
+    && [ "$swan_ver_cur" != "$swan_ver_latest" ]; then
     echo
-    echo "Note: A newer Libreswan version $swan_ver_latest is available."
+    echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
     echo "To update this Docker image, see: https://git.io/updatedockervpn"
   fi
 fi
