@@ -121,6 +121,7 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           pwd
           ls -ld vpn.env.example
+          sed -i '/swan_ver_url/s/^/#/' run.sh
 
           docker build -t vpn-test .
 
@@ -172,6 +173,9 @@ jobs:
           docker exec "$TEST_ID" iptables -nL | grep -q '192\.168\.42\.0/24'
           docker exec "$TEST_ID" iptables -nL -t nat
           docker exec "$TEST_ID" iptables -nL -t nat | grep -q '192\.168\.43\.0/24'
+          docker exec "$TEST_ID" ipsec status
+          docker exec "$TEST_ID" ipsec status | grep -q l2tp-psk
+          docker exec "$TEST_ID" ipsec status | grep -q xauth-psk
           if [ "$TEST_ID" = "with-env" ]; then
             source ./vpn.env.example
             docker exec "$TEST_ID" grep "$VPN_IPSEC_PSK" /etc/ipsec.secrets
@@ -191,6 +195,9 @@ jobs:
           docker exec "$TEST_ID" iptables -nL | grep -q '192\.168\.42\.0/24'
           docker exec "$TEST_ID" iptables -nL -t nat
           docker exec "$TEST_ID" iptables -nL -t nat | grep -q '192\.168\.43\.0/24'
+          docker exec "$TEST_ID" ipsec status
+          docker exec "$TEST_ID" ipsec status | grep -q l2tp-psk
+          docker exec "$TEST_ID" ipsec status | grep -q xauth-psk
           if [ "$TEST_ID" = "with-env" ]; then
             docker exec "$TEST_ID" grep "$VPN_IPSEC_PSK" /etc/ipsec.secrets
             docker exec "$TEST_ID" grep "$VPN_USER" /etc/ppp/chap-secrets
