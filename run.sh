@@ -88,7 +88,7 @@ VPN_USER=$(noquotes "$VPN_USER")
 VPN_PASSWORD=$(nospaces "$VPN_PASSWORD")
 VPN_PASSWORD=$(noquotes "$VPN_PASSWORD")
 
-if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
+if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ] && [ -n "$VPN_ADDL_IP_ADDRESSES" ]; then
   VPN_ADDL_USERS=$(nospaces "$VPN_ADDL_USERS")
   VPN_ADDL_USERS=$(noquotes "$VPN_ADDL_USERS")
   VPN_ADDL_USERS=$(onespace "$VPN_ADDL_USERS")
@@ -97,9 +97,14 @@ if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
   VPN_ADDL_PASSWORDS=$(noquotes "$VPN_ADDL_PASSWORDS")
   VPN_ADDL_PASSWORDS=$(onespace "$VPN_ADDL_PASSWORDS")
   VPN_ADDL_PASSWORDS=$(noquotes2 "$VPN_ADDL_PASSWORDS")
+  VPN_ADDL_IP_ADDRESSES=$(nospaces "$VPN_ADDL_IP_ADDRESSES")
+  VPN_ADDL_IP_ADDRESSES=$(noquotes "$VPN_ADDL_IP_ADDRESSES")
+  VPN_ADDL_IP_ADDRESSES=$(onespace "$VPN_ADDL_IP_ADDRESSES")
+  VPN_ADDL_IP_ADDRESSES=$(noquotes2 "$VPN_ADDL_IP_ADDRESSES")
 else
   VPN_ADDL_USERS=""
   VPN_ADDL_PASSWORDS=""
+  VPN_ADDL_IP_ADDRESSES=""
 fi
 
 if [ -n "$VPN_DNS_SRV1" ]; then
@@ -121,11 +126,11 @@ if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
 fi
 
-if printf '%s' "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD $VPN_ADDL_USERS $VPN_ADDL_PASSWORDS" | LC_ALL=C grep -q '[^ -~]\+'; then
+if printf '%s' "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD $VPN_ADDL_USERS $VPN_ADDL_PASSWORDS $VPN_ADDL_IP_ADDRESSES" | LC_ALL=C grep -q '[^ -~]\+'; then
   exiterr "VPN credentials must not contain non-ASCII characters."
 fi
 
-case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD $VPN_ADDL_USERS $VPN_ADDL_PASSWORDS" in
+case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD $VPN_ADDL_USERS $VPN_ADDL_PASSWORDS $VPN_ADDL_IP_ADDRESSES" in
   *[\\\"\']*)
     exiterr "VPN credentials must not contain these special characters: \\ \" '"
     ;;
@@ -310,14 +315,15 @@ cat > /etc/ipsec.d/passwd <<EOF
 $VPN_USER:$VPN_PASSWORD_ENC:xauth-psk
 EOF
 
-if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
+if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ] && [ -n "$VPN_ADDL_IP_ADDRESSES" ]; then
   count=1
   addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -d ' ' -f 1)
   addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -d ' ' -f 1)
-  while [ -n "$addl_user" ] && [ -n "$addl_password" ]; do
+  addl_ip_address=$(printf '%s' "$VPN_ADDL_IP_ADDRESSES" | cut -d ' ' -f 1)
+  while [ -n "$addl_user" ] && [ -n "$addl_password" ] && [ -n "$addl_ip_address" ]; do
     addl_password_enc=$(openssl passwd -1 "$addl_password")
 cat >> /etc/ppp/chap-secrets <<EOF
-"$addl_user" l2tpd "$addl_password" *
+"$addl_user" l2tpd "$addl_password" "$addl_ip_address"
 EOF
 cat >> /etc/ipsec.d/passwd <<EOF
 $addl_user:$addl_password_enc:xauth-psk
@@ -325,6 +331,7 @@ EOF
     count=$((count+1))
     addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -s -d ' ' -f "$count")
     addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -s -d ' ' -f "$count")
+    addl_ip_address=$(printf '%s' "$VPN_ADDL_IP_ADDRESSES" | cut -s -d ' ' -f "$count")
   done
 fi
 
@@ -412,21 +419,23 @@ Username: $VPN_USER
 Password: $VPN_PASSWORD
 EOF
 
-if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
+if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ] && [ -n "$VPN_ADDL_IP_ADDRESSES" ]; then
   count=1
   addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -d ' ' -f 1)
   addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -d ' ' -f 1)
+  addl_ip_address=$(printf '%s' "$VPN_ADDL_IP_ADDRESSES" | cut -d ' ' -f 1)
 cat <<'EOF'
 
-Additional VPN users (username | password):
+Additional VPN users (username | password | ip address):
 EOF
-  while [ -n "$addl_user" ] && [ -n "$addl_password" ]; do
+  while [ -n "$addl_user" ] && [ -n "$addl_password" ] && [ -n "$addl_ip_address" ]; do
 cat <<EOF
-$addl_user | $addl_password
+$addl_user | $addl_password | $addl_ip_address
 EOF
     count=$((count+1))
     addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -s -d ' ' -f "$count")
     addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -s -d ' ' -f "$count")
+    addl_ip_address=$(printf '%s' "$VPN_ADDL_IP_ADDRESSES" | cut -s -d ' ' -f "$count")
   done
 fi
 
