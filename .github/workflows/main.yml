@@ -274,6 +274,7 @@ jobs:
             --build-arg VCS_REF=${GITHUB_SHA::8} \
             --build-arg VERSION=latest \
             -t "$DOCKER_USER/ipsec-vpn-server:latest" \
+            -t "$DOCKER_USER/ipsec-vpn-server:$GITHUB_REF" \
             --push \
             .
 
@@ -284,6 +285,7 @@ jobs:
             --build-arg VCS_REF=${GITHUB_SHA::8} \
             --build-arg VERSION=latest \
             -t "quay.io/$DOCKER_USER/ipsec-vpn-server:latest" \
+            -t "$DOCKER_USER/ipsec-vpn-server:$GITHUB_REF" \
             --push \
             .
       - name: Clear
