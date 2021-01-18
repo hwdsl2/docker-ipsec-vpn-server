@@ -291,13 +291,13 @@ Please follow these steps:
    docker exec -it ipsec-vpn-server env TERM=xterm bash -l
    ```
 
-1. Download and run the [IKEv2 setup helper script](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#using-helper-scripts), and follow the prompts.
+1. Download and run the [IKEv2 helper script](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#using-helper-scripts).
 
    ```
-   wget https://bit.ly/ikev2setup -O ikev2.sh && bash ikev2.sh
+   wget https://git.io/ikev2setup -O ikev2.sh && bash ikev2.sh --auto
    ```
 
-   **Note:** If you want to generate certificates for additional VPN clients, just run the helper script again. To revoke a client certificate, see [here](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#revoke-a-client-certificate).
+   **Note:** The command above runs the helper script in auto mode, using default options. Remove the `--auto` parameter if you want to customize IKEv2 setup options. If you want to generate certificates for additional VPN clients, just run the script again. To revoke a client certificate, see [here](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#revoke-a-client-certificate).
 
 1. When finished, `exit` the container and continue to [configure IKEv2 VPN clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#configure-ikev2-vpn-clients). To copy the generated `.p12` file to the current directory on the Docker host, you may use, e.g.:
 

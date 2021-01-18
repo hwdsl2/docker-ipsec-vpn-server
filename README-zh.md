@@ -290,13 +290,13 @@ docker run \
    docker exec -it ipsec-vpn-server env TERM=xterm bash -l
    ```
 
-1. 下载并运行 [IKEv2 配置辅助脚本](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#使用辅助脚本)，并按提示操作。
+1. 下载并运行 [IKEv2 辅助脚本](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#使用辅助脚本)。
 
    ```
-   wget https://bit.ly/ikev2setup -O ikev2.sh && bash ikev2.sh
+   wget https://git.io/ikev2setup -O ikev2.sh && bash ikev2.sh --auto
    ```
 
-   **注：** 如果要为更多的客户端生成证书，只需重新运行辅助脚本。要吊销一个客户端证书，参见[这里](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#吊销一个客户端证书)。
+   **注：** 以上命令使用自动模式和默认选项运行辅助脚本。如果你想要自定义 IKEv2 安装选项，请在运行脚本时去掉 `--auto` 参数。如果要为更多的客户端生成证书，只需重新运行脚本。要吊销一个客户端证书，参见[这里](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#吊销一个客户端证书)。
 
 1. 在完成之后，退出容器 `exit` 并转到 [配置 IKEv2 VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。要将生成的 `.p12` 文件复制到 Docker 主机当前目录，你可以使用比如：
 
