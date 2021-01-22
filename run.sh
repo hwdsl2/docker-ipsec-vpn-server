@@ -221,6 +221,8 @@ conn shared
   ikev2=never
   ike=aes256-sha2,aes128-sha2,aes256-sha1,aes128-sha1,aes256-sha2;modp1024,aes128-sha1;modp1024
   phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes256-sha2_512,aes128-sha2,aes256-sha2
+  ikelifetime=24h
+  salifetime=24h
   sha2-truncbug=$SHA2_TRUNCBUG
 
 conn l2tp-psk
