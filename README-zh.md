@@ -71,7 +71,7 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 **注：** 在你的 `env` 文件中，**不要**为变量值添加 `""` 或者 `''`，或在 `=` 两边添加空格。**不要**在值中使用这些字符： `\ " '`。一个安全的 IPsec PSK 应该至少包含 20 个随机字符。
 
-高级用户可以在使用本镜像时启用 IKEv2。它是比 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 更佳的连接模式，该模式无需 IPsec PSK, 用户名或密码。更多信息请看[这里](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md)。要启用 IKEv2，在你的 `env` 文件中添加这一行：
+推荐在使用本镜像时启用 IKEv2。它是比 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 更佳的连接模式，该模式无需 IPsec PSK, 用户名或密码。更多信息请看[这里](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md)。要启用 IKEv2，在你的 `env` 文件中添加这一行：
 
 ```
 VPN_SETUP_IKEV2=yes
@@ -95,7 +95,7 @@ docker run \
     hwdsl2/ipsec-vpn-server
 ```
 
-在该命令中，我们使用 `docker run` 的 `-v` 选项来创建一个名为 `ikev2-vpn-data` 的新 [Docker 卷](https://docs.docker.com/storage/volumes/)，并且将它挂载到容器内的 `/etc/ipsec.d/` 目录下。数据在该卷中保存，之后当你需要重新创建 Docker 容器的时候，只需指定同一个卷。
+在该命令中，我们使用 `docker run` 的 `-v` 选项来创建一个名为 `ikev2-vpn-data` 的新 [Docker 卷](https://docs.docker.com/storage/volumes/)，并且将它挂载到容器内的 `/etc/ipsec.d/` 目录下。如果你启用 IKEv2（参见上一节），则必须指定这个选项。如果未启用，则该项为可选。IKEv2 的相关数据（比如证书和密钥）在该卷中保存，之后当你需要重新创建 Docker 容器的时候，只需指定同一个卷。
 
 **注：** 高级用户也可以 [不启用 privileged 模式运行](#不启用-privileged-模式运行)。
 
@@ -279,13 +279,16 @@ docker run \
 docker exec -it ipsec-vpn-server cat /etc/ipsec.d/ikev2setup.log
 ```
 
-按照安装日志中的说明 [配置 IKEv2 VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。要将生成的客户端配置文件复制到 Docker 主机当前目录，你可以使用比如：
+在安装过程中会创建一个名称为 `vpnclient` 的 IKEv2 客户端，并且导出它的配置到容器内的 `/etc/ipsec.d` 目录。按照 IKEv2 安装日志中的说明 [配置 IKEv2 VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。如果要将客户端配置文件复制到 Docker 主机当前目录，你可以使用：
 
 ```
+# 查看容器内的 /etc/ipsec.d 目录的文件
+docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
+# 示例：将一个客户端配置文件从容器复制到 Docker 主机
 docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient-日期-时间.p12 ./
 ```
 
-要管理 IKEv2 VPN 客户端，你可以使用 [IKEv2 辅助脚本](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#使用辅助脚本)。如果需要自定义客户端选项，可以在不添加参数的情况下运行脚本。
+要管理 IKEv2 客户端，你可以使用 [辅助脚本](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#使用辅助脚本)。示例如下。如果需要自定义客户端选项，可以在不添加参数的情况下运行脚本。
 
 ```
 # 添加一个客户端（使用默认选项）

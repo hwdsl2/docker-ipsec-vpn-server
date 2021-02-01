@@ -71,7 +71,7 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 **Note:** In your `env` file, DO NOT put `""` or `''` around values, or add space around `=`. DO NOT use these special characters within values: `\ " '`. A secure IPsec PSK should consist of at least 20 random characters.
 
-Advanced users can enable IKEv2 when using this image. This mode has improvements over IPsec/L2TP and IPsec/XAuth ("Cisco IPsec"), and does not require an IPsec PSK, username or password. Read more [here](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md). To enable IKEv2, add this line to your `env` file:
+It is recommended to enable IKEv2 when using this image. This mode has improvements over IPsec/L2TP and IPsec/XAuth ("Cisco IPsec"), and does not require an IPsec PSK, username or password. Read more [here](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md). To enable IKEv2, add this line to your `env` file:
 
 ```
 VPN_SETUP_IKEV2=yes
@@ -95,7 +95,7 @@ docker run \
     hwdsl2/ipsec-vpn-server
 ```
 
-In this command, we use the `-v` option of `docker run` to create a new [Docker volume](https://docs.docker.com/storage/volumes/) named `ikev2-vpn-data`, and mount the volume into `/etc/ipsec.d/` in the container. Data will persist in the volume, and later when you need to re-create the Docker container, just specify the same volume again.
+In this command, we use the `-v` option of `docker run` to create a new [Docker volume](https://docs.docker.com/storage/volumes/) named `ikev2-vpn-data`, and mount the volume into `/etc/ipsec.d/` in the container. This option is required if you enable IKEv2 (see above), and otherwise optional. IKEv2 related data such as certificates and keys will persist in the volume, and later when you need to re-create the Docker container, just specify the same volume again. 
 
 **Note:** Advanced users can also [run without privileged mode](https://github.com/hwdsl2/docker-ipsec-vpn-server#run-without-privileged-mode).
 
@@ -279,13 +279,16 @@ First, check IKEv2 setup logs and view details for client configuration:
 docker exec -it ipsec-vpn-server cat /etc/ipsec.d/ikev2setup.log
 ```
 
-Follow instructions in the setup logs to [configure IKEv2 VPN clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#configure-ikev2-vpn-clients). To copy the generated client config files to the current directory on the Docker host, you may use, e.g.:
+An IKEv2 client `vpnclient` has been created during setup, with its configuration exported to `/etc/ipsec.d` in the container. Follow instructions in the IKEv2 setup logs to [configure IKEv2 VPN clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#configure-ikev2-vpn-clients).  To copy the client config file(s) to the current directory on the Docker host, you may use:
 
 ```
+# Check contents of /etc/ipsec.d in the container
+docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
+# Example: Copy a client config file from container to Docker host
 docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient-date-time.p12 ./
 ```
 
-You can manage IKEv2 VPN clients using the [IKEv2 helper script](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#using-helper-scripts). To customize client options, run the script without arguments.
+You can manage IKEv2 clients using the [helper script](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#using-helper-scripts). See examples below. To customize client options, run the script without arguments.
 
 ```
 # Add a new client (using default options)
