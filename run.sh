@@ -383,6 +383,27 @@ esac
 # Update file attributes
 chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets /etc/ipsec.d/passwd
 
+# Set up IKEv2
+case $VPN_SETUP_IKEV2 in
+  [yY][eE][sS])
+    if ! wget -t 3 -T 30 -q -O /opt/src/ikev2.sh https://git.io/ikev2setup; then
+      if [ ! -f /opt/src/ikev2.sh ]; then
+        echo >&2
+        echo "Error: Could not download the IKEv2 setup script." >&2
+      fi
+    elif [ ! -f /etc/ipsec.d/ikev2.conf ]; then
+      echo
+      echo "Setting up IKEv2, please wait..."
+      if /bin/bash /opt/src/ikev2.sh --auto >/etc/ipsec.d/ikev2setup.log 2>&1; then
+        echo "Setup successful. See: https://git.io/ikev2docker"
+      else
+        echo "Setup failed."
+      fi
+      chmod 600 /etc/ipsec.d/ikev2setup.log
+    fi
+    ;;
+esac
+
 # Check for new Libreswan version
 swan_ver_ts="/opt/src/swan_ver_ts"
 if [ ! -f "$swan_ver_ts" ] || [ "$(find $swan_ver_ts -mmin +10080)" ]; then
