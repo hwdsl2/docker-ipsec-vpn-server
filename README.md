@@ -275,13 +275,13 @@ Before continuing, make sure that you have enabled IKEv2 when creating the Docke
 
 First, check IKEv2 setup logs and view details for client configuration:
 
-```
+```bash
 docker exec -it ipsec-vpn-server cat /etc/ipsec.d/ikev2setup.log
 ```
 
 An IKEv2 client `vpnclient` has been created during setup, with its configuration exported to `/etc/ipsec.d` in the container. Follow instructions in the IKEv2 setup logs to [configure IKEv2 VPN clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#configure-ikev2-vpn-clients).  To copy the client config file(s) to the current directory on the Docker host, you may use:
 
-```
+```bash
 # Check contents of /etc/ipsec.d in the container
 docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
 # Example: Copy a client config file from container to Docker host
@@ -290,7 +290,7 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient-date-time.p12 ./
 
 You can manage IKEv2 clients using the [helper script](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#using-helper-scripts). See examples below. To customize client options, run the script without arguments.
 
-```
+```bash
 # Add a new client (using default options)
 docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --addclient [client name]
 # Export configuration for an existing client
@@ -301,7 +301,7 @@ docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --listclients
 
 If you are an advanced user and want to customize IKEv2 setup options, such as using a DNS name instead of IP address for the VPN server, you will need to remove IKEv2 and then set it up again. Note that this will delete all IKEv2 configuration including certificates and keys, and **cannot be undone**!
 
-```
+```bash
 # Remove IKEv2 (cannot be undone)
 docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --removeikev2
 # Set up IKEv2 again (you may customize options during setup)

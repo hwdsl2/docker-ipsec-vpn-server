@@ -275,13 +275,13 @@ docker run \
 
 首先，检查 IKEv2 安装日志并查看客户端配置详情：
 
-```
+```bash
 docker exec -it ipsec-vpn-server cat /etc/ipsec.d/ikev2setup.log
 ```
 
 在安装过程中会创建一个名称为 `vpnclient` 的 IKEv2 客户端，并且导出它的配置到容器内的 `/etc/ipsec.d` 目录。按照 IKEv2 安装日志中的说明 [配置 IKEv2 VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。如果要将客户端配置文件复制到 Docker 主机当前目录，你可以使用：
 
-```
+```bash
 # 查看容器内的 /etc/ipsec.d 目录的文件
 docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
 # 示例：将一个客户端配置文件从容器复制到 Docker 主机
@@ -290,7 +290,7 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient-日期-时间.p12 ./
 
 要管理 IKEv2 客户端，你可以使用 [辅助脚本](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#使用辅助脚本)。示例如下。如果需要自定义客户端选项，可以在不添加参数的情况下运行脚本。
 
-```
+```bash
 # 添加一个客户端（使用默认选项）
 docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --addclient [client name]
 # 导出一个已有的客户端的配置
@@ -301,7 +301,7 @@ docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --listclients
 
 如果你是高级用户并且想要自定义 IKEv2 安装选项，比如为 VPN 服务器指定域名而不是 IP 地址，你将需要移除 IKEv2 然后重新安装它。请注意，这将删除所有的 IKEv2 配置（包括证书和密钥），并且**不可撤销**！
 
-```
+```bash
 # 移除 IKEv2（不可撤销）
 docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --removeikev2
 # 重新安装 IKEv2（在安装过程中可以指定选项）
