@@ -118,7 +118,7 @@ Username: your_vpn_username
 Password: your_vpn_password
 ```
 
-To view details for IKEv2 (if enabled), see [Configure and use IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server#configure-and-use-ikev2-vpn).
+The output will also include details for IKEv2 mode, if enabled. To start using IKEv2, see [Configure and use IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server#configure-and-use-ikev2-vpn).
 
 (Optional) Backup the generated VPN login details (if any) to the current directory:
 
@@ -273,13 +273,19 @@ Using this Docker image, advanced users can configure and use IKEv2. This mode h
 
 Before continuing, make sure that you have enabled IKEv2 when creating the Docker container. See [How to use this image](https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image). Otherwise, you must first enable IKEv2 and re-create the Docker container using instructions from the [Update Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server#update-docker-image) section.
 
-First, check IKEv2 setup logs and view details for client configuration:
+First, check container logs to view details for IKEv2:
+
+```bash
+docker logs ipsec-vpn-server
+```
+
+Alternatively, you can view details for IKEv2 in the setup logs:
 
 ```bash
 docker exec -it ipsec-vpn-server cat /etc/ipsec.d/ikev2setup.log
 ```
 
-An IKEv2 client `vpnclient` has been created during setup, with its configuration exported to `/etc/ipsec.d` in the container. Follow instructions in the IKEv2 setup logs to [configure IKEv2 VPN clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#configure-ikev2-vpn-clients).  To copy the client config file(s) to the current directory on the Docker host, you may use:
+An IKEv2 client `vpnclient` has been created during setup, with its configuration exported to `/etc/ipsec.d` in the container. Follow instructions in the output to [configure IKEv2 VPN clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#configure-ikev2-vpn-clients).  To copy the client config file(s) to the current directory on the Docker host, you may use:
 
 ```bash
 # Check contents of /etc/ipsec.d in the container
