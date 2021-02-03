@@ -130,6 +130,7 @@ jobs:
             --name "$TEST_ID" \
             --env-file ./vpn.env.example \
             --restart=always \
+            -v ikev2-vpn-data:/etc/ipsec.d \
             -p 500:500/udp \
             -p 4500:4500/udp \
             -d --cap-add=NET_ADMIN \
@@ -164,7 +165,7 @@ jobs:
             vpn-test
           fi
 
-          sleep 15
+          sleep 60
           docker ps | grep "$TEST_ID"
           docker logs "$TEST_ID"
           docker exec "$TEST_ID" netstat -anpu | grep pluto
@@ -182,6 +183,7 @@ jobs:
             docker exec "$TEST_ID" grep "$VPN_USER" /etc/ppp/chap-secrets
             docker exec "$TEST_ID" grep "$VPN_PASSWORD" /etc/ppp/chap-secrets
             docker exec "$TEST_ID" grep "$VPN_USER" /etc/ipsec.d/passwd
+            docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp
           fi
 
           docker restart "$TEST_ID"
@@ -203,6 +205,7 @@ jobs:
             docker exec "$TEST_ID" grep "$VPN_USER" /etc/ppp/chap-secrets
             docker exec "$TEST_ID" grep "$VPN_PASSWORD" /etc/ppp/chap-secrets
             docker exec "$TEST_ID" grep "$VPN_USER" /etc/ipsec.d/passwd
+            docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp
           fi
       - name: Clear
         if: always()

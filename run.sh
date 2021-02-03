@@ -117,6 +117,21 @@ if [ -n "$VPN_PUBLIC_IP" ]; then
   VPN_PUBLIC_IP=$(noquotes "$VPN_PUBLIC_IP")
 fi
 
+if [ -n "$VPN_SETUP_IKEV2" ]; then
+  VPN_SETUP_IKEV2=$(nospaces "$VPN_SETUP_IKEV2")
+  VPN_SETUP_IKEV2=$(noquotes "$VPN_SETUP_IKEV2")
+fi
+
+if [ -n "$VPN_ANDROID_MTU_FIX" ]; then
+  VPN_ANDROID_MTU_FIX=$(nospaces "$VPN_ANDROID_MTU_FIX")
+  VPN_ANDROID_MTU_FIX=$(noquotes "$VPN_ANDROID_MTU_FIX")
+fi
+
+if [ -n "$VPN_SHA2_TRUNCBUG" ]; then
+  VPN_SHA2_TRUNCBUG=$(nospaces "$VPN_SHA2_TRUNCBUG")
+  VPN_SHA2_TRUNCBUG=$(noquotes "$VPN_SHA2_TRUNCBUG")
+fi
+
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
 fi
@@ -387,12 +402,8 @@ chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets /etc/ipsec.d/passwd
 print_ikev2_info=0
 case $VPN_SETUP_IKEV2 in
   [yY][eE][sS])
-    if ! wget -t 3 -T 30 -q -O /opt/src/ikev2.sh https://git.io/ikev2setup; then
-      if [ ! -f /opt/src/ikev2.sh ]; then
-        echo >&2
-        echo "Error: Could not download the IKEv2 setup script." >&2
-      fi
-    elif [ ! -f /etc/ipsec.d/ikev2.conf ]; then
+    wget -t 3 -T 30 -q -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh
+    if [ -s /opt/src/ikev2.sh ] && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
       echo
       echo "Setting up IKEv2, please wait..."
       if /bin/bash /opt/src/ikev2.sh --auto >/etc/ipsec.d/ikev2setup.log 2>&1; then

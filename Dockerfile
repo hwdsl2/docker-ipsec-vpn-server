@@ -48,7 +48,9 @@ RUN apt-get -yqq update \
     && apt-get -yqq autoremove \
     && apt-get -y clean \
     && rm -rf /var/lib/apt/lists/* \
-    && update-alternatives --set iptables /usr/sbin/iptables-legacy
+    && update-alternatives --set iptables /usr/sbin/iptables-legacy \
+    && wget -t 3 -T 30 -nv -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh \
+    && chmod 755 /opt/src/ikev2.sh
 
 COPY ./run.sh /opt/src/run.sh
 RUN chmod 755 /opt/src/run.sh
