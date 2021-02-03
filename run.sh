@@ -384,6 +384,7 @@ esac
 chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets /etc/ipsec.d/passwd
 
 # Set up IKEv2
+print_ikev2_info=0
 case $VPN_SETUP_IKEV2 in
   [yY][eE][sS])
     if ! wget -t 3 -T 30 -q -O /opt/src/ikev2.sh https://git.io/ikev2setup; then
@@ -395,9 +396,13 @@ case $VPN_SETUP_IKEV2 in
       echo
       echo "Setting up IKEv2, please wait..."
       if /bin/bash /opt/src/ikev2.sh --auto >/etc/ipsec.d/ikev2setup.log 2>&1; then
-        echo "Setup successful. See: https://git.io/ikev2docker"
+        if [ -f /etc/ipsec.d/ikev2.conf ]; then
+          print_ikev2_info=1
+        else
+          echo "IKEv2 setup failed."
+        fi
       else
-        echo "Setup failed."
+        echo "IKEv2 setup failed."
       fi
       chmod 600 /etc/ipsec.d/ikev2setup.log
     fi
@@ -460,6 +465,24 @@ Write these down. You'll need them to connect!
 Important notes:   https://git.io/vpnnotes2
 Setup VPN clients: https://git.io/vpnclients
 IKEv2 guide:       https://git.io/ikev2docker
+EOF
+
+if [ "$print_ikev2_info" = "1" ]; then
+cat <<'EOF'
+
+------------------------------------------------
+
+IKEv2 setup successful. Details for IKEv2 mode:
+
+EOF
+  sed -n '/VPN client name:/,/Write this down/p' /etc/ipsec.d/ikev2setup.log
+cat <<'EOF'
+
+To start using IKEv2, see: https://git.io/ikev2docker
+EOF
+fi
+
+cat <<'EOF'
 
 ================================================
 
