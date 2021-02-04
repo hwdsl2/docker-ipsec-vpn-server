@@ -37,8 +37,8 @@ fi
 if ip link add dummy0 type dummy 2>&1 | grep -q "not permitted"; then
 cat 1>&2 <<'EOF'
 Error: This Docker image should be run in privileged mode.
-    For detailed instructions, please visit:
-    https://github.com/hwdsl2/docker-ipsec-vpn-server
+       For detailed instructions, please visit:
+       https://github.com/hwdsl2/docker-ipsec-vpn-server
 
 EOF
   exit 1
@@ -426,11 +426,12 @@ if [ ! -f "$swan_ver_ts" ] || [ "$(find $swan_ver_ts -mmin +10080)" ]; then
   [ ! -f "$swan_ver_ts" ] && first_run=1 || first_run=0
   touch "$swan_ver_ts"
   os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
-  swan_ver_cur=4.1
+  swan_ver_cur=4.2
   swan_ver_url="https://dl.ls20.com/v1/docker/$os_arch/swanver?ver=$swan_ver_cur&ver2=$IMAGE_VER&f=$first_run"
   swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
   if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
-    && [ "$swan_ver_cur" != "$swan_ver_latest" ]; then
+    && [ "$swan_ver_cur" != "$swan_ver_latest" ] \
+    && printf '%s\n%s' "$swan_ver_cur" "$swan_ver_latest" | sort -C -V; then
     echo
     echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
     echo "To update this Docker image, see: https://git.io/updatedockervpn"

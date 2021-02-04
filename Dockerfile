@@ -16,7 +16,7 @@ LABEL maintainer="Lin Song <linsongui@gmail.com>" \
     org.opencontainers.image.documentation="https://github.com/hwdsl2/docker-ipsec-vpn-server"
 
 ENV IMAGE_VER $BUILD_DATE
-ENV SWAN_VER 4.1
+ENV SWAN_VER 4.2
 
 WORKDIR /opt/src
 
@@ -34,7 +34,6 @@ RUN apt-get -yqq update \
     && tar xzf libreswan.tar.gz \
     && rm -f libreswan.tar.gz \
     && cd "libreswan-${SWAN_VER}" \
-    && sed -i 's/ sysv )/ sysvinit )/' programs/setup/setup.in \
     && printf 'WERROR_CFLAGS=-w\nUSE_DNSSEC=false\nUSE_SYSTEMD_WATCHDOG=false\n' > Makefile.inc.local \
     && printf 'USE_DH2=true\nUSE_NSS_KDF=false\nFINALNSSDIR=/etc/ipsec.d\n' >> Makefile.inc.local \
     && make -s base \
