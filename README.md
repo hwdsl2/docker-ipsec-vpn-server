@@ -2,7 +2,7 @@
 
 [![Build Status](https://img.shields.io/github/workflow/status/hwdsl2/docker-ipsec-vpn-server/buildx%20latest.svg?cacheSeconds=3600)](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/docker-ipsec-vpn-server.svg?cacheSeconds=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/)
 
-Docker image to run an IPsec VPN server, with both `IPsec/L2TP` and `Cisco IPsec`.
+Docker image to run an IPsec VPN server, with `IPsec/L2TP`, `Cisco IPsec` and `IKEv2`.
 
 Based on Debian 10 (Buster) with [Libreswan](https://libreswan.org) (IPsec VPN software) and [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP daemon).
 
@@ -287,7 +287,7 @@ Alternatively, you can view details in the setup logs:
 docker exec -it ipsec-vpn-server cat /etc/ipsec.d/ikev2setup.log
 ```
 
-During IKEv2 setup, a new IKEv2 client `vpnclient` is added, with its configuration exported to `/etc/ipsec.d` in the container. Follow instructions in the output to [configure IKEv2 VPN clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#configure-ikev2-vpn-clients).
+During IKEv2 setup, a new IKEv2 client `vpnclient` is added, with its configuration exported to `/etc/ipsec.d` in the container. Use the details from above to [configure IKEv2 VPN clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#configure-ikev2-vpn-clients).
 
 To copy the client config file(s) to the current directory on the Docker host, you may use:
 
@@ -295,7 +295,7 @@ To copy the client config file(s) to the current directory on the Docker host, y
 # Check contents of /etc/ipsec.d in the container
 docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
 # Example: Copy a client config file from container to Docker host
-docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient-date-time.p12 ./
+docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
 ```
 
 You can manage IKEv2 clients using the [helper script](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#using-helper-scripts). See examples below. To customize client options, run the script without arguments.
