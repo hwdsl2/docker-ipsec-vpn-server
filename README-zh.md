@@ -79,6 +79,12 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 VPN_SETUP_IKEV2=yes
 ```
 
+高级用户可以指定一个域名作为 VPN 服务器的地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
+
+```
+VPN_DNS_NAME=vpn.example.com
+```
+
 所有这些环境变量对于本镜像都是可选的，也就是说无需定义它们就可以搭建 IPsec VPN 服务器。详情请参见以下部分。
 
 ### 运行 IPsec VPN 服务器
@@ -309,13 +315,11 @@ docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --exportclient [client n
 docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --listclients
 ```
 
-如果你是高级用户并且想要自定义 IKEv2 安装选项，比如为 VPN 服务器指定域名而不是 IP 地址，你将需要移除 IKEv2 然后重新安装它。请注意，这将删除所有的 IKEv2 配置（包括证书和密钥），并且**不可撤销**！
+如果你想要从 Docker 容器移除 IKEv2，但是保留 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式，可以使用以下命令。请注意，这将删除所有的 IKEv2 配置（包括证书和密钥），并且**不可撤销**！
 
 ```bash
-# 移除 IKEv2（不可撤销）
+# 移除 IKEv2（不可撤销！）
 docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --removeikev2
-# 重新安装 IKEv2（在安装过程中可以指定选项）
-docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh
 ```
 
 ### 启用 Libreswan 日志

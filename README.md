@@ -79,6 +79,12 @@ To enable IKEv2, add this line to your `env` file:
 VPN_SETUP_IKEV2=yes
 ```
 
+Advanced users can optionally specify a DNS name to be used as the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). Example:
+
+```
+VPN_DNS_NAME=vpn.example.com
+```
+
 All the variables to this image are optional, which means you don't have to type in any environment variable, and you can have an IPsec VPN server out of the box! Read the sections below for details.
 
 ### Start the IPsec VPN server
@@ -309,13 +315,11 @@ docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --exportclient [client n
 docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --listclients
 ```
 
-If you are an advanced user and want to customize IKEv2 setup options, such as using a DNS name instead of IP address for the VPN server, you will need to remove IKEv2 and then set it up again. Note that this will delete all IKEv2 configuration including certificates and keys, and **cannot be undone**!
+If you want to remove IKEv2 from the Docker container, but keep the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes, use the command below. Note that this will delete all IKEv2 configuration including certificates and keys, and **cannot be undone**!
 
 ```bash
-# Remove IKEv2 (cannot be undone)
+# Remove IKEv2 (cannot be undone!)
 docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --removeikev2
-# Set up IKEv2 again (you may customize options during setup)
-docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh
 ```
 
 ### Enable Libreswan logs
