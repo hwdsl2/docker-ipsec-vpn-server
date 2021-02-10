@@ -30,6 +30,11 @@ check_ip() {
   printf '%s' "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
 }
 
+check_dns_name() {
+  FQDN_REGEX='^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$'
+  printf '%s' "$1" | tr -d '\n' | grep -Eq "$FQDN_REGEX"
+}
+
 if [ ! -f "/.dockerenv" ] && [ ! -f "/run/.containerenv" ] && ! head -n 1 /proc/1/sched | grep -q '^run\.sh '; then
   exiterr "This script ONLY runs in a container (e.g. Docker, Podman)."
 fi
@@ -112,6 +117,11 @@ if [ -n "$VPN_DNS_SRV2" ]; then
   VPN_DNS_SRV2=$(noquotes "$VPN_DNS_SRV2")
 fi
 
+if [ -n "$VPN_DNS_NAME" ]; then
+  VPN_DNS_NAME=$(nospaces "$VPN_DNS_NAME")
+  VPN_DNS_NAME=$(noquotes "$VPN_DNS_NAME")
+fi
+
 if [ -n "$VPN_PUBLIC_IP" ]; then
   VPN_PUBLIC_IP=$(nospaces "$VPN_PUBLIC_IP")
   VPN_PUBLIC_IP=$(noquotes "$VPN_PUBLIC_IP")
@@ -169,19 +179,33 @@ if [ -n "$VPN_DNS_SRV2" ]; then
   fi
 fi
 
-echo
-echo 'Trying to auto discover IP of this server...'
+if [ -n "$VPN_DNS_NAME" ]; then
+  if ! check_dns_name "$VPN_DNS_NAME"; then
+    echo >&2
+    echo "Error: Invalid DNS name. 'VPN_DNS_NAME' must be a fully qualified domain name (FQDN)." >&2
+    echo "       Falling back to using this server's IP address." >&2
+    VPN_DNS_NAME=""
+  fi
+fi
 
-# In case auto IP discovery fails, manually define the public IP
-# of this server in your 'env' file, as variable 'VPN_PUBLIC_IP'.
-PUBLIC_IP=${VPN_PUBLIC_IP:-''}
+if [ -n "$VPN_DNS_NAME" ]; then
+  server_addr="$VPN_DNS_NAME"
+else
+  echo
+  echo 'Trying to auto discover IP of this server...'
 
-# Try to auto discover IP of this server
-[ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
+  # In case auto IP discovery fails, manually define the public IP
+  # of this server in your 'env' file, as variable 'VPN_PUBLIC_IP'.
+  PUBLIC_IP=${VPN_PUBLIC_IP:-''}
 
-# Check IP for correct format
-check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-check_ip "$PUBLIC_IP" || exiterr "Cannot detect this server's public IP. Define it in your 'env' file as 'VPN_PUBLIC_IP'."
+  # Try to auto discover IP of this server
+  [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
+
+  # Check IP for correct format
+  check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
+  check_ip "$PUBLIC_IP" || exiterr "Cannot detect this server's public IP. Define it in your 'env' file as 'VPN_PUBLIC_IP'."
+  server_addr="$PUBLIC_IP"
+fi
 
 L2TP_NET=${VPN_L2TP_NET:-'192.168.42.0/24'}
 L2TP_LOCAL=${VPN_L2TP_LOCAL:-'192.168.42.1'}
@@ -223,7 +247,7 @@ config setup
 
 conn shared
   left=%defaultroute
-  leftid=$PUBLIC_IP
+  leftid=$server_addr
   right=%any
   encapsulation=yes
   authby=secret
@@ -406,7 +430,7 @@ case $VPN_SETUP_IKEV2 in
     if [ -s /opt/src/ikev2.sh ] && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
       echo
       echo "Setting up IKEv2, please wait..."
-      if /bin/bash /opt/src/ikev2.sh --auto >/etc/ipsec.d/ikev2setup.log 2>&1; then
+      if VPN_DNS_NAME="$VPN_DNS_NAME" /bin/bash /opt/src/ikev2.sh --auto >/etc/ipsec.d/ikev2setup.log 2>&1; then
         if [ -f /etc/ipsec.d/ikev2.conf ]; then
           print_ikev2_info=1
         else
@@ -438,6 +462,12 @@ if [ ! -f "$swan_ver_ts" ] || [ "$(find $swan_ver_ts -mmin +10080)" ]; then
   fi
 fi
 
+if [ -n "$VPN_DNS_NAME" ]; then
+  server_text="Server"
+else
+  server_text="Server IP"
+fi
+
 cat <<EOF
 
 ================================================
@@ -446,7 +476,7 @@ IPsec VPN server is now ready for use!
 
 Connect to your new VPN with these details:
 
-Server IP: $PUBLIC_IP
+$server_text: $server_addr
 IPsec PSK: $VPN_IPSEC_PSK
 Username: $VPN_USER
 Password: $VPN_PASSWORD
@@ -487,7 +517,7 @@ cat <<'EOF'
 IKEv2 setup successful. Details for IKEv2 mode:
 
 EOF
-  sed -n '/VPN client name:/,/Write this down/p' /etc/ipsec.d/ikev2setup.log
+  sed -n '/VPN server address:/,/Write this down/p' /etc/ipsec.d/ikev2setup.log
 cat <<'EOF'
 
 To start using IKEv2, see: https://git.io/ikev2docker
