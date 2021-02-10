@@ -426,7 +426,6 @@ chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets /etc/ipsec.d/passwd
 print_ikev2_info=0
 case $VPN_SETUP_IKEV2 in
   [yY][eE][sS])
-    wget -t 3 -T 30 -q -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh
     if [ -s /opt/src/ikev2.sh ] && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
       echo
       echo "Setting up IKEv2, please wait..."
