@@ -430,7 +430,8 @@ case $VPN_SETUP_IKEV2 in
     if [ -s /opt/src/ikev2.sh ] && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
       echo
       echo "Setting up IKEv2, please wait..."
-      if VPN_DNS_NAME="$VPN_DNS_NAME" /bin/bash /opt/src/ikev2.sh --auto >/etc/ipsec.d/ikev2setup.log 2>&1; then
+      if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
+        /bin/bash /opt/src/ikev2.sh --auto >/etc/ipsec.d/ikev2setup.log 2>&1; then
         if [ -f /etc/ipsec.d/ikev2.conf ]; then
           print_ikev2_info=1
         else
