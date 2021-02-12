@@ -423,7 +423,7 @@ esac
 chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets /etc/ipsec.d/passwd
 
 # Set up IKEv2
-print_ikev2_info=0
+ikev2_status=0
 case $VPN_SETUP_IKEV2 in
   [yY][eE][sS])
     if [ -s /opt/src/ikev2.sh ] && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
@@ -432,17 +432,23 @@ case $VPN_SETUP_IKEV2 in
       if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
         /bin/bash /opt/src/ikev2.sh --auto >/etc/ipsec.d/ikev2setup.log 2>&1; then
         if [ -f /etc/ipsec.d/ikev2.conf ]; then
-          print_ikev2_info=1
+          ikev2_status=1
+          ikev2_status_text="IKEv2 setup successful."
         else
           echo "IKEv2 setup failed."
         fi
       else
+        rm -f /etc/ipsec.d/ikev2.conf
         echo "IKEv2 setup failed."
       fi
       chmod 600 /etc/ipsec.d/ikev2setup.log
     fi
     ;;
 esac
+if [ "$ikev2_status" = "0" ] && [ -f /etc/ipsec.d/ikev2.conf ] && [ -s /etc/ipsec.d/ikev2setup.log ]; then
+  ikev2_status=2
+  ikev2_status_text="IKEv2 is already set up."
+fi
 
 # Check for new Libreswan version
 swan_ver_ts="/opt/src/swan_ver_ts"
@@ -509,12 +515,12 @@ Setup VPN clients: https://git.io/vpnclients
 IKEv2 guide:       https://git.io/ikev2docker
 EOF
 
-if [ "$print_ikev2_info" = "1" ]; then
-cat <<'EOF'
+if [ "$ikev2_status" = "1" ] || [ "$ikev2_status" = "2" ]; then
+cat <<EOF
 
 ------------------------------------------------
 
-IKEv2 setup successful. Details for IKEv2 mode:
+$ikev2_status_text Details for IKEv2 mode:
 
 EOF
   sed -n '/VPN server address:/,/Write this down/p' /etc/ipsec.d/ikev2setup.log
