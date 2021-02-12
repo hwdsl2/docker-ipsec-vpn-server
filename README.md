@@ -184,13 +184,19 @@ Using kernel support could improve IPsec/L2TP performance. If your Docker host's
 
 ## Update Docker image
 
-To update your Docker image and container, first follow instructions from the [Download](https://github.com/hwdsl2/docker-ipsec-vpn-server#download) section. If the Docker image is already up to date, you should see:
+To update your Docker image and container, first [download](https://github.com/hwdsl2/docker-ipsec-vpn-server#download) the latest version:
+
+```
+docker pull hwdsl2/ipsec-vpn-server
+```
+
+If the Docker image is already up to date, you should see:
 
 ```
 Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 ```
 
-Otherwise, it will download the latest version. To update your Docker container, first write down all your [VPN login details](https://github.com/hwdsl2/docker-ipsec-vpn-server#retrieve-vpn-login-details). Then remove the Docker container with `docker rm -f ipsec-vpn-server`. Finally, re-create it using instructions from [this section](https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image).
+Otherwise, it will download the latest version. To update your Docker container, first write down all your [VPN login details](https://github.com/hwdsl2/docker-ipsec-vpn-server#retrieve-vpn-login-details). Then remove the Docker container with `docker rm -f ipsec-vpn-server`. Finally, re-create it using instructions from [How to use this image](https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image).
 
 ## Advanced usage
 
@@ -313,13 +319,6 @@ docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --addclient [client name
 docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --exportclient [client name]
 # List the names of existing clients
 docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --listclients
-```
-
-If you want to remove IKEv2 from the Docker container, but keep the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes, use the command below. Note that this will delete all IKEv2 configuration including certificates and keys, and **cannot be undone**!
-
-```bash
-# Remove IKEv2 (cannot be undone!)
-docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --removeikev2
 ```
 
 ### Enable Libreswan logs

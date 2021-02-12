@@ -184,13 +184,19 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 ## 更新 Docker 镜像
 
-如需更新你的 Docker 镜像和容器，请首先按照 [下载](#下载) 小节的说明操作。如果 Docker 镜像已经是最新的，你会看到提示：
+如需更新你的 Docker 镜像和容器，首先 [下载](#下载) 最新版本：
+
+```
+docker pull hwdsl2/ipsec-vpn-server
+```
+
+如果 Docker 镜像已经是最新的，你会看到提示：
 
 ```
 Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 ```
 
-否则，将会下载最新版本。要更新你的 Docker 容器，首先在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)。然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。最后按照 [这一小节](#如何使用本镜像) 的说明来重新创建它。
+否则，将会下载最新版本。要更新你的 Docker 容器，首先在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)。然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。最后按照 [如何使用本镜像](#如何使用本镜像) 的说明来重新创建它。
 
 ## 高级用法
 
@@ -313,13 +319,6 @@ docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --addclient [client name
 docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --exportclient [client name]
 # 列出已有的客户端的名称
 docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --listclients
-```
-
-如果你想要从 Docker 容器移除 IKEv2，但是保留 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式，可以使用以下命令。请注意，这将删除所有的 IKEv2 配置（包括证书和密钥），并且**不可撤销**！
-
-```bash
-# 移除 IKEv2（不可撤销！）
-docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --removeikev2
 ```
 
 ### 启用 Libreswan 日志
