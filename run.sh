@@ -225,6 +225,10 @@ elif [ -n "$VPN_DNS_SRV1" ]; then
   echo "Setting DNS server to $VPN_DNS_SRV1..."
 fi
 
+if [ -z "$VPN_SETUP_IKEV2" ] && [ ! -f /etc/ipsec.d/passwd ] && mount | grep -q " /etc/ipsec.d "; then
+  VPN_SETUP_IKEV2=yes
+fi
+
 case $VPN_SHA2_TRUNCBUG in
   [yY][eE][sS])
     echo
@@ -512,7 +516,6 @@ Write these down. You'll need them to connect!
 
 Important notes:   https://git.io/vpnnotes2
 Setup VPN clients: https://git.io/vpnclients
-IKEv2 guide:       https://git.io/ikev2docker
 EOF
 
 if [ "$ikev2_status" = "1" ] || [ "$ikev2_status" = "2" ]; then
@@ -527,6 +530,10 @@ EOF
 cat <<'EOF'
 
 To start using IKEv2, see: https://git.io/ikev2docker
+EOF
+else
+cat <<'EOF'
+IKEv2 guide:       https://git.io/ikev2docker
 EOF
 fi
 
