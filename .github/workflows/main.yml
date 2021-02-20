@@ -10,8 +10,6 @@ on:
       - run.sh
   schedule:
     - cron: '25 2,14 * * *'
-  repository_dispatch:
-    types: [start-buildx-workflow]
 
 jobs:
   shellcheck:
@@ -48,11 +46,17 @@ jobs:
       DOCKER_USER: ${{ github.repository_owner }}
       EVENT_NAME: ${{ github.event_name }}
     outputs:
+      should_test: ${{ steps.check.outputs.should_test }}
       should_update: ${{ steps.check.outputs.should_update }}
     steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
       - name: Prepare
+        if: success()
         run: |
-          if [ "$EVENT_NAME" != "push" ] && [ "$EVENT_NAME" != "repository_dispatch" ]; then
+          if [ "$EVENT_NAME" != "push" ]; then
             docker pull debian:buster-slim
             docker pull "$DOCKER_USER/ipsec-vpn-server"
           fi
@@ -61,7 +65,7 @@ jobs:
         id: check
         if: success()
         run: |
-          if [ "$EVENT_NAME" != "push" ] && [ "$EVENT_NAME" != "repository_dispatch" ]; then
+          if [ "$EVENT_NAME" != "push" ]; then
             DEBIAN_UPDATED=false
 
             debian_update_time=$(docker inspect --format='{{.Created}}' debian:buster-slim)
@@ -92,15 +96,26 @@ jobs:
                 echo "Not starting build."
               fi
             fi
+            echo ::set-output name=should_test::${DEBIAN_UPDATED}
             echo ::set-output name=should_update::${DEBIAN_UPDATED}
           else
-            echo "Starting build..."
-            echo ::set-output name=should_update::true
+            cd "$GITHUB_WORKSPACE"
+            pwd
+            ls -ld vpn.env.example
+
+            changed_files=$(git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA")
+            echo "GITHUB_SHA: $GITHUB_SHA"
+            echo "Changed files: $changed_files"
+            echo ::set-output name=should_test::true
+            if [ -n "$changed_files" ] && [ "$changed_files" != ".github/workflows/main.yml" ]; then
+              echo "Starting build..."
+              echo ::set-output name=should_update::true
+            fi
           fi
 
   vpn_test:
     needs: check_update
-    if: needs.check_update.outputs.should_update == 'true'
+    if: needs.check_update.outputs.should_test == 'true'
     runs-on: ubuntu-20.04
     strategy:
       matrix:
@@ -122,6 +137,11 @@ jobs:
           pwd
           ls -ld vpn.env.example
           sed -i '/swan_ver_url/s/^/#/' run.sh
+          sed -i -e '/VPN_DNS_NAME/s/# //' \
+            -e '/VPN_DNS_SRV1/s/# //' \
+            -e '/VPN_DNS_SRV2/s/# //' vpn.env.example
+
+          set -x
 
           docker build -t vpn-test .
 
@@ -184,6 +204,19 @@ jobs:
             docker exec "$TEST_ID" grep "$VPN_PASSWORD" /etc/ppp/chap-secrets
             docker exec "$TEST_ID" grep "$VPN_USER" /etc/ipsec.d/passwd
             docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp
+            docker exec "$TEST_ID" grep "leftid=vpn.example.com" /etc/ipsec.conf
+            docker exec "$TEST_ID" grep 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.conf
+            docker exec "$TEST_ID" grep 'ms-dns 1.1.1.1' /etc/ppp/options.xl2tpd
+            docker exec "$TEST_ID" grep 'ms-dns 1.0.0.1' /etc/ppp/options.xl2tpd
+            docker exec "$TEST_ID" grep 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
+            docker exec "$TEST_ID" grep 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.d/ikev2.conf
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient.mobileconfig
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient.sswan
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient.p12
+            docker exec "$TEST_ID" grep 'vpn.example.com' /etc/ipsec.d/vpnclient.mobileconfig
+            docker exec "$TEST_ID" grep 'vpn.example.com' /etc/ipsec.d/vpnclient.sswan
+          else
+            docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp && exit 1
           fi
 
           docker restart "$TEST_ID"
@@ -206,7 +239,22 @@ jobs:
             docker exec "$TEST_ID" grep "$VPN_PASSWORD" /etc/ppp/chap-secrets
             docker exec "$TEST_ID" grep "$VPN_USER" /etc/ipsec.d/passwd
             docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp
+            docker exec "$TEST_ID" grep "leftid=vpn.example.com" /etc/ipsec.conf
+            docker exec "$TEST_ID" grep 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.conf
+            docker exec "$TEST_ID" grep 'ms-dns 1.1.1.1' /etc/ppp/options.xl2tpd
+            docker exec "$TEST_ID" grep 'ms-dns 1.0.0.1' /etc/ppp/options.xl2tpd
+            docker exec "$TEST_ID" grep 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
+            docker exec "$TEST_ID" grep 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.d/ikev2.conf
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient.mobileconfig
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient.sswan
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient.p12
+            docker exec "$TEST_ID" grep 'vpn.example.com' /etc/ipsec.d/vpnclient.mobileconfig
+            docker exec "$TEST_ID" grep 'vpn.example.com' /etc/ipsec.d/vpnclient.sswan
+          else
+            docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp && exit 1
           fi
+
+          exit 0
       - name: Clear
         if: always()
         run: |
