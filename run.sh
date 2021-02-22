@@ -460,11 +460,12 @@ if [ ! -f "$swan_ver_ts" ] || [ "$(find $swan_ver_ts -mmin +10080)" ]; then
   [ ! -f "$swan_ver_ts" ] && first_run=1 || first_run=0
   touch "$swan_ver_ts"
   os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
-  swan_ver_cur=4.2
+  ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
+  swan_ver_cur=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan //' -e 's/ (netkey).*//' -e 's/^U//' -e 's/\/K.*//')
   swan_ver_url="https://dl.ls20.com/v1/docker/$os_arch/swanver?ver=$swan_ver_cur&ver2=$IMAGE_VER&f=$first_run"
   swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
   if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
-    && [ "$swan_ver_cur" != "$swan_ver_latest" ] \
+    && [ -n "$swan_ver_cur" ] && [ "$swan_ver_cur" != "$swan_ver_latest" ] \
     && printf '%s\n%s' "$swan_ver_cur" "$swan_ver_latest" | sort -C -V; then
     echo
     echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
