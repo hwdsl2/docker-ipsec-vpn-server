@@ -127,11 +127,6 @@ if [ -n "$VPN_PUBLIC_IP" ]; then
   VPN_PUBLIC_IP=$(noquotes "$VPN_PUBLIC_IP")
 fi
 
-if [ -n "$VPN_SETUP_IKEV2" ]; then
-  VPN_SETUP_IKEV2=$(nospaces "$VPN_SETUP_IKEV2")
-  VPN_SETUP_IKEV2=$(noquotes "$VPN_SETUP_IKEV2")
-fi
-
 if [ -n "$VPN_ANDROID_MTU_FIX" ]; then
   VPN_ANDROID_MTU_FIX=$(nospaces "$VPN_ANDROID_MTU_FIX")
   VPN_ANDROID_MTU_FIX=$(noquotes "$VPN_ANDROID_MTU_FIX")
@@ -223,10 +218,6 @@ if [ -n "$VPN_DNS_SRV1" ] && [ -n "$VPN_DNS_SRV2" ]; then
 elif [ -n "$VPN_DNS_SRV1" ]; then
   echo
   echo "Setting DNS server to $VPN_DNS_SRV1..."
-fi
-
-if [ -z "$VPN_SETUP_IKEV2" ] && [ ! -f /etc/ipsec.d/passwd ] && mount | grep -q " /etc/ipsec.d "; then
-  VPN_SETUP_IKEV2=yes
 fi
 
 case $VPN_SHA2_TRUNCBUG in
@@ -428,35 +419,33 @@ chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets /etc/ipsec.d/passwd
 
 # Set up IKEv2
 ikev2_status=0
-case $VPN_SETUP_IKEV2 in
-  [yY][eE][sS])
-    if [ -s /opt/src/ikev2.sh ] && [ ! -f /etc/ipsec.d/ikev2.conf ]; then
-      echo
-      echo "Setting up IKEv2, please wait..."
-      if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
-        /bin/bash /opt/src/ikev2.sh --auto >/etc/ipsec.d/ikev2setup.log 2>&1; then
-        if [ -f /etc/ipsec.d/ikev2.conf ]; then
-          ikev2_status=1
-          ikev2_status_text="IKEv2 setup successful."
-        else
-          echo "IKEv2 setup failed."
-        fi
-      else
-        rm -f /etc/ipsec.d/ikev2.conf
-        echo "IKEv2 setup failed."
-      fi
-      chmod 600 /etc/ipsec.d/ikev2setup.log
+ikev2_conf="/etc/ipsec.d/ikev2.conf"
+ikev2_log="/etc/ipsec.d/ikev2setup.log"
+if mount | grep -q " /etc/ipsec.d " && [ -s /opt/src/ikev2.sh ] && [ ! -f "$ikev2_conf" ]; then
+  echo
+  echo "Setting up IKEv2, please wait..."
+  if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
+    /bin/bash /opt/src/ikev2.sh --auto >"$ikev2_log" 2>&1; then
+    if [ -f "$ikev2_conf" ]; then
+      ikev2_status=1
+      ikev2_status_text="IKEv2 setup successful."
+    else
+      echo "IKEv2 setup failed."
     fi
-    ;;
-esac
-if [ "$ikev2_status" = "0" ] && [ -f /etc/ipsec.d/ikev2.conf ] && [ -s /etc/ipsec.d/ikev2setup.log ]; then
+  else
+    rm -f "$ikev2_conf"
+    echo "IKEv2 setup failed."
+  fi
+  chmod 600 "$ikev2_log"
+fi
+if [ "$ikev2_status" = "0" ] && [ -f "$ikev2_conf" ] && [ -s "$ikev2_log" ]; then
   ikev2_status=2
   ikev2_status_text="IKEv2 is already set up."
 fi
 
 # Check for new Libreswan version
 swan_ver_ts="/opt/src/swan_ver_ts"
-if [ ! -f "$swan_ver_ts" ] || [ "$(find $swan_ver_ts -mmin +10080)" ]; then
+if [ ! -f "$swan_ver_ts" ] || [ "$(find $swan_ver_ts -mmin +10080)" ] || [ "$ikev2_status" = "1" ]; then
   [ ! -f "$swan_ver_ts" ] && first_run=1 || first_run=0
   touch "$swan_ver_ts"
   os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
@@ -527,7 +516,7 @@ cat <<EOF
 $ikev2_status_text Details for IKEv2 mode:
 
 EOF
-  sed -n '/VPN server address:/,/Write this down/p' /etc/ipsec.d/ikev2setup.log
+  sed -n '/VPN server address:/,/Write this down/p' "$ikev2_log"
 cat <<'EOF'
 
 To start using IKEv2, see: https://git.io/ikev2docker
