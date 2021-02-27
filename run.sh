@@ -417,50 +417,11 @@ esac
 # Update file attributes
 chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets /etc/ipsec.d/passwd
 
-# Set up IKEv2
-ikev2_status=0
-ikev2_conf="/etc/ipsec.d/ikev2.conf"
-ikev2_log="/etc/ipsec.d/ikev2setup.log"
-if mount | grep -q " /etc/ipsec.d " && [ -s /opt/src/ikev2.sh ] && [ ! -f "$ikev2_conf" ]; then
-  echo
-  echo "Setting up IKEv2, please wait..."
-  if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
-    /bin/bash /opt/src/ikev2.sh --auto >"$ikev2_log" 2>&1; then
-    if [ -f "$ikev2_conf" ]; then
-      ikev2_status=1
-      ikev2_status_text="IKEv2 setup successful."
-    else
-      echo "IKEv2 setup failed."
-    fi
-  else
-    rm -f "$ikev2_conf"
-    echo "IKEv2 setup failed."
-  fi
-  chmod 600 "$ikev2_log"
-fi
-if [ "$ikev2_status" = "0" ] && [ -f "$ikev2_conf" ] && [ -s "$ikev2_log" ]; then
-  ikev2_status=2
-  ikev2_status_text="IKEv2 is already set up."
-fi
-
-# Check for new Libreswan version
-swan_ver_ts="/opt/src/swan_ver_ts"
-if [ ! -f "$swan_ver_ts" ] || [ "$(find $swan_ver_ts -mmin +10080)" ] || [ "$ikev2_status" = "1" ]; then
-  [ ! -f "$swan_ver_ts" ] && first_run=1 || first_run=0
-  touch "$swan_ver_ts"
-  os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
-  ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
-  swan_ver_cur=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan //' -e 's/ (netkey).*//' -e 's/^U//' -e 's/\/K.*//')
-  swan_ver_url="https://dl.ls20.com/v1/docker/$os_arch/swanver?ver=$swan_ver_cur&ver2=$IMAGE_VER&f=$first_run"
-  swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
-  if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
-    && [ -n "$swan_ver_cur" ] && [ "$swan_ver_cur" != "$swan_ver_latest" ] \
-    && printf '%s\n%s' "$swan_ver_cur" "$swan_ver_latest" | sort -C -V; then
-    echo
-    echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
-    echo "To update this Docker image, see: https://git.io/updatedockervpn"
-  fi
-fi
+echo
+echo "Starting IPsec service..."
+mkdir -p /run/pluto /var/run/pluto
+rm -f /run/pluto/pluto.pid /var/run/pluto/pluto.pid
+service ipsec start >/dev/null 2>&1
 
 if [ -n "$VPN_DNS_NAME" ]; then
   server_text="Server"
@@ -506,36 +467,79 @@ Write these down. You'll need them to connect!
 
 Important notes:   https://git.io/vpnnotes2
 Setup VPN clients: https://git.io/vpnclients
+IKEv2 guide:       https://git.io/ikev2docker
+
+================================================
 EOF
 
-if [ "$ikev2_status" = "1" ] || [ "$ikev2_status" = "2" ]; then
+# Set up IKEv2
+status=0
+ikev2_conf="/etc/ipsec.d/ikev2.conf"
+ikev2_log="/etc/ipsec.d/ikev2setup.log"
+if mount | grep -q " /etc/ipsec.d " && [ -s /opt/src/ikev2.sh ] && [ ! -f "$ikev2_conf" ]; then
+  echo
+  echo "Setting up IKEv2. This may take a few moments..."
+  if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
+    /bin/bash /opt/src/ikev2.sh --auto >"$ikev2_log" 2>&1; then
+    if [ -f "$ikev2_conf" ]; then
+      status=1
+      status_text="IKEv2 setup successful."
+    else
+      status=3
+      echo "IKEv2 setup failed."
+    fi
+  else
+    status=4
+    rm -f "$ikev2_conf"
+    echo "IKEv2 setup failed."
+  fi
+  chmod 600 "$ikev2_log"
+fi
+if [ "$status" = "0" ] && [ -f "$ikev2_conf" ] && [ -s "$ikev2_log" ]; then
+  status=2
+  status_text="IKEv2 is already set up."
+fi
+
+if [ "$status" = "1" ] || [ "$status" = "2" ]; then
 cat <<EOF
 
-------------------------------------------------
+================================================
 
-$ikev2_status_text Details for IKEv2 mode:
+$status_text Details for IKEv2 mode:
 
 EOF
   sed -n '/VPN server address:/,/Write this down/p' "$ikev2_log"
 cat <<'EOF'
 
 To start using IKEv2, see: https://git.io/ikev2docker
-EOF
-else
-cat <<'EOF'
-IKEv2 guide:       https://git.io/ikev2docker
-EOF
-fi
-
-cat <<'EOF'
 
 ================================================
 
 EOF
+else
+  echo
+fi
 
-# Start services
-mkdir -p /run/pluto /var/run/pluto /var/run/xl2tpd
-rm -f /run/pluto/pluto.pid /var/run/pluto/pluto.pid /var/run/xl2tpd.pid
+# Check for new Libreswan version
+swan_ver_ts="/opt/src/swan_ver_ts"
+if [ ! -f "$swan_ver_ts" ] || [ "$(find $swan_ver_ts -mmin +1440)" ]; then
+  [ ! -f "$swan_ver_ts" ] && first_run=1 || first_run=0
+  touch "$swan_ver_ts"
+  os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
+  ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
+  swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan //' -e 's/ (netkey).*//' -e 's/^U//' -e 's/\/K.*//')
+  swan_ver_url="https://dl.ls20.com/v1/docker/$os_arch/swanver?ver=$swan_ver&ver2=$IMAGE_VER&i=$status&f=$first_run"
+  swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
+  if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
+    && [ -n "$swan_ver" ] && [ "$swan_ver" != "$swan_ver_latest" ] \
+    && printf '%s\n%s' "$swan_ver" "$swan_ver_latest" | sort -C -V; then
+    echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
+    echo "To update this Docker image, see: https://git.io/updatedockervpn"
+    echo
+  fi
+fi
 
-/usr/local/sbin/ipsec start
+# Start xl2tpd
+mkdir -p /var/run/xl2tpd
+rm -f /var/run/xl2tpd.pid
 exec /usr/sbin/xl2tpd -D -c /etc/xl2tpd/xl2tpd.conf
