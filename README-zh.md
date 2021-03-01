@@ -52,6 +52,8 @@ docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
 
 ### 环境变量
 
+**注：** 所有这些环境变量对于本镜像都是可选的，也就是说无需定义它们就可以搭建 IPsec VPN 服务器。你可以运行 `touch vpn.env` 创建一个空的 `env` 文件，然后跳到下一节。
+
 这个 Docker 镜像使用以下几个变量，可以在一个 `env` 文件中定义 （[示例](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/vpn.env.example)）：
 
 ```
@@ -76,8 +78,6 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 ```
 VPN_DNS_NAME=vpn.example.com
 ```
-
-所有这些环境变量对于本镜像都是可选的，也就是说无需定义它们就可以搭建 IPsec VPN 服务器。详情请参见以下部分。
 
 ### 运行 IPsec VPN 服务器
 
@@ -168,13 +168,9 @@ docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
 
 对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。阿里云用户请参见 [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433)。
 
-如果需要编辑 VPN 配置文件，你必须首先在正在运行的 Docker 容器中 [开始一个 Bash 会话](#在容器中运行-bash-shell)。
-
 如需添加，修改或者删除 VPN 用户账户，首先更新你的 `env` 文件，然后你必须按照 [下一节](#更新-docker-镜像) 的说明来删除并重新创建 Docker 容器。高级用户可以 [绑定挂载](#绑定挂载-env-文件) `env` 文件。
 
-在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，请看[这里](#使用其他的-dns-服务器)。
-
-使用内核支持有助于提高 IPsec/L2TP 性能。如果你的 Docker 主机的操作系统支持该功能，你会在 `docker logs ipsec-vpn-server` 的输出中看到 "Using l2tp kernel support" 字样。
+在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，请看 [这里](#使用其他的-dns-服务器)。
 
 ## 更新 Docker 镜像
 
@@ -285,13 +281,7 @@ docker run \
 docker logs ipsec-vpn-server
 ```
 
-或者你也可以从安装日志获取配置信息：
-
-```bash
-docker exec -it ipsec-vpn-server cat /etc/ipsec.d/ikev2setup.log
-```
-
-**注：** 如果你无法使用以上命令找到 IKEv2 配置信息，IKEv2 可能没有在容器中启用。尝试按照 [更新 Docker 镜像](#更新-docker-镜像) 一节的说明更新 Docker 镜像和容器。
+**注：** 如果你无法找到 IKEv2 配置信息，IKEv2 可能没有在容器中启用。尝试按照 [更新 Docker 镜像](#更新-docker-镜像) 一节的说明更新 Docker 镜像和容器。
 
 在 IKEv2 安装过程中会创建一个新的名称为 `vpnclient` 的 IKEv2 客户端，并且导出它的配置到 **容器内** 的 `/etc/ipsec.d` 目录下。如果要将客户端配置文件从容器复制到 Docker 主机当前目录：
 
@@ -302,7 +292,7 @@ docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
 docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
 ```
 
-然后你可以使用上面获取的配置信息来 [配置 IKEv2 VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。
+然后你可以使用上面获取的 IKEv2 配置信息来 [配置 IKEv2 VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。
 
 要管理 IKEv2 客户端，你可以使用 [辅助脚本](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#使用辅助脚本)。示例如下。如果需要自定义客户端选项，可以在不添加参数的情况下运行脚本。
 
@@ -317,7 +307,7 @@ docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --listclients
 
 ### 启用 Libreswan 日志
 
-为了保持较小的 Docker 镜像，Libreswan (IPsec) 日志默认未开启。如果你是高级用户，并且需要启用它以便进行故障排除，首先在正在运行的 Docker 容器中开始一个 Bash 会话：
+为了保持较小的 Docker 镜像，Libreswan (IPsec) 日志默认未开启。如果你需要启用它以进行故障排除，首先在正在运行的 Docker 容器中开始一个 Bash 会话：
 
 ```
 docker exec -it ipsec-vpn-server env TERM=xterm bash -l
