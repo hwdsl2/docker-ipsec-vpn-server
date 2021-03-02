@@ -12,6 +12,7 @@
 
 #### 目录
 
+- [快速开始](#快速开始)
 - [安装 Docker](#安装-docker)
 - [下载](#下载)
 - [如何使用本镜像](#如何使用本镜像)
@@ -22,6 +23,25 @@
 - [技术细节](#技术细节)
 - [另见](#另见)
 - [授权协议](#授权协议)
+
+## 快速开始
+
+使用以下命令在 Docker 上快速搭建 IPsec VPN 服务器：
+
+```
+docker run \
+    --name ipsec-vpn-server \
+    --restart=always \
+    -v ikev2-vpn-data:/etc/ipsec.d \
+    -p 500:500/udp \
+    -p 4500:4500/udp \
+    -d --privileged \
+    hwdsl2/ipsec-vpn-server
+```
+
+你的 VPN 登录凭证将会被自动随机生成。请参见 [获取 VPN 登录信息](#获取-vpn-登录信息)。
+
+如需了解更多有关如何使用本镜像的信息，请继续阅读以下部分。
 
 ## 安装 Docker
 
@@ -128,20 +148,6 @@ Password: 你的VPN密码
 docker cp ipsec-vpn-server:/opt/src/vpn-gen.env ./
 ```
 
-### 查看服务器状态
-
-如需查看你的 IPsec VPN 服务器状态，可以在容器中运行 `ipsec status` 命令：
-
-```
-docker exec -it ipsec-vpn-server ipsec status
-```
-
-或者查看当前已建立的 VPN 连接：
-
-```
-docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
-```
-
 ## 下一步
 
 配置你的计算机或其它设备使用 VPN 。请参见：
@@ -197,6 +203,7 @@ Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 - [关于 host network 模式](#关于-host-network-模式)
 - [配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)
 - [启用 Libreswan 日志](#启用-libreswan-日志)
+- [查看服务器状态](#查看服务器状态)
 - [从源代码构建](#从源代码构建)
 - [在容器中运行 Bash shell](#在容器中运行-bash-shell)
 - [绑定挂载 env 文件](#绑定挂载-env-文件)
@@ -330,6 +337,20 @@ docker exec -it ipsec-vpn-server grep pluto /var/log/auth.log
 ```
 
 如需查看 xl2tpd 日志，请运行 `docker logs ipsec-vpn-server`。
+
+### 查看服务器状态
+
+如需查看你的 IPsec VPN 服务器状态，可以在容器中运行 `ipsec status` 命令：
+
+```
+docker exec -it ipsec-vpn-server ipsec status
+```
+
+或者查看当前已建立的 VPN 连接：
+
+```
+docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
+```
 
 ### 从源代码构建
 

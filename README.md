@@ -12,6 +12,7 @@ Based on Debian 10 (Buster) with [Libreswan](https://libreswan.org) (IPsec VPN s
 
 #### Table of Contents
 
+- [Quick start](https://github.com/hwdsl2/docker-ipsec-vpn-server#quick-start)
 - [Install Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server#install-docker)
 - [Download](https://github.com/hwdsl2/docker-ipsec-vpn-server#download)
 - [How to use this image](https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image)
@@ -22,6 +23,25 @@ Based on Debian 10 (Buster) with [Libreswan](https://libreswan.org) (IPsec VPN s
 - [Technical details](https://github.com/hwdsl2/docker-ipsec-vpn-server#technical-details)
 - [See also](https://github.com/hwdsl2/docker-ipsec-vpn-server#see-also)
 - [License](https://github.com/hwdsl2/docker-ipsec-vpn-server#license)
+
+## Quick start
+
+Use this command to set up an IPsec VPN server on Docker:
+
+```
+docker run \
+    --name ipsec-vpn-server \
+    --restart=always \
+    -v ikev2-vpn-data:/etc/ipsec.d \
+    -p 500:500/udp \
+    -p 4500:4500/udp \
+    -d --privileged \
+    hwdsl2/ipsec-vpn-server
+```
+
+Your VPN login details will be randomly generated. See [Retrieve VPN login details](https://github.com/hwdsl2/docker-ipsec-vpn-server#retrieve-vpn-login-details).
+
+To learn more about how to use this image, read the sections below.
 
 ## Install Docker
 
@@ -128,20 +148,6 @@ The output will also include details for IKEv2 mode, if enabled. To start using 
 docker cp ipsec-vpn-server:/opt/src/vpn-gen.env ./
 ```
 
-### Check server status
-
-To check the status of your IPsec VPN server, you can pass `ipsec status` to your container like this:
-
-```
-docker exec -it ipsec-vpn-server ipsec status
-```
-
-Or display current established VPN connections:
-
-```
-docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
-```
-
 ## Next steps
 
 Get your computer or device to use the VPN. Please refer to:
@@ -197,6 +203,7 @@ Otherwise, it will download the latest version. To update your Docker container,
 - [About host network mode](https://github.com/hwdsl2/docker-ipsec-vpn-server#about-host-network-mode)
 - [Configure and use IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server#configure-and-use-ikev2-vpn)
 - [Enable Libreswan logs](https://github.com/hwdsl2/docker-ipsec-vpn-server#enable-libreswan-logs)
+- [Check server status](https://github.com/hwdsl2/docker-ipsec-vpn-server#check-server-status)
 - [Build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code)
 - [Bash shell inside container](https://github.com/hwdsl2/docker-ipsec-vpn-server#bash-shell-inside-container)
 - [Bind mount the env file](https://github.com/hwdsl2/docker-ipsec-vpn-server#bind-mount-the-env-file)
@@ -330,6 +337,20 @@ docker exec -it ipsec-vpn-server grep pluto /var/log/auth.log
 ```
 
 To check xl2tpd logs, run `docker logs ipsec-vpn-server`.
+
+### Check server status
+
+To check the status of your IPsec VPN server, you can pass `ipsec status` to your container like this:
+
+```
+docker exec -it ipsec-vpn-server ipsec status
+```
+
+Or display current established VPN connections:
+
+```
+docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
+```
 
 ### Build from source code
 
