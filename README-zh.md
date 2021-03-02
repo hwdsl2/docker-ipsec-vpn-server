@@ -406,12 +406,13 @@ docker run \
 
 ## 技术细节
 
-需要运行以下两个服务： `Libreswan (pluto)` 提供 IPsec VPN， `xl2tpd` 提供 L2TP 支持。
+需要运行以下两个服务：`Libreswan (pluto)` 提供 IPsec VPN，`xl2tpd` 提供 L2TP 支持。
 
 默认的 IPsec 配置支持以下协议：
 
-* IKEv1 with PSK and XAuth ("Cisco IPsec")
 * IPsec/L2TP with PSK
+* IKEv1 with PSK and XAuth ("Cisco IPsec")
+* IKEv2
 
 为使 VPN 服务器正常工作，将会打开以下端口：
 

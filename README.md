@@ -410,8 +410,9 @@ There are two services running: `Libreswan (pluto)` for the IPsec VPN, and `xl2t
 
 The default IPsec configuration supports:
 
-* IKEv1 with PSK and XAuth ("Cisco IPsec")
 * IPsec/L2TP with PSK
+* IKEv1 with PSK and XAuth ("Cisco IPsec")
+* IKEv2
 
 The ports that are exposed for this container to work are:
 
