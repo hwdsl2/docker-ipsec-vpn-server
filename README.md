@@ -145,7 +145,7 @@ The output will also include details for IKEv2 mode, if enabled. To start using 
 (Optional) Backup the generated VPN login details (if any) to the current directory:
 
 ```
-docker cp ipsec-vpn-server:/opt/src/vpn-gen.env ./
+docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 ```
 
 ## Next steps

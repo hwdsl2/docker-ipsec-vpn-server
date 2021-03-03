@@ -145,7 +145,7 @@ Password: 你的VPN密码
 （可选步骤）备份自动生成的 VPN 登录信息（如果有）到当前目录：
 
 ```
-docker cp ipsec-vpn-server:/opt/src/vpn-gen.env ./
+docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 ```
 
 ## 下一步
