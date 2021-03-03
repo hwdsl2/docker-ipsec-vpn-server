@@ -61,7 +61,8 @@ NET_IFACE=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
 
 mkdir -p /opt/src
 vpn_env="/opt/src/vpn.env"
-vpn_gen_env="/opt/src/vpn-gen.env"
+vpn_gen_env="/etc/ipsec.d/vpn-gen.env"
+vpn_gen_env2="/opt/src/vpn-gen.env"
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
   if [ -f "$vpn_env" ]; then
     echo
@@ -71,6 +72,10 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
     echo
     echo 'Retrieving previously generated VPN credentials...'
     . "$vpn_gen_env"
+  elif [ -f "$vpn_gen_env2" ]; then
+    echo
+    echo 'Retrieving previously generated VPN credentials...'
+    . "$vpn_gen_env2"
   else
     echo
     echo 'VPN credentials not set by user. Generating random PSK and password...'
@@ -81,7 +86,10 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
     printf '%s\n' "VPN_IPSEC_PSK='$VPN_IPSEC_PSK'" > "$vpn_gen_env"
     printf '%s\n' "VPN_USER='$VPN_USER'" >> "$vpn_gen_env"
     printf '%s\n' "VPN_PASSWORD='$VPN_PASSWORD'" >> "$vpn_gen_env"
-    chmod 600 "$vpn_gen_env"
+    printf '%s\n' "VPN_IPSEC_PSK='$VPN_IPSEC_PSK'" > "$vpn_gen_env2"
+    printf '%s\n' "VPN_USER='$VPN_USER'" >> "$vpn_gen_env2"
+    printf '%s\n' "VPN_PASSWORD='$VPN_PASSWORD'" >> "$vpn_gen_env2"
+    chmod 600 "$vpn_gen_env" "$vpn_gen_env2"
   fi
 fi
 
@@ -521,22 +529,27 @@ else
 fi
 
 # Check for new Libreswan version
-swan_ver_ts="/opt/src/swan_ver_ts"
-if [ ! -f "$swan_ver_ts" ] || [ "$(find $swan_ver_ts -mmin +1440)" ]; then
-  [ ! -f "$swan_ver_ts" ] && first_run=1 || first_run=0
-  touch "$swan_ver_ts"
+swan_ver_file="/opt/src/swanver"
+if [ ! -f "$swan_ver_file" ]; then
+  touch "$swan_ver_file"
   os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
   ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
   swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan //' -e 's/ (netkey).*//' -e 's/^U//' -e 's/\/K.*//')
-  swan_ver_url="https://dl.ls20.com/v1/docker/$os_arch/swanver?ver=$swan_ver&ver2=$IMAGE_VER&i=$status&f=$first_run"
+  swan_ver_url="https://dl.ls20.com/v1/docker/$os_arch/swanver?ver=$swan_ver&ver2=$IMAGE_VER&i=$status"
   swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
   if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
     && [ -n "$swan_ver" ] && [ "$swan_ver" != "$swan_ver_latest" ] \
     && printf '%s\n%s' "$swan_ver" "$swan_ver_latest" | sort -C -V; then
-    echo "Note: A newer version of Libreswan ($swan_ver_latest) is available."
-    echo "To update this Docker image, see: https://git.io/updatedockervpn"
-    echo
+    printf '%s\n' "swan_ver_latest='$swan_ver_latest'" > "$swan_ver_file"
   fi
+fi
+if [ -s "$swan_ver_file" ]; then
+  . "$swan_ver_file"
+cat <<EOF
+Note: A newer version of Libreswan ($swan_ver_latest) is available.
+To update this Docker image, see: https://git.io/updatedockervpn
+
+EOF
 fi
 
 # Start xl2tpd
