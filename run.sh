@@ -62,7 +62,6 @@ NET_IFACE=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
 mkdir -p /opt/src
 vpn_env="/opt/src/vpn.env"
 vpn_gen_env="/etc/ipsec.d/vpn-gen.env"
-vpn_gen_env2="/opt/src/vpn-gen.env"
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
   if [ -f "$vpn_env" ]; then
     echo
@@ -72,10 +71,6 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
     echo
     echo 'Retrieving previously generated VPN credentials...'
     . "$vpn_gen_env"
-  elif [ -f "$vpn_gen_env2" ]; then
-    echo
-    echo 'Retrieving previously generated VPN credentials...'
-    . "$vpn_gen_env2"
   else
     echo
     echo 'VPN credentials not set by user. Generating random PSK and password...'
@@ -86,10 +81,7 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
     printf '%s\n' "VPN_IPSEC_PSK='$VPN_IPSEC_PSK'" > "$vpn_gen_env"
     printf '%s\n' "VPN_USER='$VPN_USER'" >> "$vpn_gen_env"
     printf '%s\n' "VPN_PASSWORD='$VPN_PASSWORD'" >> "$vpn_gen_env"
-    printf '%s\n' "VPN_IPSEC_PSK='$VPN_IPSEC_PSK'" > "$vpn_gen_env2"
-    printf '%s\n' "VPN_USER='$VPN_USER'" >> "$vpn_gen_env2"
-    printf '%s\n' "VPN_PASSWORD='$VPN_PASSWORD'" >> "$vpn_gen_env2"
-    chmod 600 "$vpn_gen_env" "$vpn_gen_env2"
+    chmod 600 "$vpn_gen_env"
   fi
 fi
 
