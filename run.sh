@@ -474,13 +474,14 @@ EOF
 
 # Set up IKEv2
 status=0
+ikev2_sh="/opt/src/ikev2.sh"
 ikev2_conf="/etc/ipsec.d/ikev2.conf"
 ikev2_log="/etc/ipsec.d/ikev2setup.log"
-if mount | grep -q " /etc/ipsec.d " && [ -s /opt/src/ikev2.sh ] && [ ! -f "$ikev2_conf" ]; then
+if mount | grep -q " /etc/ipsec.d " && [ -s "$ikev2_sh" ] && [ ! -f "$ikev2_conf" ]; then
   echo
   echo "Setting up IKEv2. This may take a few moments..."
   if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
-    /bin/bash /opt/src/ikev2.sh --auto >"$ikev2_log" 2>&1; then
+    bash "$ikev2_sh" --auto >"$ikev2_log" 2>&1; then
     if [ -f "$ikev2_conf" ]; then
       status=1
       status_text="IKEv2 setup successful."
@@ -499,7 +500,6 @@ if [ "$status" = "0" ] && [ -f "$ikev2_conf" ] && [ -s "$ikev2_log" ]; then
   status=2
   status_text="IKEv2 is already set up."
 fi
-
 if [ "$status" = "1" ] || [ "$status" = "2" ]; then
 cat <<EOF
 
