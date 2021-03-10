@@ -292,8 +292,8 @@ jobs:
           docker info
           docker buildx version
 
-          docker pull -q multiarch/qemu-user-static
-          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
+          docker pull -q multiarch/qemu-user-static:5.0.0-5
+          docker run --rm --privileged multiarch/qemu-user-static:5.0.0-5 --reset -p yes --credential yes
           docker buildx create --name "builder-${GITHUB_SHA::8}" --driver docker-container --use
           docker buildx inspect --bootstrap
       - name: Docker Hub Login
