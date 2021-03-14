@@ -1,21 +1,5 @@
 FROM debian:buster-slim
 
-ARG BUILD_DATE
-ARG VERSION
-ARG VCS_REF
-
-LABEL maintainer="Lin Song <linsongui@gmail.com>" \
-    org.opencontainers.image.created="$BUILD_DATE" \
-    org.opencontainers.image.version="$VERSION" \
-    org.opencontainers.image.revision="$VCS_REF" \
-    org.opencontainers.image.authors="Lin Song <linsongui@gmail.com>" \
-    org.opencontainers.image.title="IPsec VPN Server on Docker" \
-    org.opencontainers.image.description="Docker image to run an IPsec VPN server, with both IPsec/L2TP and Cisco IPsec." \
-    org.opencontainers.image.url="https://github.com/hwdsl2/docker-ipsec-vpn-server" \
-    org.opencontainers.image.source="https://github.com/hwdsl2/docker-ipsec-vpn-server" \
-    org.opencontainers.image.documentation="https://github.com/hwdsl2/docker-ipsec-vpn-server"
-
-ENV IMAGE_VER $BUILD_DATE
 ENV SWAN_VER 4.3
 
 WORKDIR /opt/src
@@ -57,3 +41,19 @@ RUN chmod 755 /opt/src/run.sh
 EXPOSE 500/udp 4500/udp
 
 CMD ["/opt/src/run.sh"]
+
+ARG BUILD_DATE
+ARG VERSION
+ARG VCS_REF
+ENV IMAGE_VER $BUILD_DATE
+
+LABEL maintainer="Lin Song <linsongui@gmail.com>" \
+    org.opencontainers.image.created="$BUILD_DATE" \
+    org.opencontainers.image.version="$VERSION" \
+    org.opencontainers.image.revision="$VCS_REF" \
+    org.opencontainers.image.authors="Lin Song <linsongui@gmail.com>" \
+    org.opencontainers.image.title="IPsec VPN Server on Docker" \
+    org.opencontainers.image.description="Docker image to run an IPsec VPN server, with both IPsec/L2TP and Cisco IPsec." \
+    org.opencontainers.image.url="https://github.com/hwdsl2/docker-ipsec-vpn-server" \
+    org.opencontainers.image.source="https://github.com/hwdsl2/docker-ipsec-vpn-server" \
+    org.opencontainers.image.documentation="https://github.com/hwdsl2/docker-ipsec-vpn-server"
