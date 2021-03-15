@@ -20,6 +20,7 @@ jobs:
           path: |
             ${{ runner.temp }}/.buildx-bin
             ${{ runner.temp }}/.buildx-cache
+            ${{ runner.temp }}/.docker-images
           key: ${{ secrets.CACHE_NAME }}-${{ github.sha }}-${{ github.run_id }}
           restore-keys: |
             ${{ secrets.CACHE_NAME }}-
@@ -224,6 +225,7 @@ jobs:
           path: |
             ${{ runner.temp }}/.buildx-bin
             ${{ runner.temp }}/.buildx-cache
+            ${{ runner.temp }}/.docker-images
           key: ${{ secrets.CACHE_NAME }}-${{ github.sha }}-${{ github.run_id }}
           restore-keys: |
             ${{ secrets.CACHE_NAME }}-
@@ -263,8 +265,21 @@ jobs:
           docker info
           docker buildx version
 
-          docker pull -q multiarch/qemu-user-static:5.0.0-5
-          docker run --rm --privileged multiarch/qemu-user-static:5.0.0-5 --reset -p yes --credential yes
+          image_cache_dir="${RUNNER_TEMP}/.docker-images"
+          for image in "quay.io/hwdsl2/qemu-user-static:latest" "moby/buildkit:buildx-stable-1"; do
+            image_file=$(printf '%s' "${image}.tar.gz" | tr '/' '-' | tr ':' '-')
+            if [ -s "${image_cache_dir}/${image_file}" ]; then
+              echo "Using ${image} from cache..."
+              docker load -i "${image_cache_dir}/${image_file}"
+            else
+              echo "Downloading ${image}..."
+              docker pull -q "${image}"
+              mkdir -p "${image_cache_dir}"
+              docker save "${image}" | gzip > "${image_cache_dir}/${image_file}"
+            fi
+          done
+
+          docker run --rm --privileged quay.io/hwdsl2/qemu-user-static:latest --reset -p yes --credential yes
           docker buildx create --name "builder-${GITHUB_SHA::8}" --driver docker-container --use
           docker buildx inspect --bootstrap
       - name: Docker Hub Login

@@ -37,36 +37,9 @@ jobs:
           shellcheck **/*.sh
           shopt -u globstar
 
-  check_update:
-    needs: shellcheck
-    runs-on: ubuntu-20.04
-    if: github.repository_owner == 'hwdsl2'
-    outputs:
-      should_update: ${{ steps.check.outputs.should_update }}
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - name: Check
-        id: check
-        if: success()
-        run: |
-          cd "$GITHUB_WORKSPACE"
-          pwd
-          ls -ld vpn.env.example
-
-          changed_files=$(git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA")
-          echo "GITHUB_SHA: $GITHUB_SHA"
-          echo "Changed files:"
-          printf '%s\n' "$changed_files"
-          if [ -n "$changed_files" ] && printf '%s' "$changed_files" | grep -q -v '\.github/workflows'; then
-            echo "Starting build..."
-            echo ::set-output name=should_update::true
-          fi
-
   vpn_test:
     runs-on: ubuntu-20.04
+    if: github.repository_owner == 'hwdsl2'
     strategy:
       matrix:
         test_id: [no-env, with-env]
@@ -211,9 +184,8 @@ jobs:
           docker rmi vpn-test || true
 
   buildx:
-    needs: [check_update, vpn_test]
+    needs: [shellcheck, vpn_test]
     runs-on: ubuntu-20.04
-    if: needs.check_update.outputs.should_update == 'true'
     steps:
       - uses: actions/checkout@v2
         with:
@@ -225,6 +197,7 @@ jobs:
           path: |
             ${{ runner.temp }}/.buildx-bin
             ${{ runner.temp }}/.buildx-cache
+            ${{ runner.temp }}/.docker-images
           key: ${{ secrets.CACHE_NAME }}-${{ github.sha }}-${{ github.run_id }}
           restore-keys: |
             ${{ secrets.CACHE_NAME }}-
@@ -264,8 +237,21 @@ jobs:
           docker info
           docker buildx version
 
-          docker pull -q multiarch/qemu-user-static:5.0.0-5
-          docker run --rm --privileged multiarch/qemu-user-static:5.0.0-5 --reset -p yes --credential yes
+          image_cache_dir="${RUNNER_TEMP}/.docker-images"
+          for image in "quay.io/hwdsl2/qemu-user-static:latest" "moby/buildkit:buildx-stable-1"; do
+            image_file=$(printf '%s' "${image}.tar.gz" | tr '/' '-' | tr ':' '-')
+            if [ -s "${image_cache_dir}/${image_file}" ]; then
+              echo "Using ${image} from cache..."
+              docker load -i "${image_cache_dir}/${image_file}"
+            else
+              echo "Downloading ${image}..."
+              docker pull -q "${image}"
+              mkdir -p "${image_cache_dir}"
+              docker save "${image}" | gzip > "${image_cache_dir}/${image_file}"
+            fi
+          done
+
+          docker run --rm --privileged quay.io/hwdsl2/qemu-user-static:latest --reset -p yes --credential yes
           docker buildx create --name "builder-${GITHUB_SHA::8}" --driver docker-container --use
           docker buildx inspect --bootstrap
       - name: Docker Hub Login
