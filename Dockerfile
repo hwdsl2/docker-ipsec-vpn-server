@@ -1,7 +1,6 @@
 FROM debian:buster-slim
 
 ENV SWAN_VER 4.3
-
 WORKDIR /opt/src
 
 RUN apt-get -yqq update \
@@ -31,15 +30,14 @@ RUN apt-get -yqq update \
     && apt-get -yqq autoremove \
     && apt-get -y clean \
     && rm -rf /var/lib/apt/lists/* \
-    && update-alternatives --set iptables /usr/sbin/iptables-legacy \
-    && wget -t 3 -T 30 -nv -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/master/extras/ikev2setup.sh \
+    && update-alternatives --set iptables /usr/sbin/iptables-legacy
+
+RUN wget -t 3 -T 30 -nv -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/35c85526b6f6950a673d66f69e3089f577c2781b/extras/ikev2setup.sh \
     && chmod 755 /opt/src/ikev2.sh
 
 COPY ./run.sh /opt/src/run.sh
 RUN chmod 755 /opt/src/run.sh
-
 EXPOSE 500/udp 4500/udp
-
 CMD ["/opt/src/run.sh"]
 
 ARG BUILD_DATE
