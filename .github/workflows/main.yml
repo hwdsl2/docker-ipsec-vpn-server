@@ -266,15 +266,18 @@ jobs:
           QUAY_USER: ${{ secrets.QUAY_USER }}
           QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
         run: echo "$QUAY_TOKEN" | docker login quay.io --username "$QUAY_USER" --password-stdin 2>&1
-      - name: Docker Buildx (build and push)
+      - name: Docker Buildx
         if: success()
         env:
           DOCKER_USER: ${{ github.repository_owner }}
+          BUILD_ONLY: ${{ secrets.BUILD_ONLY }}
           RUNNER_TEMP: ${{ runner.temp }}
         run: |
           cd "$GITHUB_WORKSPACE"
           pwd
           ls -ld vpn.env.example
+
+          [ "$BUILD_ONLY" = "true" ] && BUILD_ONLY=""
           current_time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 
           docker buildx build \
@@ -286,7 +289,7 @@ jobs:
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache" \
             --cache-to type=local,dest="${RUNNER_TEMP}/.buildx-cache-new" \
             -t "$DOCKER_USER/ipsec-vpn-server:latest" \
-            --push \
+            ${BUILD_ONLY:+--push} \
             .
 
           docker buildx build \
@@ -297,7 +300,7 @@ jobs:
             --build-arg VERSION=latest \
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache-new" \
             -t "quay.io/$DOCKER_USER/ipsec-vpn-server:latest" \
-            --push \
+            ${BUILD_ONLY:+--push} \
             .
 
           /bin/rm -rf "${RUNNER_TEMP}/.buildx-cache"
