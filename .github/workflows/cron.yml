@@ -21,7 +21,7 @@ jobs:
             ${{ runner.temp }}/.buildx-bin
             ${{ runner.temp }}/.buildx-cache
             ${{ runner.temp }}/.docker-images
-          key: ${{ secrets.CACHE_NAME }}-${{ github.sha }}-${{ github.run_id }}
+          key: ${{ secrets.CACHE_NAME }}-${{ github.sha }}-${{ github.run_id }}-check
           restore-keys: |
             ${{ secrets.CACHE_NAME }}-
       - name: Prepare
