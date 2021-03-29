@@ -1,8 +1,8 @@
 ### Creative Commons Attribution-ShareAlike 3.0 Unported License
 Link to license summary: https://creativecommons.org/licenses/by-sa/3.0/
 
-Copyright (C) 2016-2021 Lin Song    
-Based on the work of Thomas Sarlandie (Copyright 2012)
+Copyright (C) 2016-2021 [Lin Song](https://www.linkedin.com/in/linsongui)   
+Based on [the work of Thomas Sarlandie](https://github.com/sarfata/voodooprivacy) (Copyright 2012)
 
 <p>THE WORK (AS DEFINED BELOW) IS PROVIDED UNDER THE TERMS
 OF THIS CREATIVE COMMONS PUBLIC LICENSE ("CCPL" OR
