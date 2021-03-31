@@ -298,6 +298,7 @@ jobs:
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache" \
             --cache-to type=local,dest="${RUNNER_TEMP}/.buildx-cache-new" \
             -t "$DOCKER_USER/ipsec-vpn-server:latest" \
+            --pull \
             ${BUILD_ONLY:+--push} \
             .
 
@@ -309,6 +310,7 @@ jobs:
             --build-arg VERSION=latest \
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache-new" \
             -t "quay.io/$DOCKER_USER/ipsec-vpn-server:latest" \
+            --pull \
             ${BUILD_ONLY:+--push} \
             .
 
