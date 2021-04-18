@@ -41,7 +41,7 @@ RUN apt-get -yqq update \
     && rm -rf /var/lib/apt/lists/* \
     && update-alternatives --set iptables /usr/sbin/iptables-legacy
 
-RUN wget -t 3 -T 30 -nv -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/f35ea9ed0d783f248ba41f515322d1a05f882070/extras/ikev2setup.sh \
+RUN wget -t 3 -T 30 -nv -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/10f09bbab6d0bd3beb26238e09d76ea181948442/extras/ikev2setup.sh \
     && chmod 755 /opt/src/ikev2.sh
 
 COPY ./run.sh /opt/src/run.sh
