@@ -237,7 +237,6 @@ version 2.0
 
 config setup
   virtual-private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!$L2TP_NET,%v4:!$XAUTH_NET
-  interfaces=%defaultroute
   uniqueids=no
 
 conn shared
@@ -264,7 +263,6 @@ conn l2tp-psk
   leftprotoport=17/1701
   rightprotoport=17/%any
   type=transport
-  phase2=esp
   also=shared
 
 conn xauth-psk
@@ -277,8 +275,6 @@ conn xauth-psk
   leftmodecfgserver=yes
   rightmodecfgclient=yes
   modecfgpull=yes
-  xauthby=file
-  fragmentation=yes
   cisco-unity=yes
   also=shared
 
@@ -529,7 +525,7 @@ if [ ! -f "$swan_ver_file" ]; then
   swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan //' -e 's/ (netkey).*//' -e 's/^U//' -e 's/\/K.*//')
   swan_ver_url="https://dl.ls20.com/v1/docker/$os_arch/swanver?ver=$swan_ver&ver2=$IMAGE_VER&i=$status"
   swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
-  if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9])\.([0-9]|[1-9][0-9])$' \
+  if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$' \
     && [ -n "$swan_ver" ] && [ "$swan_ver" != "$swan_ver_latest" ] \
     && printf '%s\n%s' "$swan_ver" "$swan_ver_latest" | sort -C -V; then
     printf '%s\n' "swan_ver_latest='$swan_ver_latest'" > "$swan_ver_file"

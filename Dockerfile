@@ -9,7 +9,7 @@
 
 FROM debian:buster-slim
 
-ENV SWAN_VER 4.3
+ENV SWAN_VER 4.4
 WORKDIR /opt/src
 
 RUN apt-get -yqq update \
@@ -41,7 +41,7 @@ RUN apt-get -yqq update \
     && rm -rf /var/lib/apt/lists/* \
     && update-alternatives --set iptables /usr/sbin/iptables-legacy
 
-RUN wget -t 3 -T 30 -nv -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/10f09bbab6d0bd3beb26238e09d76ea181948442/extras/ikev2setup.sh \
+RUN wget -t 3 -T 30 -nv -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/ac0bde54bbe3a79856e225259881b6f2bd9d9417/extras/ikev2setup.sh \
     && chmod 755 /opt/src/ikev2.sh
 
 COPY ./run.sh /opt/src/run.sh
