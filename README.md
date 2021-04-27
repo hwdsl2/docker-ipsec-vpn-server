@@ -305,11 +305,11 @@ You can manage IKEv2 clients using the [helper script](https://github.com/hwdsl2
 
 ```bash
 # Add a new client (using default options)
-docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --addclient [client name]
+docker exec -it ipsec-vpn-server /opt/src/ikev2.sh --addclient [client name]
 # Export configuration for an existing client
-docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --exportclient [client name]
+docker exec -it ipsec-vpn-server /opt/src/ikev2.sh --exportclient [client name]
 # List the names of existing clients
-docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --listclients
+docker exec -it ipsec-vpn-server /opt/src/ikev2.sh --listclients
 ```
 
 ### Enable Libreswan logs

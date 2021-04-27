@@ -305,11 +305,11 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
 
 ```bash
 # 添加一个客户端（使用默认选项）
-docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --addclient [client name]
+docker exec -it ipsec-vpn-server /opt/src/ikev2.sh --addclient [client name]
 # 导出一个已有的客户端的配置
-docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --exportclient [client name]
+docker exec -it ipsec-vpn-server /opt/src/ikev2.sh --exportclient [client name]
 # 列出已有的客户端的名称
-docker exec -it ipsec-vpn-server bash /opt/src/ikev2.sh --listclients
+docker exec -it ipsec-vpn-server /opt/src/ikev2.sh --listclients
 ```
 
 ### 启用 Libreswan 日志
