@@ -340,16 +340,16 @@ docker exec -it ipsec-vpn-server grep pluto /var/log/auth.log
 
 ### 查看服务器状态
 
-如需查看你的 IPsec VPN 服务器状态，可以在容器中运行 `ipsec status` 命令：
+检查 IPsec VPN 服务器状态：
 
 ```
 docker exec -it ipsec-vpn-server ipsec status
 ```
 
-或者查看当前已建立的 VPN 连接：
+查看当前已建立的 VPN 连接：
 
 ```
-docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
+docker exec -it ipsec-vpn-server ipsec trafficstatus
 ```
 
 ### 从源代码构建

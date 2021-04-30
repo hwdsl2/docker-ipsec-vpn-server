@@ -340,16 +340,16 @@ To check xl2tpd logs, run `docker logs ipsec-vpn-server`.
 
 ### Check server status
 
-To check the status of your IPsec VPN server, you can pass `ipsec status` to your container like this:
+Check the status of the IPsec VPN server:
 
 ```
 docker exec -it ipsec-vpn-server ipsec status
 ```
 
-Or display current established VPN connections:
+Show currently established VPN connections:
 
 ```
-docker exec -it ipsec-vpn-server ipsec whack --trafficstatus
+docker exec -it ipsec-vpn-server ipsec trafficstatus
 ```
 
 ### Build from source code
