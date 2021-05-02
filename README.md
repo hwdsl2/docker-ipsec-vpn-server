@@ -12,17 +12,17 @@ Based on Debian 10 (Buster) with [Libreswan](https://libreswan.org) (IPsec VPN s
 
 #### Table of Contents
 
-- [Quick start](https://github.com/hwdsl2/docker-ipsec-vpn-server#quick-start)
-- [Install Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server#install-docker)
-- [Download](https://github.com/hwdsl2/docker-ipsec-vpn-server#download)
-- [How to use this image](https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image)
-- [Next steps](https://github.com/hwdsl2/docker-ipsec-vpn-server#next-steps)
-- [Important notes](https://github.com/hwdsl2/docker-ipsec-vpn-server#important-notes)
-- [Update Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server#update-docker-image)
-- [Advanced usage](https://github.com/hwdsl2/docker-ipsec-vpn-server#advanced-usage)
-- [Technical details](https://github.com/hwdsl2/docker-ipsec-vpn-server#technical-details)
-- [See also](https://github.com/hwdsl2/docker-ipsec-vpn-server#see-also)
-- [License](https://github.com/hwdsl2/docker-ipsec-vpn-server#license)
+- [Quick start](#quick-start)
+- [Install Docker](#install-docker)
+- [Download](#download)
+- [How to use this image](#how-to-use-this-image)
+- [Next steps](#next-steps)
+- [Important notes](#important-notes)
+- [Update Docker image](#update-docker-image)
+- [Advanced usage](#advanced-usage)
+- [Technical details](#technical-details)
+- [See also](#see-also)
+- [License](#license)
 
 ## Quick start
 
@@ -39,7 +39,7 @@ docker run \
     hwdsl2/ipsec-vpn-server
 ```
 
-Your VPN login details will be randomly generated. See [Retrieve VPN login details](https://github.com/hwdsl2/docker-ipsec-vpn-server#retrieve-vpn-login-details).
+Your VPN login details will be randomly generated. See [Retrieve VPN login details](#retrieve-vpn-login-details).
 
 To learn more about how to use this image, read the sections below.
 
@@ -66,7 +66,7 @@ docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
 
 Supported platforms: `linux/amd64`, `linux/arm64` and `linux/arm/v7`.
 
-Advanced users can [build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code) on GitHub.
+Advanced users can [build from source code](#build-from-source-code) on GitHub.
 
 ## How to use this image
 
@@ -82,7 +82,7 @@ VPN_USER=your_vpn_username
 VPN_PASSWORD=your_vpn_password
 ```
 
-This will create a user account for VPN login, which can be used by your multiple devices[*](https://github.com/hwdsl2/docker-ipsec-vpn-server#important-notes). The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
+This will create a user account for VPN login, which can be used by your multiple devices[*](#important-notes). The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
 
 Additional VPN users are supported, and can be optionally declared in your `env` file like this. Usernames and passwords must be separated by spaces, and usernames cannot contain duplicates. All VPN users will share the same IPsec PSK.
 
@@ -119,7 +119,7 @@ In this command, we use the `-v` option of `docker run` to create a new [Docker 
 
 It is recommended to enable IKEv2 when using this image. However, if you prefer not to enable IKEv2 and use only the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes to connect to the VPN, remove the `-v` option from the `docker run` command above.
 
-**Note:** Advanced users can also [run without privileged mode](https://github.com/hwdsl2/docker-ipsec-vpn-server#run-without-privileged-mode).
+**Note:** Advanced users can also [run without privileged mode](#run-without-privileged-mode).
 
 ### Retrieve VPN login details
 
@@ -140,7 +140,7 @@ Username: your_vpn_username
 Password: your_vpn_password
 ```
 
-The output will also include details for IKEv2 mode, if enabled. To start using IKEv2, see [Configure and use IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server#configure-and-use-ikev2-vpn).
+The output will also include details for IKEv2 mode, if enabled. To start using IKEv2, see [Configure and use IKEv2 VPN](#configure-and-use-ikev2-vpn).
 
 (Optional) Backup the generated VPN login details (if any) to the current directory:
 
@@ -156,7 +156,7 @@ Get your computer or device to use the VPN. Please refer to:
 
 **[Configure IPsec/XAuth ("Cisco IPsec") VPN Clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md)**
 
-**[Advanced usage: Configure and use IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server#configure-and-use-ikev2-vpn)**
+**[Advanced usage: Configure and use IKEv2 VPN](#configure-and-use-ikev2-vpn)**
 
 If you get an error when trying to connect, see [Troubleshooting](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#troubleshooting).
 
@@ -170,17 +170,17 @@ Enjoy your very own VPN!
 
 **Android users**: If you encounter connection issues, try [these steps](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#android-mtumss-issues).
 
-The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only [IPsec/XAuth mode](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md), or [set up IKEv2](https://github.com/hwdsl2/docker-ipsec-vpn-server#configure-and-use-ikev2-vpn).
+The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only [IPsec/XAuth mode](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md), or [set up IKEv2](#configure-and-use-ikev2-vpn).
 
-If you wish to add, edit or remove VPN user accounts, first update your `env` file, then you must remove and re-create the Docker container using instructions from the [next section](https://github.com/hwdsl2/docker-ipsec-vpn-server#update-docker-image). Advanced users can [bind mount](https://github.com/hwdsl2/docker-ipsec-vpn-server#bind-mount-the-env-file) the `env` file.
+If you wish to add, edit or remove VPN user accounts, first update your `env` file, then you must remove and re-create the Docker container using instructions from the [next section](#update-docker-image). Advanced users can [bind mount](#bind-mount-the-env-file) the `env` file.
 
 For servers with an external firewall (e.g. [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)), open UDP ports 500 and 4500 for the VPN. Aliyun users, see [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
 
-Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, [read below](https://github.com/hwdsl2/docker-ipsec-vpn-server#use-alternative-dns-servers).
+Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, [read below](#use-alternative-dns-servers).
 
 ## Update Docker image
 
-To update your Docker image and container, first [download](https://github.com/hwdsl2/docker-ipsec-vpn-server#download) the latest version:
+To update your Docker image and container, first [download](#download) the latest version:
 
 ```
 docker pull hwdsl2/ipsec-vpn-server
@@ -192,25 +192,26 @@ If the Docker image is already up to date, you should see:
 Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 ```
 
-Otherwise, it will download the latest version. To update your Docker container, first write down all your [VPN login details](https://github.com/hwdsl2/docker-ipsec-vpn-server#retrieve-vpn-login-details). Then remove the Docker container with `docker rm -f ipsec-vpn-server`. Finally, re-create it using instructions from [How to use this image](https://github.com/hwdsl2/docker-ipsec-vpn-server#how-to-use-this-image).
+Otherwise, it will download the latest version. To update your Docker container, first write down all your [VPN login details](#retrieve-vpn-login-details). Then remove the Docker container with `docker rm -f ipsec-vpn-server`. Finally, re-create it using instructions from [How to use this image](#how-to-use-this-image).
 
 ## Advanced usage
 
 *Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#advanced-usage), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#高级用法).*
 
-- [Use alternative DNS servers](https://github.com/hwdsl2/docker-ipsec-vpn-server#use-alternative-dns-servers)
-- [Run without privileged mode](https://github.com/hwdsl2/docker-ipsec-vpn-server#run-without-privileged-mode)
-- [About host network mode](https://github.com/hwdsl2/docker-ipsec-vpn-server#about-host-network-mode)
-- [Configure and use IKEv2 VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server#configure-and-use-ikev2-vpn)
-- [Enable Libreswan logs](https://github.com/hwdsl2/docker-ipsec-vpn-server#enable-libreswan-logs)
-- [Check server status](https://github.com/hwdsl2/docker-ipsec-vpn-server#check-server-status)
-- [Build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code)
-- [Bash shell inside container](https://github.com/hwdsl2/docker-ipsec-vpn-server#bash-shell-inside-container)
-- [Bind mount the env file](https://github.com/hwdsl2/docker-ipsec-vpn-server#bind-mount-the-env-file)
+- [Use alternative DNS servers](#use-alternative-dns-servers)
+- [Run without privileged mode](#run-without-privileged-mode)
+- [Access other containers on the Docker host](#access-other-containers-on-the-docker-host)
+- [About host network mode](#about-host-network-mode)
+- [Configure and use IKEv2 VPN](#configure-and-use-ikev2-vpn)
+- [Enable Libreswan logs](#enable-libreswan-logs)
+- [Check server status](#check-server-status)
+- [Build from source code](#build-from-source-code)
+- [Bash shell inside container](#bash-shell-inside-container)
+- [Bind mount the env file](#bind-mount-the-env-file)
 
 ### Use alternative DNS servers
 
-Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` in your `env` file, then follow instructions above to re-create the Docker container. For example, if you want to use [Cloudflare's DNS service](https://1.1.1.1):
+Clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. If another DNS provider is preferred, define `VPN_DNS_SRV1` and optionally `VPN_DNS_SRV2` in your `env` file, then follow instructions above to re-create the Docker container. For example, if you want to use [Cloudflare's DNS service](https://1.1.1.1/dns/):
 
 ```
 VPN_DNS_SRV1=1.1.1.1
@@ -243,9 +244,9 @@ docker run \
     hwdsl2/ipsec-vpn-server
 ```
 
-When running without privileged mode, the container is unable to change `sysctl` settings. This could affect certain features of this image. A known issue is that the [Android MTU/MSS fix](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#android-mtumss-issues) also requires adding `--sysctl net.ipv4.ip_no_pmtu_disc=1` to the `docker run` command. If you encounter any issues, try re-creating the container using [privileged mode](https://github.com/hwdsl2/docker-ipsec-vpn-server#start-the-ipsec-vpn-server).
+When running without privileged mode, the container is unable to change `sysctl` settings. This could affect certain features of this image. A known issue is that the [Android MTU/MSS fix](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#android-mtumss-issues) also requires adding `--sysctl net.ipv4.ip_no_pmtu_disc=1` to the `docker run` command. If you encounter any issues, try re-creating the container using [privileged mode](#start-the-ipsec-vpn-server).
 
-After creating the Docker container, see [Retrieve VPN login details](https://github.com/hwdsl2/docker-ipsec-vpn-server#retrieve-vpn-login-details).
+After creating the Docker container, see [Retrieve VPN login details](#retrieve-vpn-login-details).
 
 Similarly, if using [Docker compose](https://docs.docker.com/compose/), you may replace `privileged: true` in [docker-compose.yml](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docker-compose.yml) with:
 
@@ -268,9 +269,15 @@ Similarly, if using [Docker compose](https://docs.docker.com/compose/), you may 
 
 For more information, see [compose file reference](https://docs.docker.com/compose/compose-file/).
 
+### Access other containers on the Docker host
+
+After connecting to the VPN, VPN clients can generally access services running in other containers on the same Docker host, without additional configuration.
+
+For example, if the IPsec VPN server container has IP `172.17.0.2`, and an Nginx container with IP `172.17.0.3` is running on the same Docker host, VPN clients can use IP `172.17.0.3` to access services on the Nginx container. To find out which IP is assigned to a container, run `docker inspect <container name>`.
+
 ### About host network mode
 
-Advanced users can run this image in [host network mode](https://docs.docker.com/network/host/), by adding `--network=host` to the `docker run` command. In addition, if [running without privileged mode](https://github.com/hwdsl2/docker-ipsec-vpn-server#run-without-privileged-mode), you may also need to replace `eth0` with the network interface name of your Docker host.
+Advanced users can run this image in [host network mode](https://docs.docker.com/network/host/), by adding `--network=host` to the `docker run` command. In addition, if [running without privileged mode](#run-without-privileged-mode), you may also need to replace `eth0` with the network interface name of your Docker host.
 
 Host network mode is NOT recommended for this image, unless your use case requires it. In this mode, the container's network stack is not isolated from the Docker host, and VPN clients may be able to access ports or services on the Docker host using its internal VPN IP `192.168.42.1` after connecting using IPsec/L2TP mode. Note that you will need to manually clean up the changes to IPTables rules and sysctl settings by [run.sh](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/run.sh) or reboot the server when you no longer use this image.
 
@@ -288,7 +295,7 @@ First, check container logs to view details for IKEv2:
 docker logs ipsec-vpn-server
 ```
 
-**Note:** If you cannot find IKEv2 details, IKEv2 may not be enabled in the container. Try updating the Docker image and container using instructions from the [Update Docker image](https://github.com/hwdsl2/docker-ipsec-vpn-server#update-docker-image) section.
+**Note:** If you cannot find IKEv2 details, IKEv2 may not be enabled in the container. Try updating the Docker image and container using instructions from the [Update Docker image](#update-docker-image) section.
 
 During IKEv2 setup, a new IKEv2 client `vpnclient` is created, with its configuration exported to `/etc/ipsec.d` **inside the container**. To copy client config file(s) from the container to the current directory on the Docker host, you may use:
 

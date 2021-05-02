@@ -200,6 +200,7 @@ Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 
 - [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
 - [不启用 privileged 模式运行](#不启用-privileged-模式运行)
+- [访问 Docker 主机上的其它容器](#访问-docker-主机上的其它容器)
 - [关于 host network 模式](#关于-host-network-模式)
 - [配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)
 - [启用 Libreswan 日志](#启用-libreswan-日志)
@@ -267,6 +268,12 @@ docker run \
 ```
 
 更多信息请参见 [compose file reference](https://docs.docker.com/compose/compose-file/)。
+
+### 访问 Docker 主机上的其它容器
+
+连接到 VPN 后，VPN 客户端通常可以访问在同一 Docker 主机上其他容器中运行的服务，而无需进行其他配置。
+
+例如，如果 IPsec VPN 服务器容器的 IP 为 `172.17.0.2`，并且一个 IP 为 `172.17.0.3` 的 Nginx 容器在同一 Docker 主机上运行，则 VPN 客户端可以使用 IP `172.17.0.3` 来访问 Nginx 容器上的服务。要找出分配给容器的 IP ，可以运行 `docker inspect <container name>`。
 
 ### 关于 host network 模式
 
