@@ -191,15 +191,11 @@ else
 
   # In case auto IP discovery fails, manually define the public IP
   # of this server in your 'env' file, as variable 'VPN_PUBLIC_IP'.
-  PUBLIC_IP=${VPN_PUBLIC_IP:-''}
-
-  # Try to auto discover IP of this server
-  [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
-
-  # Check IP for correct format
-  check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
-  check_ip "$PUBLIC_IP" || exiterr "Cannot detect this server's public IP. Define it in your 'env' file as 'VPN_PUBLIC_IP'."
-  server_addr="$PUBLIC_IP"
+  public_ip=${VPN_PUBLIC_IP:-''}
+  check_ip "$public_ip" || public_ip=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
+  check_ip "$public_ip" || public_ip=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
+  check_ip "$public_ip" || exiterr "Cannot detect this server's public IP. Define it in your 'env' file as 'VPN_PUBLIC_IP'."
+  server_addr="$public_ip"
 fi
 
 L2TP_NET=${VPN_L2TP_NET:-'192.168.42.0/24'}
@@ -476,7 +472,8 @@ ikev2_log="/etc/ipsec.d/ikev2setup.log"
 if mount | grep -q " /etc/ipsec.d " && [ -s "$ikev2_sh" ] && [ ! -f "$ikev2_conf" ]; then
   echo
   echo "Setting up IKEv2. This may take a few moments..."
-  if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
+  if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" \
+    VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
     bash "$ikev2_sh" --auto >"$ikev2_log" 2>&1; then
     if [ -f "$ikev2_conf" ]; then
       status=1
