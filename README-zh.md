@@ -99,6 +99,12 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 VPN_DNS_NAME=vpn.example.com
 ```
 
+你可以指定第一个 IKEv2 客户端的名称。这是可选的。该名称不能包含空格或者除 `-` `_` 之外的任何特殊字符。如果未指定，则使用默认值 `vpnclient`。请注意，如果在 Docker 容器中已经配置了 IKEv2，则此变量无效。
+
+```
+VPN_CLIENT_NAME=your_client_name
+```
+
 ### 运行 IPsec VPN 服务器
 
 使用本镜像创建一个新的 Docker 容器 （将 `./vpn.env` 替换为你自己的 `env` 文件）：

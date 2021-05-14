@@ -99,6 +99,12 @@ Advanced users can optionally specify a DNS name to be used as the VPN server's 
 VPN_DNS_NAME=vpn.example.com
 ```
 
+You may optionally specify a name for the first IKEv2 client. Use one word only, no special characters except '-' and '_'. The default is `vpnclient` if not specified. Note that this variable has no effect if IKEv2 is already set up in the Docker container.
+
+```
+VPN_CLIENT_NAME=your_client_name
+```
+
 ### Start the IPsec VPN server
 
 Create a new Docker container from this image (replace `./vpn.env` with your own `env` file):
