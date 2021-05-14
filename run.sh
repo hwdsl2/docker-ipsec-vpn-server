@@ -35,6 +35,11 @@ check_dns_name() {
   printf '%s' "$1" | tr -d '\n' | grep -Eq "$FQDN_REGEX"
 }
 
+check_client_name() {
+  ! { [ "${#1}" -gt "64" ] || printf '%s' "$1" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
+    || case $1 in -*) true;; *) false;; esac; }
+}
+
 if [ ! -f "/.dockerenv" ] && [ ! -f "/run/.containerenv" ] && ! head -n 1 /proc/1/sched | grep -q '^run\.sh '; then
   exiterr "This script ONLY runs in a container (e.g. Docker, Podman)."
 fi
@@ -117,6 +122,11 @@ if [ -n "$VPN_DNS_SRV2" ]; then
   VPN_DNS_SRV2=$(noquotes "$VPN_DNS_SRV2")
 fi
 
+if [ -n "$VPN_CLIENT_NAME" ]; then
+  VPN_CLIENT_NAME=$(nospaces "$VPN_CLIENT_NAME")
+  VPN_CLIENT_NAME=$(noquotes "$VPN_CLIENT_NAME")
+fi
+
 if [ -n "$VPN_DNS_NAME" ]; then
   VPN_DNS_NAME=$(nospaces "$VPN_DNS_NAME")
   VPN_DNS_NAME=$(noquotes "$VPN_DNS_NAME")
@@ -171,6 +181,15 @@ if [ -n "$VPN_DNS_SRV2" ]; then
     echo >&2
     echo "Error: Invalid DNS server. Check VPN_DNS_SRV2 in your 'env' file." >&2
     VPN_DNS_SRV2=""
+  fi
+fi
+
+if [ -n "$VPN_CLIENT_NAME" ]; then
+  if ! check_client_name "$VPN_CLIENT_NAME"; then
+    echo >&2
+    echo "Error: Invalid client name. Use one word only, no special characters except '-' and '_'." >&2
+    echo "       Falling back to default client name 'vpnclient'." >&2
+    VPN_CLIENT_NAME=""
   fi
 fi
 
@@ -472,7 +491,7 @@ ikev2_log="/etc/ipsec.d/ikev2setup.log"
 if mount | grep -q " /etc/ipsec.d " && [ -s "$ikev2_sh" ] && [ ! -f "$ikev2_conf" ]; then
   echo
   echo "Setting up IKEv2. This may take a few moments..."
-  if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" \
+  if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" VPN_CLIENT_NAME="$VPN_CLIENT_NAME" \
     VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
     bash "$ikev2_sh" --auto >"$ikev2_log" 2>&1; then
     if [ -f "$ikev2_conf" ]; then
