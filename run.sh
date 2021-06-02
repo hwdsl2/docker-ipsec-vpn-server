@@ -478,7 +478,13 @@ Write these down. You'll need them to connect!
 
 Important notes:   https://git.io/vpnnotes2
 Setup VPN clients: https://git.io/vpnclients
-IKEv2 guide:       https://git.io/ikev2docker
+EOF
+
+if ! mount | grep -q " /etc/ipsec.d "; then
+  echo "IKEv2 guide:       https://git.io/ikev2docker"
+fi
+
+cat <<'EOF'
 
 ================================================
 EOF
@@ -494,13 +500,8 @@ if mount | grep -q " /etc/ipsec.d " && [ -s "$ikev2_sh" ] && [ ! -f "$ikev2_conf
   if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" VPN_CLIENT_NAME="$VPN_CLIENT_NAME" \
     VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
     bash "$ikev2_sh" --auto >"$ikev2_log" 2>&1; then
-    if [ -f "$ikev2_conf" ]; then
-      status=1
-      status_text="IKEv2 setup successful."
-    else
-      status=3
-      echo "IKEv2 setup failed."
-    fi
+    status=1
+    status_text="IKEv2 setup successful."
   else
     status=4
     rm -f "$ikev2_conf"
