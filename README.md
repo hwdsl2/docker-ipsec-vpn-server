@@ -19,6 +19,7 @@ Based on Debian 10 (Buster) with [Libreswan](https://libreswan.org) (IPsec VPN s
 - [Next steps](#next-steps)
 - [Important notes](#important-notes)
 - [Update Docker image](#update-docker-image)
+- [Configure and use IKEv2 VPN](#configure-and-use-ikev2-vpn)
 - [Advanced usage](#advanced-usage)
 - [Technical details](#technical-details)
 - [See also](#see-also)
@@ -162,7 +163,7 @@ Get your computer or device to use the VPN. Please refer to:
 
 **[Configure IPsec/XAuth ("Cisco IPsec") VPN Clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md)**
 
-**[Advanced usage: Configure and use IKEv2 VPN](#configure-and-use-ikev2-vpn)**
+**[Configure and use IKEv2 VPN](#configure-and-use-ikev2-vpn)**
 
 If you get an error when trying to connect, see [Troubleshooting](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#troubleshooting).
 
@@ -200,6 +201,48 @@ Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 
 Otherwise, it will download the latest version. To update your Docker container, first write down all your [VPN login details](#retrieve-vpn-login-details). Then remove the Docker container with `docker rm -f ipsec-vpn-server`. Finally, re-create it using instructions from [How to use this image](#how-to-use-this-image).
 
+## Configure and use IKEv2 VPN
+
+*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn).*
+
+Using this Docker image, advanced users can configure and use IKEv2. This mode has improvements over IPsec/L2TP and IPsec/XAuth ("Cisco IPsec"), and does not require an IPsec PSK, username or password. Read more [here](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md).
+
+First, check container logs to view details for IKEv2:
+
+```bash
+docker logs ipsec-vpn-server
+```
+
+**Note:** If you cannot find IKEv2 details, IKEv2 may not be enabled in the container. Try updating the Docker image and container using instructions from the [Update Docker image](#update-docker-image) section.
+
+During IKEv2 setup, a new IKEv2 client (with default name `vpnclient`) is created, with its configuration exported to `/etc/ipsec.d` **inside the container**. To copy client config file(s) from the container to the current directory on the Docker host, you may use:
+
+```bash
+# Check contents of /etc/ipsec.d in the container
+docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
+# Example: Copy a client config file from container to Docker host
+docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
+```
+
+After that, use the IKEv2 details from above to [configure IKEv2 VPN clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#configure-ikev2-vpn-clients).
+
+You can manage IKEv2 clients using the [helper script](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#using-helper-scripts). See examples below. To customize client options, run the script without arguments.
+
+```bash
+# Add a new client (using default options)
+docker exec -it ipsec-vpn-server ikev2.sh --addclient [client name]
+# Export configuration for an existing client
+docker exec -it ipsec-vpn-server ikev2.sh --exportclient [client name]
+# List the names of existing clients
+docker exec -it ipsec-vpn-server ikev2.sh --listclients
+# Show usage information
+docker exec -it ipsec-vpn-server ikev2.sh -h
+# Run the script without arguments
+docker exec -it ipsec-vpn-server ikev2.sh
+```
+
+**Note:** If you encounter error "executable file not found", replace `ikev2.sh` above with `/opt/src/ikev2.sh`.
+
 ## Advanced usage
 
 *Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#advanced-usage), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#高级用法).*
@@ -208,7 +251,6 @@ Otherwise, it will download the latest version. To update your Docker container,
 - [Run without privileged mode](#run-without-privileged-mode)
 - [Access other containers on the Docker host](#access-other-containers-on-the-docker-host)
 - [About host network mode](#about-host-network-mode)
-- [Configure and use IKEv2 VPN](#configure-and-use-ikev2-vpn)
 - [Enable Libreswan logs](#enable-libreswan-logs)
 - [Check server status](#check-server-status)
 - [Build from source code](#build-from-source-code)
@@ -288,48 +330,6 @@ Advanced users can run this image in [host network mode](https://docs.docker.com
 Host network mode is NOT recommended for this image, unless your use case requires it. In this mode, the container's network stack is not isolated from the Docker host, and VPN clients may be able to access ports or services on the Docker host using its internal VPN IP `192.168.42.1` after connecting using IPsec/L2TP mode. Note that you will need to manually clean up the changes to IPTables rules and sysctl settings by [run.sh](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/run.sh) or reboot the server when you no longer use this image.
 
 Some Docker host OS, such as Debian 10, cannot run this image in host network mode due to the use of nftables.
-
-### Configure and use IKEv2 VPN
-
-*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn).*
-
-Using this Docker image, advanced users can configure and use IKEv2. This mode has improvements over IPsec/L2TP and IPsec/XAuth ("Cisco IPsec"), and does not require an IPsec PSK, username or password. Read more [here](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md).
-
-First, check container logs to view details for IKEv2:
-
-```bash
-docker logs ipsec-vpn-server
-```
-
-**Note:** If you cannot find IKEv2 details, IKEv2 may not be enabled in the container. Try updating the Docker image and container using instructions from the [Update Docker image](#update-docker-image) section.
-
-During IKEv2 setup, a new IKEv2 client (with default name `vpnclient`) is created, with its configuration exported to `/etc/ipsec.d` **inside the container**. To copy client config file(s) from the container to the current directory on the Docker host, you may use:
-
-```bash
-# Check contents of /etc/ipsec.d in the container
-docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
-# Example: Copy a client config file from container to Docker host
-docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
-```
-
-After that, use the IKEv2 details from above to [configure IKEv2 VPN clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#configure-ikev2-vpn-clients).
-
-You can manage IKEv2 clients using the [helper script](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#using-helper-scripts). See examples below. To customize client options, run the script without arguments.
-
-```bash
-# Add a new client (using default options)
-docker exec -it ipsec-vpn-server ikev2.sh --addclient [client name]
-# Export configuration for an existing client
-docker exec -it ipsec-vpn-server ikev2.sh --exportclient [client name]
-# List the names of existing clients
-docker exec -it ipsec-vpn-server ikev2.sh --listclients
-# Show usage information
-docker exec -it ipsec-vpn-server ikev2.sh -h
-# Run the script without arguments
-docker exec -it ipsec-vpn-server ikev2.sh
-```
-
-**Note:** If you encounter error "executable file not found", replace `ikev2.sh` above with `/opt/src/ikev2.sh`.
 
 ### Enable Libreswan logs
 

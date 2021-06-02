@@ -19,6 +19,7 @@
 - [下一步](#下一步)
 - [重要提示](#重要提示)
 - [更新 Docker 镜像](#更新-docker-镜像)
+- [配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)
 - [高级用法](#高级用法)
 - [技术细节](#技术细节)
 - [另见](#另见)
@@ -162,7 +163,7 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 
 **[配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)**
 
-**[高级用法：配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)**
+**[配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)**
 
 如果在连接过程中遇到错误，请参见 [故障排除](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#故障排除)。
 
@@ -200,6 +201,48 @@ Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 
 否则，将会下载最新版本。要更新你的 Docker 容器，首先在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)。然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。最后按照 [如何使用本镜像](#如何使用本镜像) 的说明来重新创建它。
 
+## 配置并使用 IKEv2 VPN
+
+*其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn).*
+
+使用这个 Docker 镜像，高级用户可以配置并使用 IKEv2。它是比 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 更佳的连接模式，该模式无需 IPsec PSK, 用户名或密码。更多信息请看[这里](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md)。
+
+首先，查看容器的日志以获取 IKEv2 配置信息：
+
+```bash
+docker logs ipsec-vpn-server
+```
+
+**注：** 如果你无法找到 IKEv2 配置信息，IKEv2 可能没有在容器中启用。尝试按照 [更新 Docker 镜像](#更新-docker-镜像) 一节的说明更新 Docker 镜像和容器。
+
+在 IKEv2 安装过程中会创建一个新的 IKEv2 客户端（默认名称为 `vpnclient`），并且导出它的配置到 **容器内** 的 `/etc/ipsec.d` 目录下。如果要将客户端配置文件从容器复制到 Docker 主机当前目录：
+
+```bash
+# 查看容器内的 /etc/ipsec.d 目录的文件
+docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
+# 示例：将一个客户端配置文件从容器复制到 Docker 主机
+docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
+```
+
+然后你可以使用上面获取的 IKEv2 配置信息来 [配置 IKEv2 VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。
+
+要管理 IKEv2 客户端，你可以使用 [辅助脚本](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#使用辅助脚本)。示例如下。如果需要自定义客户端选项，可以在不添加参数的情况下运行脚本。
+
+```bash
+# 添加一个客户端（使用默认选项）
+docker exec -it ipsec-vpn-server ikev2.sh --addclient [client name]
+# 导出一个已有的客户端的配置
+docker exec -it ipsec-vpn-server ikev2.sh --exportclient [client name]
+# 列出已有的客户端的名称
+docker exec -it ipsec-vpn-server ikev2.sh --listclients
+# 显示使用信息
+docker exec -it ipsec-vpn-server ikev2.sh -h
+# 不添加参数运行脚本
+docker exec -it ipsec-vpn-server ikev2.sh
+```
+
+**注：** 如果你遇到错误 "executable file not found"，将上面的 `ikev2.sh` 换成 `/opt/src/ikev2.sh`。
+
 ## 高级用法
 
 *其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#advanced-usage), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#高级用法).*
@@ -208,7 +251,6 @@ Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 - [不启用 privileged 模式运行](#不启用-privileged-模式运行)
 - [访问 Docker 主机上的其它容器](#访问-docker-主机上的其它容器)
 - [关于 host network 模式](#关于-host-network-模式)
-- [配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)
 - [启用 Libreswan 日志](#启用-libreswan-日志)
 - [查看服务器状态](#查看服务器状态)
 - [从源代码构建](#从源代码构建)
@@ -288,48 +330,6 @@ docker run \
 在非必要的情况下，**不推荐**使用 host network 模式运行本镜像。在该模式下，容器的网络栈未与 Docker 主机隔离，从而在使用 IPsec/L2TP 模式连接之后，VPN 客户端可以使用 Docker 主机的 VPN 内网 IP `192.168.42.1` 访问主机上的端口或服务。请注意，当你不再使用本镜像时，你需要手动清理 [run.sh](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/run.sh) 所更改的 IPTables 规则和 sysctl 设置，或者重启服务器。
 
 某些 Docker 主机操作系统，比如 Debian 10，不能使用 host network 模式运行本镜像，因为它们使用 nftables。
-
-### 配置并使用 IKEv2 VPN
-
-*其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn).*
-
-使用这个 Docker 镜像，高级用户可以配置并使用 IKEv2。它是比 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 更佳的连接模式，该模式无需 IPsec PSK, 用户名或密码。更多信息请看[这里](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md)。
-
-首先，查看容器的日志以获取 IKEv2 配置信息：
-
-```bash
-docker logs ipsec-vpn-server
-```
-
-**注：** 如果你无法找到 IKEv2 配置信息，IKEv2 可能没有在容器中启用。尝试按照 [更新 Docker 镜像](#更新-docker-镜像) 一节的说明更新 Docker 镜像和容器。
-
-在 IKEv2 安装过程中会创建一个新的 IKEv2 客户端（默认名称为 `vpnclient`），并且导出它的配置到 **容器内** 的 `/etc/ipsec.d` 目录下。如果要将客户端配置文件从容器复制到 Docker 主机当前目录：
-
-```bash
-# 查看容器内的 /etc/ipsec.d 目录的文件
-docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
-# 示例：将一个客户端配置文件从容器复制到 Docker 主机
-docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
-```
-
-然后你可以使用上面获取的 IKEv2 配置信息来 [配置 IKEv2 VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。
-
-要管理 IKEv2 客户端，你可以使用 [辅助脚本](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#使用辅助脚本)。示例如下。如果需要自定义客户端选项，可以在不添加参数的情况下运行脚本。
-
-```bash
-# 添加一个客户端（使用默认选项）
-docker exec -it ipsec-vpn-server ikev2.sh --addclient [client name]
-# 导出一个已有的客户端的配置
-docker exec -it ipsec-vpn-server ikev2.sh --exportclient [client name]
-# 列出已有的客户端的名称
-docker exec -it ipsec-vpn-server ikev2.sh --listclients
-# 显示使用信息
-docker exec -it ipsec-vpn-server ikev2.sh -h
-# 不添加参数运行脚本
-docker exec -it ipsec-vpn-server ikev2.sh
-```
-
-**注：** 如果你遇到错误 "executable file not found"，将上面的 `ikev2.sh` 换成 `/opt/src/ikev2.sh`。
 
 ### 启用 Libreswan 日志
 
