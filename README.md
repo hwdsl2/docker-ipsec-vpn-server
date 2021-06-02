@@ -99,7 +99,7 @@ Advanced users can optionally specify a DNS name to be used as the VPN server's 
 VPN_DNS_NAME=vpn.example.com
 ```
 
-You may optionally specify a name for the first IKEv2 client. Use one word only, no special characters except '-' and '_'. The default is `vpnclient` if not specified. Note that this variable has no effect if IKEv2 is already set up in the Docker container.
+You may optionally specify a name for the first IKEv2 client. Use one word only, no special characters except `-` and `_`. The default is `vpnclient` if not specified. Note that this variable has no effect if IKEv2 is already set up in the Docker container.
 
 ```
 VPN_CLIENT_NAME=your_client_name
@@ -303,7 +303,7 @@ docker logs ipsec-vpn-server
 
 **Note:** If you cannot find IKEv2 details, IKEv2 may not be enabled in the container. Try updating the Docker image and container using instructions from the [Update Docker image](#update-docker-image) section.
 
-During IKEv2 setup, a new IKEv2 client `vpnclient` is created, with its configuration exported to `/etc/ipsec.d` **inside the container**. To copy client config file(s) from the container to the current directory on the Docker host, you may use:
+During IKEv2 setup, a new IKEv2 client (with default name `vpnclient`) is created, with its configuration exported to `/etc/ipsec.d` **inside the container**. To copy client config file(s) from the container to the current directory on the Docker host, you may use:
 
 ```bash
 # Check contents of /etc/ipsec.d in the container
@@ -318,12 +318,18 @@ You can manage IKEv2 clients using the [helper script](https://github.com/hwdsl2
 
 ```bash
 # Add a new client (using default options)
-docker exec -it ipsec-vpn-server /opt/src/ikev2.sh --addclient [client name]
+docker exec -it ipsec-vpn-server ikev2.sh --addclient [client name]
 # Export configuration for an existing client
-docker exec -it ipsec-vpn-server /opt/src/ikev2.sh --exportclient [client name]
+docker exec -it ipsec-vpn-server ikev2.sh --exportclient [client name]
 # List the names of existing clients
-docker exec -it ipsec-vpn-server /opt/src/ikev2.sh --listclients
+docker exec -it ipsec-vpn-server ikev2.sh --listclients
+# Show usage information
+docker exec -it ipsec-vpn-server ikev2.sh -h
+# Run the script without arguments
+docker exec -it ipsec-vpn-server ikev2.sh
 ```
+
+**Note:** If you encounter error "executable file not found", replace `ikev2.sh` above with `/opt/src/ikev2.sh`.
 
 ### Enable Libreswan logs
 

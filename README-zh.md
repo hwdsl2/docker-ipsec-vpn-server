@@ -303,7 +303,7 @@ docker logs ipsec-vpn-server
 
 **注：** 如果你无法找到 IKEv2 配置信息，IKEv2 可能没有在容器中启用。尝试按照 [更新 Docker 镜像](#更新-docker-镜像) 一节的说明更新 Docker 镜像和容器。
 
-在 IKEv2 安装过程中会创建一个新的名称为 `vpnclient` 的 IKEv2 客户端，并且导出它的配置到 **容器内** 的 `/etc/ipsec.d` 目录下。如果要将客户端配置文件从容器复制到 Docker 主机当前目录：
+在 IKEv2 安装过程中会创建一个新的 IKEv2 客户端（默认名称为 `vpnclient`），并且导出它的配置到 **容器内** 的 `/etc/ipsec.d` 目录下。如果要将客户端配置文件从容器复制到 Docker 主机当前目录：
 
 ```bash
 # 查看容器内的 /etc/ipsec.d 目录的文件
@@ -318,12 +318,18 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
 
 ```bash
 # 添加一个客户端（使用默认选项）
-docker exec -it ipsec-vpn-server /opt/src/ikev2.sh --addclient [client name]
+docker exec -it ipsec-vpn-server ikev2.sh --addclient [client name]
 # 导出一个已有的客户端的配置
-docker exec -it ipsec-vpn-server /opt/src/ikev2.sh --exportclient [client name]
+docker exec -it ipsec-vpn-server ikev2.sh --exportclient [client name]
 # 列出已有的客户端的名称
-docker exec -it ipsec-vpn-server /opt/src/ikev2.sh --listclients
+docker exec -it ipsec-vpn-server ikev2.sh --listclients
+# 显示使用信息
+docker exec -it ipsec-vpn-server ikev2.sh -h
+# 不添加参数运行脚本
+docker exec -it ipsec-vpn-server ikev2.sh
 ```
+
+**注：** 如果你遇到错误 "executable file not found"，将上面的 `ikev2.sh` 换成 `/opt/src/ikev2.sh`。
 
 ### 启用 Libreswan 日志
 
