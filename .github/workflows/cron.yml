@@ -34,13 +34,11 @@ jobs:
           restore-keys: |
             ${{ secrets.CACHE_NAME }}-
       - name: Prepare
-        if: success()
         run: |
           docker pull debian:buster-slim
           docker pull "$DOCKER_USER/ipsec-vpn-server"
       - name: Check
         id: check
-        if: success()
         run: |
           DEBIAN_UPDATED=false
 
@@ -87,7 +85,6 @@ jobs:
         with:
           persist-credentials: false
       - name: Test
-        if: success()
         run: |
           [ ! -x /usr/bin/docker ] && exit 1
 
@@ -233,7 +230,6 @@ jobs:
         with:
           persist-credentials: false
       - name: Cache
-        if: success()
         uses: actions/cache@v2
         with:
           path: |
@@ -244,7 +240,6 @@ jobs:
           restore-keys: |
             ${{ secrets.CACHE_NAME }}-
       - name: Set up Buildx
-        if: success()
         env:
           RUNNER_TEMP: ${{ runner.temp }}
         run: |
@@ -297,19 +292,16 @@ jobs:
           docker buildx create --name "builder-${GITHUB_SHA::8}" --driver docker-container --use
           docker buildx inspect --bootstrap
       - name: Docker Hub Login
-        if: success()
         env:
           DOCKER_USER: ${{ github.repository_owner }}
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
         run: echo "$DOCKER_TOKEN" | docker login --username "$DOCKER_USER" --password-stdin 2>&1
       - name: Quay.io Login
-        if: success()
         env:
           QUAY_USER: ${{ secrets.QUAY_USER }}
           QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
         run: echo "$QUAY_TOKEN" | docker login quay.io --username "$QUAY_USER" --password-stdin 2>&1
       - name: Docker Buildx
-        if: success()
         env:
           DOCKER_USER: ${{ github.repository_owner }}
           BUILD_ONLY: ${{ secrets.BUILD_ONLY }}
