@@ -48,7 +48,9 @@ docker run \
 
 首先，在你的 Linux 服务器上 [安装并运行 Docker](https://docs.docker.com/engine/install/)。高级用户也可以使用 [Podman](https://podman.io) 来替代 Docker 运行本镜像，需要首先为 `docker` 命令 [创建一个别名](https://podman.io/whatis.html)。
 
-**注：** 本镜像不支持 Docker for Mac 或者 Windows。
+高级用户也可以在 macOS 上通过安装 [Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/) 来使用本镜像。请注意，在使用 IPsec/L2TP 模式之前，你可能需要运行 `docker restart ipsec-vpn-server` 重新启动一次 Docker 容器。
+
+本镜像目前不支持 Docker for Windows。
 
 ## 下载
 

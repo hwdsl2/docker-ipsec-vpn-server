@@ -48,7 +48,9 @@ To learn more about how to use this image, read the sections below.
 
 First, [install and run Docker](https://docs.docker.com/engine/install/) on your Linux server. Advanced users can also use [Podman](https://podman.io) instead of Docker to run this image, after [creating an alias](https://podman.io/whatis.html) for `docker`.
 
-**Note:** This image does not support Docker for Mac or Windows.
+Advanced users can also use this image on macOS with [Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/). Note that before using IPsec/L2TP mode, you may need to restart the Docker container once with `docker restart ipsec-vpn-server`.
+
+This image does NOT currently support Docker for Windows.
 
 ## Download
 
