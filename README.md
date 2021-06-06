@@ -75,9 +75,9 @@ Advanced users can [build from source code](#build-from-source-code) on GitHub.
 
 ### Environment variables
 
-**Note:** All the variables to this image are optional, which means you don't have to type in any environment variable, and you can have an IPsec VPN server out of the box! To do that, create an empty `env` file using `touch vpn.env`, and skip to the next section.
+**Note:** All the variables to this image are optional, which means you don't have to type in any variable, and you can have an IPsec VPN server out of the box! To do that, create an empty `env` file using `touch vpn.env`, and skip to the next section.
 
-This Docker image uses the following variables, that can be declared in an `env` file ([example](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/vpn.env.example)):
+This Docker image uses the following variables, that can be declared in an `env` file (see [example](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/vpn.env.example)):
 
 ```
 VPN_IPSEC_PSK=your_ipsec_pre_shared_key
@@ -96,17 +96,19 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 **Note:** In your `env` file, DO NOT put `""` or `''` around values, or add space around `=`. DO NOT use these special characters within values: `\ " '`. A secure IPsec PSK should consist of at least 20 random characters.
 
-Advanced users can optionally specify a DNS name to be used as the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). Example:
+Advanced users can optionally specify a DNS name to be used as the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). It will be included in the server certificate for IKEv2 mode, which is required for VPN clients to connect. Example:
 
 ```
 VPN_DNS_NAME=vpn.example.com
 ```
 
-You may optionally specify a name for the first IKEv2 client. Use one word only, no special characters except `-` and `_`. The default is `vpnclient` if not specified. Note that this variable has no effect if IKEv2 is already set up in the Docker container.
+You may optionally specify a name for the first IKEv2 client. Use one word only, no special characters except `-` and `_`. The default is `vpnclient` if not specified.
 
 ```
 VPN_CLIENT_NAME=your_client_name
 ```
+
+Note that the `VPN_DNS_NAME` and `VPN_CLIENT_NAME` variables have no effect if IKEv2 is already set up in the Docker container.
 
 ### Start the IPsec VPN server
 
@@ -239,8 +241,6 @@ docker exec -it ipsec-vpn-server ikev2.sh --exportclient [client name]
 docker exec -it ipsec-vpn-server ikev2.sh --listclients
 # Show usage information
 docker exec -it ipsec-vpn-server ikev2.sh -h
-# Run the script without arguments
-docker exec -it ipsec-vpn-server ikev2.sh
 ```
 
 **Note:** If you encounter error "executable file not found", replace `ikev2.sh` above with `/opt/src/ikev2.sh`.

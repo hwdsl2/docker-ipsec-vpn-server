@@ -75,9 +75,9 @@ docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
 
 ### 环境变量
 
-**注：** 所有这些环境变量对于本镜像都是可选的，也就是说无需定义它们就可以搭建 IPsec VPN 服务器。你可以运行 `touch vpn.env` 创建一个空的 `env` 文件，然后跳到下一节。
+**注：** 所有这些变量对于本镜像都是可选的，也就是说无需定义它们就可以搭建 IPsec VPN 服务器。你可以运行 `touch vpn.env` 创建一个空的 `env` 文件，然后跳到下一节。
 
-这个 Docker 镜像使用以下几个变量，可以在一个 `env` 文件中定义 （[示例](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/vpn.env.example)）：
+这个 Docker 镜像使用以下几个变量，可以在一个 `env` 文件中定义（参见[示例](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/vpn.env.example)）：
 
 ```
 VPN_IPSEC_PSK=your_ipsec_pre_shared_key
@@ -96,17 +96,19 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 **注：** 在你的 `env` 文件中，**不要**为变量值添加 `""` 或者 `''`，或在 `=` 两边添加空格。**不要**在值中使用这些字符： `\ " '`。一个安全的 IPsec PSK 应该至少包含 20 个随机字符。
 
-高级用户可以指定一个域名作为 VPN 服务器的地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
+高级用户可以指定一个域名作为 VPN 服务器的地址。这是可选的。该域名必须是一个全称域名 (FQDN)。它将包含在 IKEv2 模式的服务器证书中，这是 VPN 客户端连接所必需的。示例如下：
 
 ```
 VPN_DNS_NAME=vpn.example.com
 ```
 
-你可以指定第一个 IKEv2 客户端的名称。这是可选的。该名称不能包含空格或者除 `-` `_` 之外的任何特殊字符。如果未指定，则使用默认值 `vpnclient`。请注意，如果在 Docker 容器中已经配置了 IKEv2，则此变量无效。
+你可以指定第一个 IKEv2 客户端的名称。这是可选的。该名称不能包含空格或者除 `-` `_` 之外的任何特殊字符。如果未指定，则使用默认值 `vpnclient`。
 
 ```
 VPN_CLIENT_NAME=your_client_name
 ```
+
+请注意，如果在 Docker 容器中已经配置了 IKEv2，则 `VPN_DNS_NAME` 和 `VPN_CLIENT_NAME` 变量无效。
 
 ### 运行 IPsec VPN 服务器
 
@@ -239,8 +241,6 @@ docker exec -it ipsec-vpn-server ikev2.sh --exportclient [client name]
 docker exec -it ipsec-vpn-server ikev2.sh --listclients
 # 显示使用信息
 docker exec -it ipsec-vpn-server ikev2.sh -h
-# 不添加参数运行脚本
-docker exec -it ipsec-vpn-server ikev2.sh
 ```
 
 **注：** 如果你遇到错误 "executable file not found"，将上面的 `ikev2.sh` 换成 `/opt/src/ikev2.sh`。
