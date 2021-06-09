@@ -539,7 +539,7 @@ if [ ! -f "$swan_ver_file" ]; then
   touch "$swan_ver_file"
   os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
   ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
-  swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/Linux Libreswan //' -e 's/ (netkey).*//' -e 's/^U//' -e 's/\/K.*//')
+  swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
   swan_ver_url="https://dl.ls20.com/v1/docker/$os_arch/swanver?ver=$swan_ver&ver2=$IMAGE_VER&i=$status"
   swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
   if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$' \
