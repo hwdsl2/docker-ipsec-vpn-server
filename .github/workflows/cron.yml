@@ -150,10 +150,12 @@ jobs:
           docker logs "$TEST_ID"
           docker exec "$TEST_ID" netstat -anpu | grep pluto
           docker exec "$TEST_ID" netstat -anpu | grep xl2tpd
-          docker exec "$TEST_ID" iptables -nL
-          docker exec "$TEST_ID" iptables -nL | grep -q '192\.168\.42\.0/24'
-          docker exec "$TEST_ID" iptables -nL -t nat
-          docker exec "$TEST_ID" iptables -nL -t nat | grep -q '192\.168\.43\.0/24'
+          docker exec "$TEST_ID" iptables -nvL
+          docker exec "$TEST_ID" iptables -nvL | grep -q 'ppp+'
+          docker exec "$TEST_ID" iptables -nvL | grep -q '192\.168\.43\.0/24'
+          docker exec "$TEST_ID" iptables -nvL -t nat
+          docker exec "$TEST_ID" iptables -nvL -t nat | grep -q '192\.168\.42\.0/24'
+          docker exec "$TEST_ID" iptables -nvL -t nat | grep -q '192\.168\.43\.0/24'
           docker exec "$TEST_ID" ipsec status
           docker exec "$TEST_ID" ipsec status | grep -q l2tp-psk
           docker exec "$TEST_ID" ipsec status | grep -q xauth-psk
@@ -186,10 +188,12 @@ jobs:
           docker logs "$TEST_ID"
           docker exec "$TEST_ID" netstat -anpu | grep pluto
           docker exec "$TEST_ID" netstat -anpu | grep xl2tpd
-          docker exec "$TEST_ID" iptables -nL
-          docker exec "$TEST_ID" iptables -nL | grep -q '192\.168\.42\.0/24'
-          docker exec "$TEST_ID" iptables -nL -t nat
-          docker exec "$TEST_ID" iptables -nL -t nat | grep -q '192\.168\.43\.0/24'
+          docker exec "$TEST_ID" iptables -nvL
+          docker exec "$TEST_ID" iptables -nvL | grep -q 'ppp+'
+          docker exec "$TEST_ID" iptables -nvL | grep -q '192\.168\.43\.0/24'
+          docker exec "$TEST_ID" iptables -nvL -t nat
+          docker exec "$TEST_ID" iptables -nvL -t nat | grep -q '192\.168\.42\.0/24'
+          docker exec "$TEST_ID" iptables -nvL -t nat | grep -q '192\.168\.43\.0/24'
           docker exec "$TEST_ID" ipsec status
           docker exec "$TEST_ID" ipsec status | grep -q l2tp-psk
           docker exec "$TEST_ID" ipsec status | grep -q xauth-psk
