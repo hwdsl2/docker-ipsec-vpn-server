@@ -55,6 +55,10 @@ EOF
 fi
 ip link delete dummy0 >/dev/null 2>&1
 
+os_type=debian
+os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
+[ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
+
 if uname -r | grep -q cloud && [ ! -e /dev/ppp ]; then
   echo >&2
   echo "Error: /dev/ppp is missing. Debian 10 users, see: https://git.io/vpndebian10" >&2
@@ -440,7 +444,12 @@ echo
 echo "Starting IPsec service..."
 mkdir -p /run/pluto /var/run/pluto
 rm -f /run/pluto/pluto.pid /var/run/pluto/pluto.pid
-service ipsec start >/dev/null 2>&1
+if [ "$os_type" = "alpine" ]; then
+  ipsec initnss >/dev/null
+  ipsec pluto --config /etc/ipsec.conf
+else
+  service ipsec start >/dev/null 2>&1
+fi
 
 if [ -n "$VPN_DNS_NAME" ]; then
   server_text="Server"
@@ -545,10 +554,9 @@ fi
 swan_ver_file="/opt/src/swanver"
 if [ ! -f "$swan_ver_file" ]; then
   touch "$swan_ver_file"
-  os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
-  ipsec_ver=$(/usr/local/sbin/ipsec --version 2>/dev/null)
+  ipsec_ver=$(ipsec --version 2>/dev/null)
   swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
-  swan_ver_url="https://dl.ls20.com/v1/docker/$os_arch/swanver?ver=$swan_ver&ver2=$IMAGE_VER&i=$status"
+  swan_ver_url="https://dl.ls20.com/v1/docker/$os_type/$os_arch/swanver?ver=$swan_ver&ver2=$IMAGE_VER&i=$status"
   swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
   if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$' \
     && [ -n "$swan_ver" ] && [ "$swan_ver" != "$swan_ver_latest" ] \
