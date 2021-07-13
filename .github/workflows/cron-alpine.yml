@@ -7,47 +7,73 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-name: buildx latest
+name: buildx alpine cron
 
 on:
-  push:
-    branches: [master]
-    paths:
-      - .github/workflows/main.yml
-      - .dockerignore
-      - Dockerfile
-      - run.sh
+  schedule:
+    - cron: '40 2,14 * * *'
 
 jobs:
-  shellcheck:
+  check_update:
     runs-on: ubuntu-20.04
     if: github.repository_owner == 'hwdsl2'
+    env:
+      DOCKER_USER: ${{ github.repository_owner }}
+    outputs:
+      should_test: ${{ steps.check.outputs.should_test }}
+      should_update: ${{ steps.check.outputs.should_update }}
     steps:
-      - uses: actions/checkout@v2
+      - name: Cache
+        uses: actions/cache@v2
         with:
-          persist-credentials: false
-      - name: Check
+          path: |
+            ${{ runner.temp }}/.buildx-bin
+            ${{ runner.temp }}/.buildx-cache
+            ${{ runner.temp }}/.docker-images
+          key: ${{ secrets.CACHE_NAME2 }}-${{ github.sha }}-${{ github.run_id }}-check
+          restore-keys: |
+            ${{ secrets.CACHE_NAME2 }}-
+      - name: Prepare
         run: |
-          if [ ! -x /usr/bin/shellcheck ]; then
-            export DEBIAN_FRONTEND=noninteractive
-            sudo apt-get -yq update
-            sudo apt-get -yq install shellcheck
+          docker pull alpine:3.14
+          docker pull "$DOCKER_USER/ipsec-vpn-server:alpine"
+      - name: Check
+        id: check
+        run: |
+          ALPINE_UPDATED=false
+
+          alpine_update_time=$(docker inspect --format='{{.Created}}' alpine:3.14)
+          image_update_time=$(docker inspect --format='{{.Created}}' "$DOCKER_USER/ipsec-vpn-server:alpine")
+
+          if [ -n "$alpine_update_time" ] && [ -n "$image_update_time" ]; then
+            alpine_update_time_s=$(date -d "$alpine_update_time" +%s)
+            image_update_time_s=$(date -d "$image_update_time" +%s)
+            current_time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            current_time_s=$(date -d "$current_time" +%s)
+            diff_time_s=$((current_time_s - alpine_update_time_s))
+            diff_time=$(printf '%dd %dh:%dm:%ds\n' $(($diff_time_s/86400)) $(($diff_time_s%86400/3600)) $(($diff_time_s%3600/60)) $(($diff_time_s%60)))
+
+            echo "Alpine update time:     $alpine_update_time"
+            echo "Image update time:      $image_update_time"
+            echo "Current time:           $current_time"
+            echo "Time diff (cur-alpine): $diff_time (${diff_time_s}s)"
+
+            if [ -n "$alpine_update_time_s" ] && [ -n "$image_update_time_s" ] \
+              && [ "$alpine_update_time_s" -ge "$image_update_time_s" ] \
+              && [ "$diff_time_s" -ge 14400 ]; then
+              echo "Starting build..."
+              ALPINE_UPDATED=true
+            else
+              echo "Not starting build."
+            fi
           fi
-
-          cd "$GITHUB_WORKSPACE"
-          pwd
-          ls -ld vpn.env.example
-
-          export SHELLCHECK_OPTS="-e SC1090,SC1091,SC1117"
-          shellcheck --version
-          shopt -s globstar
-          ls -ld -- **/*.sh
-          shellcheck **/*.sh
-          shopt -u globstar
+          echo ::set-output name=should_test::${ALPINE_UPDATED}
+          echo ::set-output name=should_update::${ALPINE_UPDATED}
 
   vpn_test:
+    needs: check_update
     runs-on: ubuntu-20.04
-    if: github.repository_owner == 'hwdsl2'
+    if: needs.check_update.outputs.should_test == 'true'
     strategy:
       matrix:
         test_id: [no-env, with-env]
@@ -77,7 +103,7 @@ jobs:
 
           set -x
 
-          docker build -t vpn-test .
+          docker build -f Dockerfile.alpine -t vpn-test .
 
           if [ "$TEST_ID" = "with-env" ]; then
             docker run \
@@ -200,8 +226,9 @@ jobs:
           docker rmi vpn-test || true
 
   buildx:
-    needs: [shellcheck, vpn_test]
+    needs: [check_update, vpn_test]
     runs-on: ubuntu-20.04
+    if: needs.check_update.outputs.should_update == 'true'
     steps:
       - uses: actions/checkout@v2
         with:
@@ -213,9 +240,9 @@ jobs:
             ${{ runner.temp }}/.buildx-bin
             ${{ runner.temp }}/.buildx-cache
             ${{ runner.temp }}/.docker-images
-          key: ${{ secrets.CACHE_NAME }}-${{ github.sha }}-${{ github.run_id }}
+          key: ${{ secrets.CACHE_NAME2 }}-${{ github.sha }}-${{ github.run_id }}
           restore-keys: |
-            ${{ secrets.CACHE_NAME }}-
+            ${{ secrets.CACHE_NAME2 }}-
       - name: Set up Buildx
         env:
           RUNNER_TEMP: ${{ runner.temp }}
@@ -296,10 +323,11 @@ jobs:
             --platform=linux/amd64,linux/arm64,linux/arm/v7 \
             --build-arg BUILD_DATE=$current_time \
             --build-arg VCS_REF=${GITHUB_SHA::8} \
-            --build-arg VERSION=latest \
+            --build-arg VERSION=alpine \
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache" \
             --cache-to type=local,dest="${RUNNER_TEMP}/.buildx-cache-new" \
-            -t "$DOCKER_USER/ipsec-vpn-server:latest" \
+            -f Dockerfile.alpine \
+            -t "$DOCKER_USER/ipsec-vpn-server:alpine" \
             --pull \
             ${BUILD_ONLY:+--push} \
             .
@@ -309,9 +337,10 @@ jobs:
             --platform=linux/amd64,linux/arm64,linux/arm/v7 \
             --build-arg BUILD_DATE=$current_time \
             --build-arg VCS_REF=${GITHUB_SHA::8} \
-            --build-arg VERSION=latest \
+            --build-arg VERSION=alpine \
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache-new" \
-            -t "quay.io/$DOCKER_USER/ipsec-vpn-server:latest" \
+            -f Dockerfile.alpine \
+            -t "quay.io/$DOCKER_USER/ipsec-vpn-server:alpine" \
             --pull \
             ${BUILD_ONLY:+--push} \
             .

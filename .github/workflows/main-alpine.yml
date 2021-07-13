@@ -7,15 +7,15 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-name: buildx latest
+name: buildx alpine latest
 
 on:
   push:
     branches: [master]
     paths:
-      - .github/workflows/main.yml
+      - .github/workflows/main-alpine.yml
       - .dockerignore
-      - Dockerfile
+      - Dockerfile.alpine
       - run.sh
 
 jobs:
@@ -77,7 +77,7 @@ jobs:
 
           set -x
 
-          docker build -t vpn-test .
+          docker build -f Dockerfile.alpine -t vpn-test .
 
           if [ "$TEST_ID" = "with-env" ]; then
             docker run \
@@ -213,9 +213,9 @@ jobs:
             ${{ runner.temp }}/.buildx-bin
             ${{ runner.temp }}/.buildx-cache
             ${{ runner.temp }}/.docker-images
-          key: ${{ secrets.CACHE_NAME }}-${{ github.sha }}-${{ github.run_id }}
+          key: ${{ secrets.CACHE_NAME2 }}-${{ github.sha }}-${{ github.run_id }}
           restore-keys: |
-            ${{ secrets.CACHE_NAME }}-
+            ${{ secrets.CACHE_NAME2 }}-
       - name: Set up Buildx
         env:
           RUNNER_TEMP: ${{ runner.temp }}
@@ -296,10 +296,11 @@ jobs:
             --platform=linux/amd64,linux/arm64,linux/arm/v7 \
             --build-arg BUILD_DATE=$current_time \
             --build-arg VCS_REF=${GITHUB_SHA::8} \
-            --build-arg VERSION=latest \
+            --build-arg VERSION=alpine \
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache" \
             --cache-to type=local,dest="${RUNNER_TEMP}/.buildx-cache-new" \
-            -t "$DOCKER_USER/ipsec-vpn-server:latest" \
+            -f Dockerfile.alpine \
+            -t "$DOCKER_USER/ipsec-vpn-server:alpine" \
             --pull \
             ${BUILD_ONLY:+--push} \
             .
@@ -309,9 +310,10 @@ jobs:
             --platform=linux/amd64,linux/arm64,linux/arm/v7 \
             --build-arg BUILD_DATE=$current_time \
             --build-arg VCS_REF=${GITHUB_SHA::8} \
-            --build-arg VERSION=latest \
+            --build-arg VERSION=alpine \
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache-new" \
-            -t "quay.io/$DOCKER_USER/ipsec-vpn-server:latest" \
+            -f Dockerfile.alpine \
+            -t "quay.io/$DOCKER_USER/ipsec-vpn-server:alpine" \
             --pull \
             ${BUILD_ONLY:+--push} \
             .
