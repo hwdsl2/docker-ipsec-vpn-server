@@ -4,7 +4,7 @@
 
 使用这个 Docker 镜像快速搭建 IPsec VPN 服务器。支持 IPsec/L2TP，Cisco IPsec 和 IKEv2 协议。
 
-本镜像以 Debian 10 (Buster) 为基础，并使用 [Libreswan](https://libreswan.org) (IPsec VPN 软件) 和 [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP 服务进程)。
+本镜像以 Debian 10 或 Alpine 3.14 为基础，并使用 [Libreswan](https://libreswan.org) (IPsec VPN 软件) 和 [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP 服务进程)。
 
 [**&raquo; 另见： IPsec VPN 服务器一键安装脚本**](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)
 
@@ -15,6 +15,7 @@
 - [快速开始](#快速开始)
 - [安装 Docker](#安装-docker)
 - [下载](#下载)
+- [镜像对照表](#镜像对照表)
 - [如何使用本镜像](#如何使用本镜像)
 - [下一步](#下一步)
 - [重要提示](#重要提示)
@@ -42,7 +43,7 @@ docker run \
 
 你的 VPN 登录凭证将会被自动随机生成。请参见 [获取 VPN 登录信息](#获取-vpn-登录信息)。
 
-如需了解更多有关如何使用本镜像的信息，请继续阅读以下部分。
+另外，你也可以使用较小的基于 Alpine 的镜像。要了解更多信息，请继续阅读以下部分。
 
 ## 安装 Docker
 
@@ -50,9 +51,11 @@ docker run \
 
 高级用户也可以在 macOS 上通过安装 [Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/) 来使用本镜像。请注意，在使用 IPsec/L2TP 模式之前，你可能需要运行 `docker restart ipsec-vpn-server` 重新启动一次 Docker 容器。
 
-本镜像目前不支持 Docker for Windows。
+本镜像不支持 Docker for Windows。
 
 ## 下载
+
+**新:** 现在可以使用基于 Alpine 的镜像（参见[对照表](#镜像对照表)），压缩后大小仅 ~16MB。要使用它，请将本自述文件中所有的 `hwdsl2/ipsec-vpn-server` 替换为 `hwdsl2/ipsec-vpn-server:alpine`。
 
 预构建的可信任镜像可在 [Docker Hub registry](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) 下载：
 
@@ -70,6 +73,21 @@ docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
 支持以下架构系统：`linux/amd64`, `linux/arm64` 和 `linux/arm/v7`。
 
 高级用户可以自己从 GitHub [编译源代码](#从源代码构建)。
+
+## 镜像对照表
+
+|                 | 基于 Debian              | 基于 Alpine (新)                |
+| --------------- | ----------------------- | ------------------------------ |
+| 镜像名称          | hwdsl2/ipsec-vpn-server | hwdsl2/ipsec-vpn-server:alpine |
+| 压缩后大小        | ~ 57 MB                 | ~ 16 MB                        |
+| 基础镜像          | Debian Linux 10         | Alpine Linux 3.14              |
+| 系统架构          | amd64, arm64, arm/v7    | amd64, arm64, arm/v7           |
+| Libreswan 版本   | 4.4                     | 4.4                            |
+| IPsec/L2TP      | ✅                       | ✅                             |
+| Cisco IPsec     | ✅                       | ✅                             |
+| IKEv2           | ✅                       | ✅                             |
+
+**注：** 要使用基于 Alpine 的镜像，请将本自述文件中所有的 `hwdsl2/ipsec-vpn-server` 替换为 `hwdsl2/ipsec-vpn-server:alpine`。
 
 ## 如何使用本镜像
 
@@ -344,10 +362,17 @@ docker exec -it ipsec-vpn-server env TERM=xterm bash -l
 然后运行以下命令：
 
 ```
+# For Debian-based image
 apt-get update && apt-get -y install rsyslog
 service rsyslog restart
 service ipsec restart
 sed -i '/pluto\.pid/a service rsyslog restart' /opt/src/run.sh
+exit
+# For Alpine-based image
+apk add --no-cache rsyslog
+rsyslogd
+ipsec whack --shutdown
+ipsec pluto --config /etc/ipsec.conf
 exit
 ```
 
@@ -400,7 +425,10 @@ docker exec -it ipsec-vpn-server env TERM=xterm bash -l
 （可选步骤） 安装 `nano` 编辑器：
 
 ```
+# For Debian-based image
 apt-get update && apt-get -y install nano
+# For Alpine-based image
+apk add --no-cache nano
 ```
 
 然后在容器中运行你的命令。完成后退出并重启 Docker 容器 （如果需要）：

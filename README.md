@@ -4,7 +4,7 @@
 
 Docker image to run an IPsec VPN server, with IPsec/L2TP, Cisco IPsec and IKEv2.
 
-Based on Debian 10 (Buster) with [Libreswan](https://libreswan.org) (IPsec VPN software) and [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP daemon).
+Based on Debian 10 or Alpine 3.14 with [Libreswan](https://libreswan.org) (IPsec VPN software) and [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP daemon).
 
 [**&raquo; See also: IPsec VPN Server on Ubuntu, Debian and CentOS**](https://github.com/hwdsl2/setup-ipsec-vpn)
 
@@ -15,6 +15,7 @@ Based on Debian 10 (Buster) with [Libreswan](https://libreswan.org) (IPsec VPN s
 - [Quick start](#quick-start)
 - [Install Docker](#install-docker)
 - [Download](#download)
+- [Image comparison](#image-comparison)
 - [How to use this image](#how-to-use-this-image)
 - [Next steps](#next-steps)
 - [Important notes](#important-notes)
@@ -42,7 +43,7 @@ docker run \
 
 Your VPN login details will be randomly generated. See [Retrieve VPN login details](#retrieve-vpn-login-details).
 
-To learn more about how to use this image, read the sections below.
+A smaller Alpine-based image is also available. To learn more, read the sections below.
 
 ## Install Docker
 
@@ -50,9 +51,11 @@ First, [install and run Docker](https://docs.docker.com/engine/install/) on your
 
 Advanced users can also use this image on macOS with [Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/). Note that before using IPsec/L2TP mode, you may need to restart the Docker container once with `docker restart ipsec-vpn-server`.
 
-This image does NOT currently support Docker for Windows.
+This image does NOT support Docker for Windows.
 
 ## Download
+
+**New:** An Alpine-based image is now available (see [comparison](#image-comparison)), which is only ~16MB compressed. To use it, replace every `hwdsl2/ipsec-vpn-server` with `hwdsl2/ipsec-vpn-server:alpine` in this README.
 
 Get the trusted build from the [Docker Hub registry](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/):
 
@@ -70,6 +73,21 @@ docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
 Supported platforms: `linux/amd64`, `linux/arm64` and `linux/arm/v7`.
 
 Advanced users can [build from source code](#build-from-source-code) on GitHub.
+
+## Image comparison
+
+|                   | Debian-based            | Alpine-based (new)             |
+| ----------------- | ----------------------- | ------------------------------ |
+| Image name        | hwdsl2/ipsec-vpn-server | hwdsl2/ipsec-vpn-server:alpine |
+| Compressed size   | ~ 57 MB                 | ~ 16 MB                        |
+| Base image        | Debian Linux 10         | Alpine Linux 3.14              |
+| Platforms         | amd64, arm64, arm/v7    | amd64, arm64, arm/v7           |
+| Libreswan version | 4.4                     | 4.4                            |
+| IPsec/L2TP        | ✅                       | ✅                             |
+| Cisco IPsec       | ✅                       | ✅                             |
+| IKEv2             | ✅                       | ✅                             |
+
+**Note:** To use the Alpine-based image, replace every `hwdsl2/ipsec-vpn-server` with `hwdsl2/ipsec-vpn-server:alpine` in this README.
 
 ## How to use this image
 
@@ -344,10 +362,17 @@ docker exec -it ipsec-vpn-server env TERM=xterm bash -l
 Then run the following commands:
 
 ```
+# For Debian-based image
 apt-get update && apt-get -y install rsyslog
 service rsyslog restart
 service ipsec restart
 sed -i '/pluto\.pid/a service rsyslog restart' /opt/src/run.sh
+exit
+# For Alpine-based image
+apk add --no-cache rsyslog
+rsyslogd
+ipsec whack --shutdown
+ipsec pluto --config /etc/ipsec.conf
 exit
 ```
 
@@ -400,7 +425,10 @@ docker exec -it ipsec-vpn-server env TERM=xterm bash -l
 (Optional) Install the `nano` editor:
 
 ```
+# For Debian-based image
 apt-get update && apt-get -y install nano
+# For Alpine-based image
+apk add --no-cache nano
 ```
 
 Then run your commands inside the container. When finished, exit the container and restart if needed:
