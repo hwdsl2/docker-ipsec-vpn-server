@@ -7,7 +7,7 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-name: buildx latest
+name: buildx debian latest
 
 on:
   push:
@@ -15,7 +15,7 @@ on:
     paths:
       - .github/workflows/main.yml
       - .dockerignore
-      - Dockerfile
+      - Dockerfile.debian
       - run.sh
 
 jobs:
@@ -77,7 +77,7 @@ jobs:
 
           set -x
 
-          docker build -t vpn-test .
+          docker build -f Dockerfile.debian -t vpn-test .
 
           if [ "$TEST_ID" = "with-env" ]; then
             docker run \
@@ -296,10 +296,11 @@ jobs:
             --platform=linux/amd64,linux/arm64,linux/arm/v7 \
             --build-arg BUILD_DATE=$current_time \
             --build-arg VCS_REF=${GITHUB_SHA::8} \
-            --build-arg VERSION=latest \
+            --build-arg VERSION=debian-latest \
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache" \
             --cache-to type=local,dest="${RUNNER_TEMP}/.buildx-cache-new" \
-            -t "$DOCKER_USER/ipsec-vpn-server:latest" \
+            -f Dockerfile.debian \
+            -t "$DOCKER_USER/ipsec-vpn-server:debian" \
             --pull \
             ${BUILD_ONLY:+--push} \
             .
@@ -309,9 +310,10 @@ jobs:
             --platform=linux/amd64,linux/arm64,linux/arm/v7 \
             --build-arg BUILD_DATE=$current_time \
             --build-arg VCS_REF=${GITHUB_SHA::8} \
-            --build-arg VERSION=latest \
+            --build-arg VERSION=debian-latest \
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache-new" \
-            -t "quay.io/$DOCKER_USER/ipsec-vpn-server:latest" \
+            -f Dockerfile.debian \
+            -t "quay.io/$DOCKER_USER/ipsec-vpn-server:debian" \
             --pull \
             ${BUILD_ONLY:+--push} \
             .

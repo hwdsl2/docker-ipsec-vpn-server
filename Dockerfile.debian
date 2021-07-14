@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2016-2021 Lin Song <linsongui@gmail.com>
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -7,32 +7,40 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-FROM alpine:3.14
+FROM debian:buster-slim
 
 ENV SWAN_VER 4.4
 WORKDIR /opt/src
 
-RUN set -x \
-    && apk add --no-cache \
-         bash bind-tools coreutils openssl uuidgen wget xl2tpd iproute2 \
-         libcap-ng libcurl libevent linux-pam musl nspr nss nss-tools \
-         bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev \
-         nss-dev libcap-ng-dev libevent-dev curl-dev nspr-dev \
+RUN apt-get -yqq update \
+    && DEBIAN_FRONTEND=noninteractive \
+       apt-get -yqq --no-install-recommends install \
+         wget dnsutils openssl ca-certificates kmod iproute2 \
+         gawk net-tools iptables bsdmainutils libcurl3-nss \
+         libnss3-tools libevent-dev uuid-runtime xl2tpd \
+         libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
+         libcap-ng-dev libcap-ng-utils libselinux1-dev \
+         libcurl4-nss-dev flex bison gcc make \
     && wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://github.com/libreswan/libreswan/archive/v${SWAN_VER}.tar.gz" \
     || wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz" \
     && tar xzf libreswan.tar.gz \
     && rm -f libreswan.tar.gz \
     && cd "libreswan-${SWAN_VER}" \
-    && sed -i '28s/stdlib\.h/sys\/types.h/' include/fd.h \
-    && printf 'WERROR_CFLAGS=-w -s\nUSE_DNSSEC=false\nUSE_DH2=true\n' > Makefile.inc.local \
-    && printf 'FINALNSSDIR=/etc/ipsec.d\nUSE_GLIBC_KERN_FLIP_HEADERS=true\n' >> Makefile.inc.local \
+    && printf 'WERROR_CFLAGS=-w -s\nUSE_DNSSEC=false\nUSE_SYSTEMD_WATCHDOG=false\n' > Makefile.inc.local \
+    && printf 'USE_DH2=true\nUSE_NSS_KDF=false\nFINALNSSDIR=/etc/ipsec.d\n' >> Makefile.inc.local \
     && make -s base \
     && make -s install-base \
     && cd /opt/src \
     && rm -rf "/opt/src/libreswan-${SWAN_VER}" \
-    && apk del --no-cache \
-         bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev \
-         nss-dev libcap-ng-dev libevent-dev curl-dev nspr-dev
+    && apt-get -yqq remove \
+         libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
+         libcap-ng-dev libcap-ng-utils libselinux1-dev \
+         libcurl4-nss-dev flex bison gcc make \
+    && apt-get -yqq autoremove \
+    && apt-get -y clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/log/* \
+    && update-alternatives --set iptables /usr/sbin/iptables-legacy
 
 RUN wget -t 3 -T 30 -nv -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/5d43404bebc222122a0ecd219d60b54ac0fe026b/extras/ikev2setup.sh \
     && chmod +x /opt/src/ikev2.sh \

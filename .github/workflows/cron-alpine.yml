@@ -36,14 +36,14 @@ jobs:
       - name: Prepare
         run: |
           docker pull alpine:3.14
-          docker pull "$DOCKER_USER/ipsec-vpn-server:alpine"
+          docker pull "$DOCKER_USER/ipsec-vpn-server"
       - name: Check
         id: check
         run: |
           ALPINE_UPDATED=false
 
           alpine_update_time=$(docker inspect --format='{{.Created}}' alpine:3.14)
-          image_update_time=$(docker inspect --format='{{.Created}}' "$DOCKER_USER/ipsec-vpn-server:alpine")
+          image_update_time=$(docker inspect --format='{{.Created}}' "$DOCKER_USER/ipsec-vpn-server")
 
           if [ -n "$alpine_update_time" ] && [ -n "$image_update_time" ]; then
             alpine_update_time_s=$(date -d "$alpine_update_time" +%s)
@@ -103,7 +103,7 @@ jobs:
 
           set -x
 
-          docker build -f Dockerfile.alpine -t vpn-test .
+          docker build -t vpn-test .
 
           if [ "$TEST_ID" = "with-env" ]; then
             docker run \
@@ -323,10 +323,10 @@ jobs:
             --platform=linux/amd64,linux/arm64,linux/arm/v7 \
             --build-arg BUILD_DATE=$current_time \
             --build-arg VCS_REF=${GITHUB_SHA::8} \
-            --build-arg VERSION=alpine \
+            --build-arg VERSION=alpine-latest \
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache" \
             --cache-to type=local,dest="${RUNNER_TEMP}/.buildx-cache-new" \
-            -f Dockerfile.alpine \
+            -t "$DOCKER_USER/ipsec-vpn-server:latest" \
             -t "$DOCKER_USER/ipsec-vpn-server:alpine" \
             --pull \
             ${BUILD_ONLY:+--push} \
@@ -337,9 +337,9 @@ jobs:
             --platform=linux/amd64,linux/arm64,linux/arm/v7 \
             --build-arg BUILD_DATE=$current_time \
             --build-arg VCS_REF=${GITHUB_SHA::8} \
-            --build-arg VERSION=alpine \
+            --build-arg VERSION=alpine-latest \
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache-new" \
-            -f Dockerfile.alpine \
+            -t "quay.io/$DOCKER_USER/ipsec-vpn-server:latest" \
             -t "quay.io/$DOCKER_USER/ipsec-vpn-server:alpine" \
             --pull \
             ${BUILD_ONLY:+--push} \

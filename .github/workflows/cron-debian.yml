@@ -7,7 +7,7 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-name: buildx cron
+name: buildx debian cron
 
 on:
   schedule:
@@ -36,14 +36,14 @@ jobs:
       - name: Prepare
         run: |
           docker pull debian:buster-slim
-          docker pull "$DOCKER_USER/ipsec-vpn-server"
+          docker pull "$DOCKER_USER/ipsec-vpn-server:debian"
       - name: Check
         id: check
         run: |
           DEBIAN_UPDATED=false
 
           debian_update_time=$(docker inspect --format='{{.Created}}' debian:buster-slim)
-          image_update_time=$(docker inspect --format='{{.Created}}' "$DOCKER_USER/ipsec-vpn-server")
+          image_update_time=$(docker inspect --format='{{.Created}}' "$DOCKER_USER/ipsec-vpn-server:debian")
 
           if [ -n "$debian_update_time" ] && [ -n "$image_update_time" ]; then
             debian_update_time_s=$(date -d "$debian_update_time" +%s)
@@ -103,7 +103,7 @@ jobs:
 
           set -x
 
-          docker build -t vpn-test .
+          docker build -f Dockerfile.debian -t vpn-test .
 
           if [ "$TEST_ID" = "with-env" ]; then
             docker run \
@@ -323,10 +323,11 @@ jobs:
             --platform=linux/amd64,linux/arm64,linux/arm/v7 \
             --build-arg BUILD_DATE=$current_time \
             --build-arg VCS_REF=${GITHUB_SHA::8} \
-            --build-arg VERSION=latest \
+            --build-arg VERSION=debian-latest \
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache" \
             --cache-to type=local,dest="${RUNNER_TEMP}/.buildx-cache-new" \
-            -t "$DOCKER_USER/ipsec-vpn-server:latest" \
+            -f Dockerfile.debian \
+            -t "$DOCKER_USER/ipsec-vpn-server:debian" \
             --pull \
             ${BUILD_ONLY:+--push} \
             .
@@ -336,9 +337,10 @@ jobs:
             --platform=linux/amd64,linux/arm64,linux/arm/v7 \
             --build-arg BUILD_DATE=$current_time \
             --build-arg VCS_REF=${GITHUB_SHA::8} \
-            --build-arg VERSION=latest \
+            --build-arg VERSION=debian-latest \
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache-new" \
-            -t "quay.io/$DOCKER_USER/ipsec-vpn-server:latest" \
+            -f Dockerfile.debian \
+            -t "quay.io/$DOCKER_USER/ipsec-vpn-server:debian" \
             --pull \
             ${BUILD_ONLY:+--push} \
             .
