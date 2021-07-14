@@ -1,6 +1,6 @@
 # Docker 上的 IPsec VPN 服务器
 
-[![Build Status](https://img.shields.io/github/workflow/status/hwdsl2/docker-ipsec-vpn-server/buildx%20latest.svg?cacheSeconds=3600)](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/docker-ipsec-vpn-server.svg?cacheSeconds=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/)
+[![Build Status](https://img.shields.io/github/workflow/status/hwdsl2/docker-ipsec-vpn-server/buildx%20alpine%20latest.svg?cacheSeconds=3600)](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/docker-ipsec-vpn-server.svg?cacheSeconds=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/)
 
 使用这个 Docker 镜像快速搭建 IPsec VPN 服务器。支持 IPsec/L2TP，Cisco IPsec 和 IKEv2 协议。
 
@@ -38,7 +38,7 @@ docker run \
     -p 500:500/udp \
     -p 4500:4500/udp \
     -d --privileged \
-    hwdsl2/ipsec-vpn-server:alpine
+    hwdsl2/ipsec-vpn-server
 ```
 
 你的 VPN 登录凭证将会被自动随机生成。请参见 [获取 VPN 登录信息](#获取-vpn-登录信息)。
@@ -58,14 +58,14 @@ docker run \
 预构建的可信任镜像可在 [Docker Hub registry](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) 下载：
 
 ```
-docker pull hwdsl2/ipsec-vpn-server:alpine
+docker pull hwdsl2/ipsec-vpn-server
 ```
 
 或者，你也可以从 [Quay.io](https://quay.io/repository/hwdsl2/ipsec-vpn-server) 下载这个镜像：
 
 ```
-docker pull quay.io/hwdsl2/ipsec-vpn-server:alpine
-docker image tag quay.io/hwdsl2/ipsec-vpn-server:alpine hwdsl2/ipsec-vpn-server:alpine
+docker pull quay.io/hwdsl2/ipsec-vpn-server
+docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
 ```
 
 支持以下架构系统：`linux/amd64`, `linux/arm64` 和 `linux/arm/v7`。
@@ -74,18 +74,18 @@ docker image tag quay.io/hwdsl2/ipsec-vpn-server:alpine hwdsl2/ipsec-vpn-server:
 
 ## 镜像对照表
 
-|                 | 基于 Alpine                     | 基于 Debian              |
-| --------------- | ------------------------------ | ----------------------- |
-| 镜像名称          | hwdsl2/ipsec-vpn-server:alpine | hwdsl2/ipsec-vpn-server |
-| 压缩后大小        | ~ 16 MB                        | ~ 57 MB                 |
-| 基础镜像          | Alpine Linux 3.14              | Debian Linux 10         |
-| 系统架构          | amd64, arm64, arm/v7           | amd64, arm64, arm/v7    |
-| Libreswan 版本   | 4.4                            | 4.4                     |
-| IPsec/L2TP      | ✅                             | ✅                       |
-| Cisco IPsec     | ✅                             | ✅                       |
-| IKEv2           | ✅                             | ✅                       |
+|                 | 基于 Alpine               | 基于 Debian                     |
+| --------------- | ------------------------ | ------------------------------ |
+| 镜像名称          | hwdsl2/ipsec-vpn-server  | hwdsl2/ipsec-vpn-server:debian |
+| 压缩后大小        | ~ 16 MB                  | ~ 57 MB                        |
+| 基础镜像          | Alpine Linux 3.14        | Debian Linux 10                |
+| 系统架构          | amd64, arm64, arm/v7     | amd64, arm64, arm/v7           |
+| Libreswan 版本   | 4.4                      | 4.4                            |
+| IPsec/L2TP      | ✅                       | ✅                              |
+| Cisco IPsec     | ✅                       | ✅                              |
+| IKEv2           | ✅                       | ✅                              |
 
-**注：** 要使用基于 Debian 的镜像，请将本自述文件中所有的 `hwdsl2/ipsec-vpn-server:alpine` 替换为 `hwdsl2/ipsec-vpn-server`。
+**注：** 要使用基于 Debian 的镜像，请将本自述文件中所有的 `hwdsl2/ipsec-vpn-server` 替换为 `hwdsl2/ipsec-vpn-server:debian`。
 
 ## 如何使用本镜像
 
@@ -139,7 +139,7 @@ docker run \
     -p 500:500/udp \
     -p 4500:4500/udp \
     -d --privileged \
-    hwdsl2/ipsec-vpn-server:alpine
+    hwdsl2/ipsec-vpn-server
 ```
 
 在该命令中，我们使用 `docker run` 的 `-v` 选项来创建一个名为 `ikev2-vpn-data` 的新 [Docker 卷](https://docs.docker.com/storage/volumes/)，并且将它挂载到容器内的 `/etc/ipsec.d` 目录下。IKEv2 的相关数据（比如证书和密钥）在该卷中保存，之后当你需要重新创建 Docker 容器的时候，只需指定同一个卷。
@@ -210,13 +210,13 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 如需更新你的 Docker 镜像和容器，首先 [下载](#下载) 最新版本：
 
 ```
-docker pull hwdsl2/ipsec-vpn-server:alpine
+docker pull hwdsl2/ipsec-vpn-server
 ```
 
 如果 Docker 镜像已经是最新的，你会看到提示：
 
 ```
-Status: Image is up to date for hwdsl2/ipsec-vpn-server:alpine
+Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 ```
 
 否则，将会下载最新版本。要更新你的 Docker 容器，首先在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)。然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。最后按照 [如何使用本镜像](#如何使用本镜像) 的说明来重新创建它。
@@ -307,7 +307,7 @@ docker run \
     --sysctl net.ipv4.conf.default.rp_filter=0 \
     --sysctl net.ipv4.conf.eth0.send_redirects=0 \
     --sysctl net.ipv4.conf.eth0.rp_filter=0 \
-    hwdsl2/ipsec-vpn-server:alpine
+    hwdsl2/ipsec-vpn-server
 ```
 
 在不启用 privileged 模式运行时，容器不能更改 `sysctl` 设置。这可能会影响本镜像的某些功能。一个已知问题是 [Android MTU/MSS fix](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#android-mtumss-问题) 需要另外在 `docker run` 命令添加 `--sysctl net.ipv4.ip_no_pmtu_disc=1` 才有效。如果你遇到任何问题，可以尝试换用 [privileged 模式](#运行-ipsec-vpn-服务器) 重新创建容器。
@@ -404,19 +404,19 @@ docker exec -it ipsec-vpn-server ipsec trafficstatus
 git clone https://github.com/hwdsl2/docker-ipsec-vpn-server.git
 cd docker-ipsec-vpn-server
 # To build Alpine-based image
-docker build -f Dockerfile.alpine -t hwdsl2/ipsec-vpn-server:alpine .
-# To build Debian-based image
 docker build -t hwdsl2/ipsec-vpn-server .
+# To build Debian-based image
+docker build -f Dockerfile.debian -t hwdsl2/ipsec-vpn-server:debian .
 ```
 
 若不需要改动源码，也可以这样：
 
 ```
 # To build Alpine-based image
-docker build -f Dockerfile.alpine -t hwdsl2/ipsec-vpn-server:alpine \
-  github.com/hwdsl2/docker-ipsec-vpn-server.git
-# To build Debian-based image
 docker build -t hwdsl2/ipsec-vpn-server github.com/hwdsl2/docker-ipsec-vpn-server.git
+# To build Debian-based image
+docker build -f Dockerfile.debian -t hwdsl2/ipsec-vpn-server:debian \
+  github.com/hwdsl2/docker-ipsec-vpn-server.git
 ```
 
 ### 在容器中运行 Bash shell
@@ -456,7 +456,7 @@ docker run \
     -p 500:500/udp \
     -p 4500:4500/udp \
     -d --privileged \
-    hwdsl2/ipsec-vpn-server:alpine
+    hwdsl2/ipsec-vpn-server
 ```
 
 ## 技术细节
