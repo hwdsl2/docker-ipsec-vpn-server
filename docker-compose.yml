@@ -2,7 +2,7 @@ version: '3'
 
 services:
   vpn:
-    image: hwdsl2/ipsec-vpn-server
+    image: hwdsl2/ipsec-vpn-server:alpine
     restart: always
     env_file:
       - ./vpn.env
