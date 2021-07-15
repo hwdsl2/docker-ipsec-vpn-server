@@ -42,25 +42,25 @@ jobs:
         run: |
           ALPINE_UPDATED=false
 
-          alpine_update_time=$(docker inspect --format='{{.Created}}' alpine:3.14)
-          image_update_time=$(docker inspect --format='{{.Created}}' "$DOCKER_USER/ipsec-vpn-server")
+          alpine_ts=$(docker inspect --format='{{.Created}}' alpine:3.14)
+          image_ts=$(docker inspect --format='{{.Created}}' "$DOCKER_USER/ipsec-vpn-server")
 
-          if [ -n "$alpine_update_time" ] && [ -n "$image_update_time" ]; then
-            alpine_update_time_s=$(date -d "$alpine_update_time" +%s)
-            image_update_time_s=$(date -d "$image_update_time" +%s)
-            current_time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-            current_time_s=$(date -d "$current_time" +%s)
-            diff_time_s=$((current_time_s - alpine_update_time_s))
-            diff_time=$(printf '%dd %dh:%dm:%ds\n' $(($diff_time_s/86400)) $(($diff_time_s%86400/3600)) $(($diff_time_s%3600/60)) $(($diff_time_s%60)))
+          if [ -n "$alpine_ts" ] && [ -n "$image_ts" ]; then
+            alpine_ts_s=$(date -d "$alpine_ts" +%s)
+            image_ts_s=$(date -d "$image_ts" +%s)
+            ts_now=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            ts_now_s=$(date -d "$ts_now" +%s)
+            diff_s=$((ts_now_s - alpine_ts_s))
+            diff=$(printf '%dd %dh:%dm:%ds\n' $(($diff_s/86400)) $(($diff_s%86400/3600)) $(($diff_s%3600/60)) $(($diff_s%60)))
 
-            echo "Alpine update time:     $alpine_update_time"
-            echo "Image update time:      $image_update_time"
-            echo "Current time:           $current_time"
-            echo "Time diff (cur-alpine): $diff_time (${diff_time_s}s)"
+            echo "Alpine update time:     $alpine_ts"
+            echo "Image update time:      $image_ts"
+            echo "Current time:           $ts_now"
+            echo "Time diff (cur-alpine): $diff (${diff_s}s)"
 
-            if [ -n "$alpine_update_time_s" ] && [ -n "$image_update_time_s" ] \
-              && [ "$alpine_update_time_s" -ge "$image_update_time_s" ] \
-              && [ "$diff_time_s" -ge 14400 ]; then
+            if [ -n "$alpine_ts_s" ] && [ -n "$image_ts_s" ] \
+              && [ "$alpine_ts_s" -ge "$image_ts_s" ] \
+              && [ "$diff_s" -ge 14400 ]; then
               echo "Starting build..."
               ALPINE_UPDATED=true
             else
@@ -131,21 +131,11 @@ jobs:
             --restart=always \
             -p 500:500/udp \
             -p 4500:4500/udp \
-            -d --cap-add=NET_ADMIN \
-            --device=/dev/ppp \
-            --sysctl net.ipv4.ip_forward=1 \
-            --sysctl net.ipv4.conf.all.accept_redirects=0 \
-            --sysctl net.ipv4.conf.all.send_redirects=0 \
-            --sysctl net.ipv4.conf.all.rp_filter=0 \
-            --sysctl net.ipv4.conf.default.accept_redirects=0 \
-            --sysctl net.ipv4.conf.default.send_redirects=0 \
-            --sysctl net.ipv4.conf.default.rp_filter=0 \
-            --sysctl net.ipv4.conf.eth0.send_redirects=0 \
-            --sysctl net.ipv4.conf.eth0.rp_filter=0 \
+            -d --privileged \
             vpn-test
           fi
 
-          sleep 60
+          sleep 30
           docker ps | grep "$TEST_ID"
           docker logs "$TEST_ID"
           docker exec "$TEST_ID" netstat -anpu | grep pluto
@@ -177,13 +167,24 @@ jobs:
             docker exec "$TEST_ID" ls -ld /etc/ipsec.d/your_client_name.p12
             docker exec "$TEST_ID" grep 'vpn.example.com' /etc/ipsec.d/your_client_name.mobileconfig
             docker exec "$TEST_ID" grep 'vpn.example.com' /etc/ipsec.d/your_client_name.sswan
+            docker exec "$TEST_ID" ikev2.sh --addclient vpnclient2
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.sswan
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.p12
+            docker exec "$TEST_ID" rm -f /etc/ipsec.d/vpnclient2*
+            docker exec "$TEST_ID" ikev2.sh --exportclient vpnclient2
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.sswan
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.p12
+            docker exec "$TEST_ID" ikev2.sh --listclients
+            echo "y" | docker exec -i "$TEST_ID" ikev2.sh --revokeclient vpnclient2
           else
             docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp && exit 1
           fi
 
           docker restart "$TEST_ID"
 
-          sleep 15
+          sleep 10
           docker ps | grep "$TEST_ID"
           docker logs "$TEST_ID"
           docker exec "$TEST_ID" netstat -anpu | grep pluto
@@ -198,25 +199,11 @@ jobs:
           docker exec "$TEST_ID" ipsec status | grep -q l2tp-psk
           docker exec "$TEST_ID" ipsec status | grep -q xauth-psk
           if [ "$TEST_ID" = "with-env" ]; then
-            docker exec "$TEST_ID" grep "$VPN_IPSEC_PSK" /etc/ipsec.secrets
-            docker exec "$TEST_ID" grep "$VPN_USER" /etc/ppp/chap-secrets
-            docker exec "$TEST_ID" grep "$VPN_PASSWORD" /etc/ppp/chap-secrets
-            docker exec "$TEST_ID" grep "$VPN_USER" /etc/ipsec.d/passwd
             docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp
-            docker exec "$TEST_ID" grep "leftid=vpn.example.com" /etc/ipsec.conf
-            docker exec "$TEST_ID" grep 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.conf
-            docker exec "$TEST_ID" grep 'ms-dns 1.1.1.1' /etc/ppp/options.xl2tpd
-            docker exec "$TEST_ID" grep 'ms-dns 1.0.0.1' /etc/ppp/options.xl2tpd
-            docker exec "$TEST_ID" grep 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
-            docker exec "$TEST_ID" grep 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.d/ikev2.conf
-            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/your_client_name.mobileconfig
-            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/your_client_name.sswan
-            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/your_client_name.p12
-            docker exec "$TEST_ID" grep 'vpn.example.com' /etc/ipsec.d/your_client_name.mobileconfig
-            docker exec "$TEST_ID" grep 'vpn.example.com' /etc/ipsec.d/your_client_name.sswan
-          else
-            docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp && exit 1
+            echo "y" | docker exec -i "$TEST_ID" ikev2.sh --removeikev2
+            sleep 3
           fi
+          docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp && exit 1
 
           exit 0
       - name: Clear
@@ -316,18 +303,17 @@ jobs:
           ls -ld vpn.env.example
 
           [ "$BUILD_ONLY" = "true" ] && BUILD_ONLY=""
-          current_time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          ts_now=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 
           docker buildx build \
             --progress plain \
             --platform=linux/amd64,linux/arm64,linux/arm/v7 \
-            --build-arg BUILD_DATE=$current_time \
+            --build-arg BUILD_DATE=$ts_now \
             --build-arg VCS_REF=${GITHUB_SHA::8} \
             --build-arg VERSION=alpine-latest \
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache" \
             --cache-to type=local,dest="${RUNNER_TEMP}/.buildx-cache-new" \
             -t "$DOCKER_USER/ipsec-vpn-server:latest" \
-            -t "$DOCKER_USER/ipsec-vpn-server:alpine" \
             --pull \
             ${BUILD_ONLY:+--push} \
             .
@@ -335,12 +321,11 @@ jobs:
           docker buildx build \
             --progress plain \
             --platform=linux/amd64,linux/arm64,linux/arm/v7 \
-            --build-arg BUILD_DATE=$current_time \
+            --build-arg BUILD_DATE=$ts_now \
             --build-arg VCS_REF=${GITHUB_SHA::8} \
             --build-arg VERSION=alpine-latest \
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache-new" \
             -t "quay.io/$DOCKER_USER/ipsec-vpn-server:latest" \
-            -t "quay.io/$DOCKER_USER/ipsec-vpn-server:alpine" \
             --pull \
             ${BUILD_ONLY:+--push} \
             .
