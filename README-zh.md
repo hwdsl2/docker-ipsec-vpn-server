@@ -47,11 +47,9 @@ docker run \
 
 ## 安装 Docker
 
-首先，在你的 Linux 服务器上 [安装并运行 Docker](https://docs.docker.com/engine/install/)。高级用户也可以使用 [Podman](https://podman.io) 来替代 Docker 运行本镜像，需要首先为 `docker` 命令 [创建一个别名](https://podman.io/whatis.html)。
+首先在你的 Linux 服务器上 [安装 Docker](https://docs.docker.com/engine/install/)。另外你也可以使用 [Podman](https://podman.io) 运行本镜像，需要首先为 `docker` 命令 [创建一个别名](https://podman.io/whatis.html)。
 
-高级用户也可以在 macOS 上通过安装 [Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/) 来使用本镜像。请注意，在使用 IPsec/L2TP 模式之前，你可能需要运行 `docker restart ipsec-vpn-server` 重新启动一次 Docker 容器。
-
-本镜像不支持 Docker for Windows。
+高级用户也可以在 macOS 上通过安装 [Docker for Mac](https://docs.docker.com/docker-for-mac/) 来使用本镜像。在使用 IPsec/L2TP 模式之前，请运行 `docker restart ipsec-vpn-server` 重新启动一次 Docker 容器。本镜像不支持 Docker for Windows。
 
 ## 下载
 
@@ -73,6 +71,8 @@ docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
 高级用户可以自己从 GitHub [编译源代码](#从源代码构建)。
 
 ## 镜像对照表
+
+有两个预构建的镜像可用。基于 Alpine 的镜像大小仅 ~16MB。
 
 |                 | 基于 Alpine               | 基于 Debian                     |
 | --------------- | ------------------------ | ------------------------------ |
@@ -207,7 +207,7 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 
 ## 更新 Docker 镜像
 
-如需更新你的 Docker 镜像和容器，首先 [下载](#下载) 最新版本：
+要更新你的 Docker 镜像和容器，首先 [下载](#下载) 最新版本：
 
 ```
 docker pull hwdsl2/ipsec-vpn-server
@@ -219,7 +219,7 @@ docker pull hwdsl2/ipsec-vpn-server
 Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 ```
 
-否则，将会下载最新版本。要更新你的 Docker 容器，首先在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)。然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。最后按照 [如何使用本镜像](#如何使用本镜像) 的说明来重新创建它。
+否则将会下载最新版本。要更新你的 Docker 容器，首先在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)。然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。最后按照 [如何使用本镜像](#如何使用本镜像) 的说明来重新创建它。
 
 ## 配置并使用 IKEv2 VPN
 
@@ -235,18 +235,18 @@ docker logs ipsec-vpn-server
 
 **注：** 如果你无法找到 IKEv2 配置信息，IKEv2 可能没有在容器中启用。尝试按照 [更新 Docker 镜像](#更新-docker-镜像) 一节的说明更新 Docker 镜像和容器。
 
-在 IKEv2 安装过程中会创建一个新的 IKEv2 客户端（默认名称为 `vpnclient`），并且导出它的配置到 **容器内** 的 `/etc/ipsec.d` 目录下。如果要将客户端配置文件从容器复制到 Docker 主机当前目录：
+在 IKEv2 安装过程中会创建一个新的 IKEv2 客户端（默认名称为 `vpnclient`），并且导出它的配置到 **容器内** 的 `/etc/ipsec.d` 目录下。你可以将客户端配置文件复制到 Docker 主机：
 
 ```bash
 # 查看容器内的 /etc/ipsec.d 目录的文件
 docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
-# 示例：将一个客户端配置文件从容器复制到 Docker 主机
+# 示例：将一个客户端配置文件从容器复制到 Docker 主机当前目录
 docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
 ```
 
 然后你可以使用上面获取的 IKEv2 配置信息来 [配置 IKEv2 VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。
 
-要管理 IKEv2 客户端，你可以使用 [辅助脚本](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#使用辅助脚本)。示例如下。如果需要自定义客户端选项，可以在不添加参数的情况下运行脚本。
+要管理 IKEv2 客户端，你可以使用 [辅助脚本](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#使用辅助脚本)。示例如下。如需自定义客户端选项，可以在不添加参数的情况下运行脚本。
 
 ```bash
 # 添加一个客户端（使用默认选项）
@@ -365,6 +365,7 @@ apk add --no-cache rsyslog
 rsyslogd
 ipsec whack --shutdown
 ipsec pluto --config /etc/ipsec.conf
+sed -i '/pluto\.pid/a rsyslogd' /opt/src/run.sh
 exit
 # For Debian-based image
 apt-get update && apt-get -y install rsyslog
@@ -478,6 +479,8 @@ docker run \
 * [IPsec VPN Server on Ubuntu, Debian and CentOS](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)
 
 ## 授权协议
+
+**注：** 预构建镜像中的软件组件（例如 Libreswan 和 xl2tpd）在其各自版权所有者选择的相应许可下。对于任何预构建的镜像的使用，用户有责任确保对该镜像的任何使用符合其中包含的所有软件的任何相关许可。
 
 版权所有 (C) 2016-2021 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
 基于 [Thomas Sarlandie 的工作](https://github.com/sarfata/voodooprivacy) (版权所有 2012)

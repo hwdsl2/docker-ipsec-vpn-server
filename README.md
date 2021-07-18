@@ -47,11 +47,9 @@ To learn more about how to use this image, read the sections below.
 
 ## Install Docker
 
-First, [install and run Docker](https://docs.docker.com/engine/install/) on your Linux server. Advanced users can also use [Podman](https://podman.io) instead of Docker to run this image, after [creating an alias](https://podman.io/whatis.html) for `docker`.
+First, [install Docker](https://docs.docker.com/engine/install/) on your Linux server. Alternatively, you may also use [Podman](https://podman.io) to run this image, after [creating an alias](https://podman.io/whatis.html) for `docker`.
 
-Advanced users can also use this image on macOS with [Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/). Note that before using IPsec/L2TP mode, you may need to restart the Docker container once with `docker restart ipsec-vpn-server`.
-
-This image does NOT support Docker for Windows.
+Advanced users can also use this image on macOS with [Docker for Mac](https://docs.docker.com/docker-for-mac/). Before using IPsec/L2TP mode, restart the Docker container once with `docker restart ipsec-vpn-server`. This image does NOT support Docker for Windows.
 
 ## Download
 
@@ -73,6 +71,8 @@ Supported platforms: `linux/amd64`, `linux/arm64` and `linux/arm/v7`.
 Advanced users can [build from source code](#build-from-source-code) on GitHub.
 
 ## Image comparison
+
+Two pre-built images are available. The Alpine-based image is only ~16MB.
 
 |                   | Alpine-based             | Debian-based                   |
 | ----------------- | ------------------------ | ------------------------------ |
@@ -235,12 +235,13 @@ docker logs ipsec-vpn-server
 
 **Note:** If you cannot find IKEv2 details, IKEv2 may not be enabled in the container. Try updating the Docker image and container using instructions from the [Update Docker image](#update-docker-image) section.
 
-During IKEv2 setup, a new IKEv2 client (with default name `vpnclient`) is created, with its configuration exported to `/etc/ipsec.d` **inside the container**. To copy client config file(s) from the container to the current directory on the Docker host, you may use:
+During IKEv2 setup, a new IKEv2 client (with default name `vpnclient`) is created, with its configuration exported to `/etc/ipsec.d` **inside the container**. To copy client config file(s) to the Docker host, you may use:
 
 ```bash
 # Check contents of /etc/ipsec.d in the container
 docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
-# Example: Copy a client config file from container to Docker host
+# Example: Copy a client config file from the container
+# to the current directory on the Docker host
 docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
 ```
 
@@ -365,6 +366,7 @@ apk add --no-cache rsyslog
 rsyslogd
 ipsec whack --shutdown
 ipsec pluto --config /etc/ipsec.conf
+sed -i '/pluto\.pid/a rsyslogd' /opt/src/run.sh
 exit
 # For Debian-based image
 apt-get update && apt-get -y install rsyslog
@@ -478,6 +480,8 @@ The ports that are exposed for this container to work are:
 * [IPsec VPN Server on Ubuntu, Debian and CentOS](https://github.com/hwdsl2/setup-ipsec-vpn)
 
 ## License
+
+**Note:** The software components inside the pre-built image (such as Libreswan and xl2tpd) are under the respective licenses chosen by their respective copyright holders. As for any pre-built image usage, it is the image user's responsibility to ensure that any use of this image complies with any relevant licenses for all software contained within.
 
 Copyright (C) 2016-2021 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
 Based on [the work of Thomas Sarlandie](https://github.com/sarfata/voodooprivacy) (Copyright 2012)
