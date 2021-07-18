@@ -497,7 +497,7 @@ Important notes:   https://git.io/vpnnotes2
 Setup VPN clients: https://git.io/vpnclients
 EOF
 
-if ! mount | grep -q " /etc/ipsec.d "; then
+if ! grep -q " /etc/ipsec.d " /proc/mounts; then
   echo "IKEv2 guide:       https://git.io/ikev2docker"
 fi
 
@@ -511,7 +511,7 @@ status=0
 ikev2_sh="/opt/src/ikev2.sh"
 ikev2_conf="/etc/ipsec.d/ikev2.conf"
 ikev2_log="/etc/ipsec.d/ikev2setup.log"
-if mount | grep -q " /etc/ipsec.d " && [ -s "$ikev2_sh" ] && [ ! -f "$ikev2_conf" ]; then
+if grep -q " /etc/ipsec.d " /proc/mounts && [ -s "$ikev2_sh" ] && [ ! -f "$ikev2_conf" ]; then
   echo
   echo "Setting up IKEv2. This may take a few moments..."
   if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" VPN_CLIENT_NAME="$VPN_CLIENT_NAME" \
