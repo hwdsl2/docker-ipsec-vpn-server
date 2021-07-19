@@ -268,6 +268,7 @@ docker exec -it ipsec-vpn-server ikev2.sh -h
 
 - [Use alternative DNS servers](#use-alternative-dns-servers)
 - [Run without privileged mode](#run-without-privileged-mode)
+- [Select VPN modes](#select-vpn-modes)
 - [Access other containers on the Docker host](#access-other-containers-on-the-docker-host)
 - [About host network mode](#about-host-network-mode)
 - [Enable Libreswan logs](#enable-libreswan-logs)
@@ -335,6 +336,16 @@ Similarly, if using [Docker compose](https://docs.docker.com/compose/), you may 
 ```
 
 For more information, see [compose file reference](https://docs.docker.com/compose/compose-file/).
+
+### Select VPN modes
+
+Using this Docker image, the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes are enabled by default. In addition, IKEv2 mode will be enabled if the `-v ikev2-vpn-data:/etc/ipsec.d` option [is specified](#start-the-ipsec-vpn-server) in the `docker run` command when creating the Docker container.
+
+Advanced users can selectively disable VPN modes by setting the following variable(s) in the `env` file, then re-create the Docker container.
+
+Disable IPsec/L2TP mode: `VPN_DISABLE_IPSEC_L2TP=yes`   
+Disable IPsec/XAuth ("Cisco IPsec") mode: `VPN_DISABLE_IPSEC_XAUTH=yes`   
+Disable both IPsec/L2TP and IPsec/XAuth modes: `VPN_IKEV2_ONLY=yes`
 
 ### Access other containers on the Docker host
 

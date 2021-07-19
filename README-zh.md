@@ -267,6 +267,7 @@ docker exec -it ipsec-vpn-server ikev2.sh -h
 
 - [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
 - [不启用 privileged 模式运行](#不启用-privileged-模式运行)
+- [选择 VPN 模式](#选择-vpn-模式)
 - [访问 Docker 主机上的其它容器](#访问-docker-主机上的其它容器)
 - [关于 host network 模式](#关于-host-network-模式)
 - [启用 Libreswan 日志](#启用-libreswan-日志)
@@ -334,6 +335,16 @@ docker run \
 ```
 
 更多信息请参见 [compose file reference](https://docs.docker.com/compose/compose-file/)。
+
+### 选择 VPN 模式
+
+在使用此 Docker 镜像时，默认启用 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式。此外，如果在创建 Docker 容器时在 `docker run` 命令中[指定](#运行-ipsec-vpn-服务器)了 `-v ikev2-vpn-data:/etc/ipsec.d` 选项，则会启用 IKEv2 模式。
+
+高级用户可以有选择性地禁用 VPN 模式，通过在 `env` 文件中设置以下变量并重新创建 Docker 容器来实现。
+
+禁用 IPsec/L2TP 模式：`VPN_DISABLE_IPSEC_L2TP=yes`   
+禁用 IPsec/XAuth ("Cisco IPsec") 模式：`VPN_DISABLE_IPSEC_XAUTH=yes`   
+禁用 IPsec/L2TP 和 IPsec/XAuth 模式：`VPN_IKEV2_ONLY=yes`
 
 ### 访问 Docker 主机上的其它容器
 
