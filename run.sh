@@ -151,6 +151,21 @@ if [ -n "$VPN_SHA2_TRUNCBUG" ]; then
   VPN_SHA2_TRUNCBUG=$(noquotes "$VPN_SHA2_TRUNCBUG")
 fi
 
+if [ -n "$VPN_DISABLE_IPSEC_L2TP" ]; then
+  VPN_DISABLE_IPSEC_L2TP=$(nospaces "$VPN_DISABLE_IPSEC_L2TP")
+  VPN_DISABLE_IPSEC_L2TP=$(noquotes "$VPN_DISABLE_IPSEC_L2TP")
+fi
+
+if [ -n "$VPN_DISABLE_IPSEC_XAUTH" ]; then
+  VPN_DISABLE_IPSEC_XAUTH=$(nospaces "$VPN_DISABLE_IPSEC_XAUTH")
+  VPN_DISABLE_IPSEC_XAUTH=$(noquotes "$VPN_DISABLE_IPSEC_XAUTH")
+fi
+
+if [ -n "$VPN_IKEV2_ONLY" ]; then
+  VPN_IKEV2_ONLY=$(nospaces "$VPN_IKEV2_ONLY")
+  VPN_IKEV2_ONLY=$(noquotes "$VPN_IKEV2_ONLY")
+fi
+
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
 fi
@@ -239,16 +254,51 @@ elif [ -n "$VPN_DNS_SRV1" ]; then
   echo "Setting DNS server to $VPN_DNS_SRV1..."
 fi
 
+sha2_truncbug=no
 case $VPN_SHA2_TRUNCBUG in
   [yY][eE][sS])
     echo
     echo "Setting sha2-truncbug to yes in ipsec.conf..."
-    SHA2_TRUNCBUG=yes
-    ;;
-  *)
-    SHA2_TRUNCBUG=no
+    sha2_truncbug=yes
     ;;
 esac
+
+disable_ipsec_l2tp=no
+case $VPN_DISABLE_IPSEC_L2TP in
+  [yY][eE][sS])
+    disable_ipsec_l2tp=yes
+    ;;
+esac
+
+disable_ipsec_xauth=no
+case $VPN_DISABLE_IPSEC_XAUTH in
+  [yY][eE][sS])
+    disable_ipsec_xauth=yes
+    ;;
+esac
+
+case $VPN_IKEV2_ONLY in
+  [yY][eE][sS])
+    disable_ipsec_l2tp=yes
+    disable_ipsec_xauth=yes
+    ;;
+esac
+
+if [ "$disable_ipsec_l2tp" = "yes" ] && [ "$disable_ipsec_xauth" = "yes" ]; then
+  echo
+  echo "Note: Running in IKEv2-only mode via env file option."
+  echo "      IPsec/L2TP and IPsec/XAuth (\"Cisco IPsec\") modes are disabled."
+  if ! grep -q " /etc/ipsec.d " /proc/mounts; then
+    echo "WARNING: /etc/ipsec.d not mounted. IKEv2 setup requires a Docker volume"
+    echo "         to be mounted at /etc/ipsec.d. See: https://git.io/ikev2docker"
+  fi
+elif [ "$disable_ipsec_l2tp" = "yes" ]; then
+  echo
+  echo "Note: IPsec/L2TP mode is disabled via env file option."
+elif [ "$disable_ipsec_xauth" = "yes" ]; then
+  echo
+  echo "Note: IPsec/XAuth (\"Cisco IPsec\") mode is disabled via env file option."
+fi
 
 # Create IPsec config
 cat > /etc/ipsec.conf <<EOF
@@ -275,8 +325,12 @@ conn shared
   phase2alg=aes_gcm-null,aes128-sha1,aes256-sha1,aes256-sha2_512,aes128-sha2,aes256-sha2
   ikelifetime=24h
   salifetime=24h
-  sha2-truncbug=$SHA2_TRUNCBUG
+  sha2-truncbug=$sha2_truncbug
 
+EOF
+
+if [ "$disable_ipsec_l2tp" != "yes" ]; then
+cat >> /etc/ipsec.conf <<'EOF'
 conn l2tp-psk
   auto=add
   leftprotoport=17/1701
@@ -284,6 +338,11 @@ conn l2tp-psk
   type=transport
   also=shared
 
+EOF
+fi
+
+if [ "$disable_ipsec_xauth" != "yes" ]; then
+cat >> /etc/ipsec.conf <<EOF
 conn xauth-psk
   auto=add
   leftsubnet=0.0.0.0/0
@@ -297,6 +356,10 @@ conn xauth-psk
   cisco-unity=yes
   also=shared
 
+EOF
+fi
+
+cat >> /etc/ipsec.conf <<'EOF'
 include /etc/ipsec.d/*.conf
 EOF
 
@@ -457,6 +520,7 @@ else
   server_text="Server IP"
 fi
 
+if [ "$disable_ipsec_l2tp" != "yes" ] || [ "$disable_ipsec_xauth" != "yes" ]; then
 cat <<EOF
 
 ================================================
@@ -471,23 +535,23 @@ Username: $VPN_USER
 Password: $VPN_PASSWORD
 EOF
 
-if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
-  count=1
-  addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -d ' ' -f 1)
-  addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -d ' ' -f 1)
+  if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
+    count=1
+    addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -d ' ' -f 1)
+    addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -d ' ' -f 1)
 cat <<'EOF'
 
 Additional VPN users (username | password):
 EOF
-  while [ -n "$addl_user" ] && [ -n "$addl_password" ]; do
+    while [ -n "$addl_user" ] && [ -n "$addl_password" ]; do
 cat <<EOF
 $addl_user | $addl_password
 EOF
-    count=$((count+1))
-    addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -s -d ' ' -f "$count")
-    addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -s -d ' ' -f "$count")
-  done
-fi
+      count=$((count+1))
+      addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -s -d ' ' -f "$count")
+      addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -s -d ' ' -f "$count")
+    done
+  fi
 
 cat <<'EOF'
 
@@ -497,14 +561,15 @@ Important notes:   https://git.io/vpnnotes2
 Setup VPN clients: https://git.io/vpnclients
 EOF
 
-if ! grep -q " /etc/ipsec.d " /proc/mounts; then
-  echo "IKEv2 guide:       https://git.io/ikev2docker"
-fi
+  if ! grep -q " /etc/ipsec.d " /proc/mounts; then
+    echo "IKEv2 guide:       https://git.io/ikev2docker"
+  fi
 
 cat <<'EOF'
 
 ================================================
 EOF
+fi
 
 # Set up IKEv2
 status=0
