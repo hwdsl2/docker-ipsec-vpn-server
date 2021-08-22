@@ -9,7 +9,7 @@
 
 FROM debian:buster-slim
 
-ENV SWAN_VER 4.4
+ENV SWAN_VER 4.5
 WORKDIR /opt/src
 
 RUN apt-get -yqq update \
