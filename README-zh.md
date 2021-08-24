@@ -80,7 +80,7 @@ docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
 | 压缩后大小        | ~ 16 MB                  | ~ 57 MB                        |
 | 基础镜像          | Alpine Linux 3.14        | Debian Linux 10                |
 | 系统架构          | amd64, arm64, arm/v7     | amd64, arm64, arm/v7           |
-| Libreswan 版本   | 4.4                      | 4.4                            |
+| Libreswan 版本   | 4.5                      | 4.5                            |
 | IPsec/L2TP      | ✅                       | ✅                              |
 | Cisco IPsec     | ✅                       | ✅                              |
 | IKEv2           | ✅                       | ✅                              |
