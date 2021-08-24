@@ -61,7 +61,7 @@ os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
 
 if uname -r | grep -q cloud && [ ! -e /dev/ppp ]; then
   echo >&2
-  echo "Error: /dev/ppp is missing. Debian 10 users, see: https://git.io/vpndebian10" >&2
+  echo "Error: /dev/ppp is missing. Debian 11 or 10 users, see: https://git.io/vpndebian10" >&2
 fi
 
 NET_IFACE=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
