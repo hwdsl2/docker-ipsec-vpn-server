@@ -47,8 +47,7 @@ fi
 if ip link add dummy0 type dummy 2>&1 | grep -q "not permitted"; then
 cat 1>&2 <<'EOF'
 Error: This Docker image should be run in privileged mode.
-       For detailed instructions, please visit:
-       https://github.com/hwdsl2/docker-ipsec-vpn-server
+       See: https://github.com/hwdsl2/docker-ipsec-vpn-server
 
 EOF
   exit 1
@@ -59,9 +58,13 @@ os_type=debian
 os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
 [ -f /etc/os-release ] && os_type=$(. /etc/os-release && printf '%s' "$ID")
 
-if uname -r | grep -q cloud && [ ! -e /dev/ppp ]; then
-  echo >&2
-  echo "Error: /dev/ppp is missing. Debian 11 or 10 users, see: https://git.io/vpndebian10" >&2
+if [ ! -e /dev/ppp ]; then
+cat <<'EOF'
+
+Warning: /dev/ppp is missing, and IPsec/L2TP mode may not work. Please use
+         IKEv2 (https://git.io/ikev2docker) or IPsec/XAuth mode to connect.
+         Debian 11/10 users, see https://git.io/vpndebian10
+EOF
 fi
 
 NET_IFACE=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
@@ -188,8 +191,10 @@ fi
 if [ -n "$VPN_DNS_SRV1" ]; then
   check_ip "$VPN_DNS_SRV1" || VPN_DNS_SRV1=$(dig -t A -4 +short "$VPN_DNS_SRV1")
   if ! check_ip "$VPN_DNS_SRV1"; then
-    echo >&2
-    echo "Error: Invalid DNS server. Check VPN_DNS_SRV1 in your 'env' file." >&2
+cat <<'EOF'
+
+Warning: Invalid DNS server. Check VPN_DNS_SRV1 in your 'env' file.
+EOF
     VPN_DNS_SRV1=""
   fi
 fi
@@ -197,26 +202,32 @@ fi
 if [ -n "$VPN_DNS_SRV2" ]; then
   check_ip "$VPN_DNS_SRV2" || VPN_DNS_SRV2=$(dig -t A -4 +short "$VPN_DNS_SRV2")
   if ! check_ip "$VPN_DNS_SRV2"; then
-    echo >&2
-    echo "Error: Invalid DNS server. Check VPN_DNS_SRV2 in your 'env' file." >&2
+cat <<'EOF'
+
+Warning: Invalid DNS server. Check VPN_DNS_SRV2 in your 'env' file.
+EOF
     VPN_DNS_SRV2=""
   fi
 fi
 
 if [ -n "$VPN_CLIENT_NAME" ]; then
   if ! check_client_name "$VPN_CLIENT_NAME"; then
-    echo >&2
-    echo "Error: Invalid client name. Use one word only, no special characters except '-' and '_'." >&2
-    echo "       Falling back to default client name 'vpnclient'." >&2
+cat <<'EOF'
+
+Warning: Invalid client name. Use one word only, no special characters except '-' and '_'.
+         Falling back to default client name 'vpnclient'.
+EOF
     VPN_CLIENT_NAME=""
   fi
 fi
 
 if [ -n "$VPN_DNS_NAME" ]; then
   if ! check_dns_name "$VPN_DNS_NAME"; then
-    echo >&2
-    echo "Error: Invalid DNS name. 'VPN_DNS_NAME' must be a fully qualified domain name (FQDN)." >&2
-    echo "       Falling back to using this server's IP address." >&2
+cat <<'EOF'
+
+Warning: Invalid DNS name. 'VPN_DNS_NAME' must be a fully qualified domain name (FQDN).
+         Falling back to using this server's IP address.
+EOF
     VPN_DNS_NAME=""
   fi
 fi
@@ -285,19 +296,28 @@ case $VPN_IKEV2_ONLY in
 esac
 
 if [ "$disable_ipsec_l2tp" = "yes" ] && [ "$disable_ipsec_xauth" = "yes" ]; then
-  echo
-  echo "Note: Running in IKEv2-only mode via env file option."
-  echo "      IPsec/L2TP and IPsec/XAuth (\"Cisco IPsec\") modes are disabled."
+cat <<'EOF'
+
+Note: Running in IKEv2-only mode via env file option.
+      IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes are disabled.
+EOF
   if ! grep -q " /etc/ipsec.d " /proc/mounts; then
-    echo "WARNING: /etc/ipsec.d not mounted. IKEv2 setup requires a Docker volume"
-    echo "         to be mounted at /etc/ipsec.d. See: https://git.io/ikev2docker"
+cat <<'EOF'
+
+Warning: /etc/ipsec.d not mounted. IKEv2 setup requires a Docker volume
+         to be mounted at /etc/ipsec.d. See: https://git.io/ikev2docker
+EOF
   fi
 elif [ "$disable_ipsec_l2tp" = "yes" ]; then
-  echo
-  echo "Note: IPsec/L2TP mode is disabled via env file option."
+cat <<'EOF'
+
+Note: IPsec/L2TP mode is disabled via env file option.
+EOF
 elif [ "$disable_ipsec_xauth" = "yes" ]; then
-  echo
-  echo "Note: IPsec/XAuth (\"Cisco IPsec\") mode is disabled via env file option."
+cat <<'EOF'
+
+Note: IPsec/XAuth ("Cisco IPsec") mode is disabled via env file option.
+EOF
 fi
 
 # Create IPsec config
