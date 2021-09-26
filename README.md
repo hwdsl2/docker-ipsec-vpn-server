@@ -262,6 +262,17 @@ docker exec -it ipsec-vpn-server ikev2.sh -h
 
 **Note:** If you encounter error "executable file not found", replace `ikev2.sh` above with `/opt/src/ikev2.sh`.
 
+In certain circumstances, advanced users may need to remove IKEv2 and set it up again using custom options. This can be done using the helper script. Note that this will override variables you specified in the `env` file, such as `VPN_DNS_NAME` and `VPN_CLIENT_NAME`, and the Docker container's logs will no longer show up-to-date information for IKEv2.
+
+**Warning:** All IKEv2 configuration including certificates and keys will be **permanently deleted**. This **cannot be undone**!
+
+```bash
+# Remove IKEv2 and delete all IKEv2 configuration
+docker exec -it ipsec-vpn-server ikev2.sh --removeikev2
+# Set up IKEv2 again using custom options
+docker exec -it ipsec-vpn-server ikev2.sh
+```
+
 ## Advanced usage
 
 *Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#advanced-usage), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#高级用法).*
