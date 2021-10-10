@@ -197,7 +197,7 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 
 **Android 用户** 如果遇到连接问题，请尝试 [这些步骤](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#android-mtumss-问题)。
 
-同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT（比如家用路由器）后面的多个设备到 VPN 服务器，你必须仅使用 [IKEv2](#配置并使用-ikev2-vpn) 或者 [IPsec/XAuth](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md) 模式。
+同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT（比如家用路由器）后面的多个设备到 VPN 服务器，你必须使用 [IKEv2](#配置并使用-ikev2-vpn) 或者 [IPsec/XAuth](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md) 模式。
 
 如需添加，修改或者删除 VPN 用户账户，首先更新你的 `env` 文件，然后你必须按照 [下一节](#更新-docker-镜像) 的说明来删除并重新创建 Docker 容器。高级用户可以 [绑定挂载](#绑定挂载-env-文件) `env` 文件。
 
@@ -246,7 +246,7 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
 
 然后你可以使用上面获取的 IKEv2 配置信息来 [配置 IKEv2 VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。
 
-要管理 IKEv2 客户端，你可以使用 [辅助脚本](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#使用辅助脚本)。示例如下。如需自定义客户端选项，可以在不添加参数的情况下运行脚本。
+要管理 IKEv2 客户端，你可以使用 [辅助脚本](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#使用辅助脚本配置-ikev2)。示例如下。如需自定义客户端选项，可以在不添加参数的情况下运行脚本。
 
 ```bash
 # 添加一个客户端（使用默认选项）

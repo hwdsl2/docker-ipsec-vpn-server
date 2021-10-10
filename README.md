@@ -197,7 +197,7 @@ Enjoy your very own VPN!
 
 **Android users**: If you encounter connection issues, try [these steps](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#android-mtumss-issues).
 
-The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use only [IKEv2](#configure-and-use-ikev2-vpn) or [IPsec/XAuth](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md) mode.
+The same VPN account can be used by your multiple devices. However, due to an IPsec/L2TP limitation, if you wish to connect multiple devices simultaneously from behind the same NAT (e.g. home router), you must use [IKEv2](#configure-and-use-ikev2-vpn) or [IPsec/XAuth](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md) mode.
 
 If you wish to add, edit or remove VPN user accounts, first update your `env` file, then you must remove and re-create the Docker container using instructions from the [next section](#update-docker-image). Advanced users can [bind mount](#bind-mount-the-env-file) the `env` file.
 
@@ -247,7 +247,7 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
 
 After that, use the IKEv2 details from above to [configure IKEv2 VPN clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#configure-ikev2-vpn-clients).
 
-You can manage IKEv2 clients using the [helper script](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#using-helper-scripts). See examples below. To customize client options, run the script without arguments.
+You can manage IKEv2 clients using the [helper script](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#set-up-ikev2-using-helper-script). See examples below. To customize client options, run the script without arguments.
 
 ```bash
 # Add a new client (using default options)
