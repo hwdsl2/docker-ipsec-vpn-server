@@ -112,7 +112,7 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 **Note:** In your `env` file, DO NOT put `""` or `''` around values, or add space around `=`. DO NOT use these special characters within values: `\ " '`. A secure IPsec PSK should consist of at least 20 random characters.
 
-Advanced users can optionally specify a DNS name to be used as the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). It will be included in the server certificate for IKEv2 mode, which is required for VPN clients to connect. Example:
+Advanced users can optionally specify a DNS name for the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). It will be included in the server certificate for IKEv2 mode. Example:
 
 ```
 VPN_DNS_NAME=vpn.example.com
