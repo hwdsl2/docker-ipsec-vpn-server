@@ -6,6 +6,7 @@
 - [Run without privileged mode](#run-without-privileged-mode)
 - [Select VPN modes](#select-vpn-modes)
 - [Access other containers on the Docker host](#access-other-containers-on-the-docker-host)
+- [Specify VPN server's public IP](#specify-vpn-servers-public-ip)
 - [About host network mode](#about-host-network-mode)
 - [Enable Libreswan logs](#enable-libreswan-logs)
 - [Check server status](#check-server-status)
@@ -88,6 +89,26 @@ Disable both IPsec/L2TP and IPsec/XAuth modes: `VPN_IKEV2_ONLY=yes`
 After connecting to the VPN, VPN clients can generally access services running in other containers on the same Docker host, without additional configuration.
 
 For example, if the IPsec VPN server container has IP `172.17.0.2`, and an Nginx container with IP `172.17.0.3` is running on the same Docker host, VPN clients can use IP `172.17.0.3` to access services on the Nginx container. To find out which IP is assigned to a container, run `docker inspect <container name>`.
+
+## Specify VPN server's public IP
+
+On Docker hosts with multiple public IP addresses, advanced users can specify a public IP for the VPN server using variable `VPN_PUBLIC_IP` in the `env` file, then re-create the Docker container. For example, if the Docker host has IPs `192.0.2.1` and `192.0.2.2`, and you want the VPN server to use `192.0.2.2`:
+
+```
+VPN_PUBLIC_IP=192.0.2.2
+```
+
+Note that this variable has no effect if IKEv2 is already set up in the Docker container. In this case, you may remove IKEv2 and set it up again using custom options. Refer to [Configure and use IKEv2 VPN](../README.md#configure-and-use-ikev2-vpn).
+
+Additional configuration may be required if you want VPN clients to use the specified public IP as their "outgoing IP" when the VPN connection is active, and the specified IP is NOT the main IP (or default route) on the Docker host. In this case, you can try adding an IPTables `SNAT` rule on the Docker host. To persist after reboot, you may add the command to `/etc/rc.local`.
+
+Continuing with the example above, if the Docker container has internal IP `172.17.0.2` (check using `docker inspect ipsec-vpn-server`), Docker's network interface name is `docker0` (check using `iptables -nvL -t nat`), and you want the "outgoing IP" to be `192.0.2.2`:
+
+```
+iptables -t nat -I POSTROUTING -s 172.17.0.2 ! -o docker0 -j SNAT --to 192.0.2.2
+```
+
+To check the "outgoing IP" for a connected VPN client, you may open a browser on the client and [look up the IP address on Google](https://www.google.com/search?q=my+ip).
 
 ## About host network mode
 

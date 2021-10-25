@@ -6,6 +6,7 @@
 - [不启用 privileged 模式运行](#不启用-privileged-模式运行)
 - [选择 VPN 模式](#选择-vpn-模式)
 - [访问 Docker 主机上的其它容器](#访问-docker-主机上的其它容器)
+- [指定 VPN 服务器的公有 IP](#指定-vpn-服务器的公有-ip)
 - [关于 host network 模式](#关于-host-network-模式)
 - [启用 Libreswan 日志](#启用-libreswan-日志)
 - [查看服务器状态](#查看服务器状态)
@@ -88,6 +89,26 @@ docker run \
 连接到 VPN 后，VPN 客户端通常可以访问在同一 Docker 主机上其他容器中运行的服务，而无需进行其他配置。
 
 例如，如果 IPsec VPN 服务器容器的 IP 为 `172.17.0.2`，并且一个 IP 为 `172.17.0.3` 的 Nginx 容器在同一 Docker 主机上运行，则 VPN 客户端可以使用 IP `172.17.0.3` 来访问 Nginx 容器上的服务。要找出分配给容器的 IP ，可以运行 `docker inspect <container name>`。
+
+## 指定 VPN 服务器的公有 IP
+
+在具有多个公有 IP 地址的 Docker 主机上，高级用户可以使用 `env` 文件中的变量 `VPN_PUBLIC_IP` 为 VPN 服务器指定一个公有 IP，然后重新创建 Docker 容器。例如，如果 Docker 主机的 IP 为 `192.0.2.1` 和 `192.0.2.2`，并且你想要 VPN 服务器使用 `192.0.2.2`：
+
+```
+VPN_PUBLIC_IP=192.0.2.2
+```
+
+请注意，如果在 Docker 容器中已经配置了 IKEv2，则此变量无效。在这种情况下，你可以移除 IKEv2 并使用自定义选项重新配置它。参见 [配置并使用 IKEv2 VPN](../README-zh.md#配置并使用-ikev2-vpn)。
+
+如果你想要 VPN 客户端在 VPN 连接处于活动状态时使用指定的公有 IP 作为其 "出站 IP"，并且指定的 IP **不是** Docker 主机上的主 IP（或默认路由），则可能需要额外的配置。在这种情况下，你可以尝试在 Docker 主机上添加一个 IPTables `SNAT` 规则。如果要在重启后继续有效，你可以将命令添加到 `/etc/rc.local`。
+
+继续上面的例子，如果 Docker 容器具有内部 IP `172.17.0.2`（使用 `docker inspect ipsec-vpn-server` 查看），Docker 的网络接口名称为 `docker0`（使用 `iptables -nvL -t nat` 查看)，并且你希望 "出站 IP" 为 `192.0.2.2`：
+
+```
+iptables -t nat -I POSTROUTING -s 172.17.0.2 ! -o docker0 -j SNAT --to 192.0.2.2
+```
+
+要检查一个已连接的 VPN 客户端的 "出站 IP"，你可以在该客户端上打开浏览器并到 [这里](https://www.ipchicken.com) 检测 IP 地址。
 
 ## 关于 host network 模式
 

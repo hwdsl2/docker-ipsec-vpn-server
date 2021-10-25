@@ -280,6 +280,7 @@ docker exec -it ipsec-vpn-server ikev2.sh
 - [不启用 privileged 模式运行](docs/advanced-usage-zh.md#不启用-privileged-模式运行)
 - [选择 VPN 模式](docs/advanced-usage-zh.md#选择-vpn-模式)
 - [访问 Docker 主机上的其它容器](docs/advanced-usage-zh.md#访问-docker-主机上的其它容器)
+- [指定 VPN 服务器的公有 IP](docs/advanced-usage-zh.md#指定-vpn-服务器的公有-ip)
 - [关于 host network 模式](docs/advanced-usage-zh.md#关于-host-network-模式)
 - [启用 Libreswan 日志](docs/advanced-usage-zh.md#启用-libreswan-日志)
 - [查看服务器状态](docs/advanced-usage-zh.md#查看服务器状态)
