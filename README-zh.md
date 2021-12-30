@@ -4,7 +4,7 @@
 
 使用这个 Docker 镜像快速搭建 IPsec VPN 服务器。支持 IPsec/L2TP，Cisco IPsec 和 IKEv2 协议。
 
-本镜像以 Alpine 3.15 或 Debian 10 为基础，并使用 [Libreswan](https://libreswan.org) (IPsec VPN 软件) 和 [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP 服务进程)。
+本镜像以 Alpine 3.15 或 Debian 11 为基础，并使用 [Libreswan](https://libreswan.org) (IPsec VPN 软件) 和 [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP 服务进程)。
 
 [**&raquo; 另见：IPsec VPN 服务器一键安装脚本**](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)
 
@@ -77,8 +77,8 @@ docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
 |                 | 基于 Alpine               | 基于 Debian                     |
 | --------------- | ------------------------ | ------------------------------ |
 | 镜像名称          | hwdsl2/ipsec-vpn-server  | hwdsl2/ipsec-vpn-server:debian |
-| 压缩后大小        | ~ 17 MB                  | ~ 57 MB                        |
-| 基础镜像          | Alpine Linux 3.15        | Debian Linux 10                |
+| 压缩后大小        | ~ 17 MB                  | ~ 61 MB                        |
+| 基础镜像          | Alpine Linux 3.15        | Debian Linux 11                |
 | 系统架构          | amd64, arm64, arm/v7     | amd64, arm64, arm/v7           |
 | Libreswan 版本   | 4.5                      | 4.5                            |
 | IPsec/L2TP      | ✅                       | ✅                              |
