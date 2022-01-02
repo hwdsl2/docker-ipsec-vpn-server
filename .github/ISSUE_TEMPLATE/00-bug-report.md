@@ -12,7 +12,7 @@ assignees: ''
 - [ ] I read the [README](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md)
 - [ ] I read the [Important notes](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#important-notes)
 - [ ] I followed instructions to [configure VPN clients](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#next-steps)
-- [ ] I checked [Troubleshooting](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#troubleshooting), [enabled logs](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#enable-libreswan-logs) and checked [VPN status](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#check-logs-and-vpn-status)
+- [ ] I checked [Troubleshooting](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#troubleshooting), [enabled logs](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage.md#enable-libreswan-logs) and checked [VPN status](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#check-logs-and-vpn-status)
 - [ ] I searched existing [Issues](https://github.com/hwdsl2/docker-ipsec-vpn-server/issues?q=is%3Aissue)
 - [ ] This bug is about the IPsec VPN server Docker image, and not IPsec VPN itself
 
@@ -33,7 +33,7 @@ Steps to reproduce the behavior:
 A clear and concise description of what you expected to happen.
 
 **Logs**
-[Enable logs](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#enable-libreswan-logs), check [VPN status](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#check-logs-and-vpn-status), and add error logs to help explain the problem, if applicable.
+[Enable logs](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage.md#enable-libreswan-logs), check [VPN status](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#check-logs-and-vpn-status), and add error logs to help explain the problem, if applicable.
 
 **Server (please complete the following information)**
 - Docker host OS: [e.g. Ubuntu 20.04]

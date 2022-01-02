@@ -12,7 +12,7 @@ assignees: ''
 - [ ] 我已阅读 [自述文件](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)
 - [ ] 我已阅读 [重要提示](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#重要提示)
 - [ ] 我已按照说明 [配置 VPN 客户端](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#下一步)
-- [ ] 我检查了 [故障排除](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#故障排除)，[启用日志](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#启用-libreswan-日志) 并查看了 [VPN 状态](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#检查日志及-vpn-状态)
+- [ ] 我检查了 [故障排除](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#故障排除)，[启用日志](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage-zh.md#启用-libreswan-日志) 并查看了 [VPN 状态](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#检查日志及-vpn-状态)
 - [ ] 我搜索了已有的 [Issues](https://github.com/hwdsl2/docker-ipsec-vpn-server/issues?q=is%3Aissue)
 - [ ] 这个 bug 是关于 IPsec VPN 服务器 Docker 镜像，而不是 IPsec VPN 本身
 
@@ -33,7 +33,7 @@ assignees: ''
 简要地描述你期望的正确结果。
 
 **日志**
-[启用日志](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#启用-libreswan-日志)，检查 [VPN 状态](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#检查日志及-vpn-状态)，并且添加错误日志以帮助解释该问题（如果适用）。
+[启用日志](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage-zh.md#启用-libreswan-日志)，检查 [VPN 状态](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#检查日志及-vpn-状态)，并且添加错误日志以帮助解释该问题（如果适用）。
 
 **服务器信息（请填写以下信息）**
 - Docker 主机操作系统: [比如 Ubuntu 20.04]
