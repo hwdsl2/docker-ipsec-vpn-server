@@ -642,16 +642,15 @@ if [ ! -f "$swan_ver_file" ]; then
   ipsec_ver=$(ipsec --version 2>/dev/null)
   swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
   swan_ver_url="https://dl.ls20.com/v1/docker/$os_type/$os_arch/swanver?ver=$swan_ver&ver2=$IMAGE_VER&i=$status"
-  swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url")
-  swan_ver_latest=$(printf '%s' "$swan_ver_latest" | head -n 1)
+  swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url" | head -n 1)
   if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$' \
     && [ -n "$swan_ver" ] && [ "$swan_ver" != "$swan_ver_latest" ] \
     && printf '%s\n%s' "$swan_ver" "$swan_ver_latest" | sort -C -V; then
-    printf '%s\n' "swan_ver_latest='$swan_ver_latest'" > "$swan_ver_file"
+    printf '%s\n' "$swan_ver_latest" > "$swan_ver_file"
   fi
 fi
 if [ -s "$swan_ver_file" ]; then
-  . "$swan_ver_file"
+  swan_ver_latest=$(cat "$swan_ver_file")
 cat <<EOF
 Note: A newer version of Libreswan ($swan_ver_latest) is available.
 To update this Docker image, see: https://git.io/updatedockervpn
