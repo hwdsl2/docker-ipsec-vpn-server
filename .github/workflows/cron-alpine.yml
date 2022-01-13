@@ -35,14 +35,14 @@ jobs:
             ${{ secrets.CACHE_NAME2 }}-
       - name: Prepare
         run: |
-          docker pull alpine:3.14
+          docker pull alpine:3.15
           docker pull "$DOCKER_USER/ipsec-vpn-server"
       - name: Check
         id: check
         run: |
           ALPINE_UPDATED=false
 
-          alpine_ts=$(docker inspect --format='{{.Created}}' alpine:3.14)
+          alpine_ts=$(docker inspect --format='{{.Created}}' alpine:3.15)
           image_ts=$(docker inspect --format='{{.Created}}' "$DOCKER_USER/ipsec-vpn-server")
 
           if [ -n "$alpine_ts" ] && [ -n "$image_ts" ]; then

@@ -35,14 +35,14 @@ jobs:
             ${{ secrets.CACHE_NAME }}-
       - name: Prepare
         run: |
-          docker pull debian:buster-slim
+          docker pull debian:bullseye-slim
           docker pull "$DOCKER_USER/ipsec-vpn-server:debian"
       - name: Check
         id: check
         run: |
           DEBIAN_UPDATED=false
 
-          debian_ts=$(docker inspect --format='{{.Created}}' debian:buster-slim)
+          debian_ts=$(docker inspect --format='{{.Created}}' debian:bullseye-slim)
           image_ts=$(docker inspect --format='{{.Created}}' "$DOCKER_USER/ipsec-vpn-server:debian")
 
           if [ -n "$debian_ts" ] && [ -n "$image_ts" ]; then
