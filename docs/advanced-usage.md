@@ -1,6 +1,6 @@
 # Advanced Usage
 
-*Read this in other languages: [English](advanced-usage.md), [简体中文](advanced-usage-zh.md). Have a suggestion? <a href="https://blog.ls20.com/vpnfeedback" target="_blank">Submit feedback</a>.*
+*Read this in other languages: [English](advanced-usage.md), [简体中文](advanced-usage-zh.md). Have a suggestion? [Send feedback](https://blog.ls20.com/vpnfeedback).*
 
 - [Use alternative DNS servers](#use-alternative-dns-servers)
 - [Run without privileged mode](#run-without-privileged-mode)
