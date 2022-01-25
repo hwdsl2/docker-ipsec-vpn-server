@@ -17,3 +17,4 @@ services:
     container_name: ipsec-vpn-server
     volumes:
       - ikev2-vpn-data:/etc/ipsec.d
+      - /lib/modules:/lib/modules:ro
