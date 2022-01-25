@@ -25,7 +25,9 @@ VPN_DNS_SRV2=1.0.0.1
 
 ## Run without privileged mode
 
-Advanced users can create a Docker container from this image without using [privileged mode](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities) (replace `./vpn.env` with your own `env` file):
+Advanced users can create a Docker container from this image without using [privileged mode](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities) (replace `./vpn.env` with your own `env` file).
+
+**Note:** If your Docker host runs CentOS 8, Oracle Linux 8, Rocky Linux or AlmaLinux OS, you must first run `modprobe ip_tables` before creating the Docker container.
 
 ```
 docker run \
@@ -221,8 +223,9 @@ As an alternative to the `--env-file` option, advanced users can bind mount the 
 docker run \
     --name ipsec-vpn-server \
     --restart=always \
-    -v ikev2-vpn-data:/etc/ipsec.d \
     -v "$(pwd)/vpn.env:/opt/src/vpn.env:ro" \
+    -v ikev2-vpn-data:/etc/ipsec.d \
+    -v /lib/modules:/lib/modules:ro \
     -p 500:500/udp \
     -p 4500:4500/udp \
     -d --privileged \

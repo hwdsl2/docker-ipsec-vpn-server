@@ -25,7 +25,9 @@ VPN_DNS_SRV2=1.0.0.1
 
 ## 不启用 privileged 模式运行
 
-高级用户可以在不启用 [privileged 模式](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities) 的情况下使用本镜像创建一个 Docker 容器 （将 `./vpn.env` 替换为你自己的 `env` 文件）：
+高级用户可以在不启用 [privileged 模式](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities) 的情况下使用本镜像创建一个 Docker 容器 （将 `./vpn.env` 替换为你自己的 `env` 文件）。
+
+**注：** 如果你的 Docker 主机运行 CentOS 8, Oracle Linux 8, Rocky Linux 或者 AlmaLinux OS，你必须在创建 Docker 容器之前首先运行 `modprobe ip_tables`。
 
 ```
 docker run \
@@ -221,8 +223,9 @@ docker restart ipsec-vpn-server
 docker run \
     --name ipsec-vpn-server \
     --restart=always \
-    -v ikev2-vpn-data:/etc/ipsec.d \
     -v "$(pwd)/vpn.env:/opt/src/vpn.env:ro" \
+    -v ikev2-vpn-data:/etc/ipsec.d \
+    -v /lib/modules:/lib/modules:ro \
     -p 500:500/udp \
     -p 4500:4500/udp \
     -d --privileged \

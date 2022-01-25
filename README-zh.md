@@ -35,6 +35,7 @@ docker run \
     --name ipsec-vpn-server \
     --restart=always \
     -v ikev2-vpn-data:/etc/ipsec.d \
+    -v /lib/modules:/lib/modules:ro \
     -p 500:500/udp \
     -p 4500:4500/udp \
     -d --privileged \
@@ -136,6 +137,7 @@ docker run \
     --env-file ./vpn.env \
     --restart=always \
     -v ikev2-vpn-data:/etc/ipsec.d \
+    -v /lib/modules:/lib/modules:ro \
     -p 500:500/udp \
     -p 4500:4500/udp \
     -d --privileged \
@@ -144,7 +146,7 @@ docker run \
 
 在该命令中，我们使用 `docker run` 的 `-v` 选项来创建一个名为 `ikev2-vpn-data` 的新 [Docker 卷](https://docs.docker.com/storage/volumes/)，并且将它挂载到容器内的 `/etc/ipsec.d` 目录下。IKEv2 的相关数据（比如证书和密钥）在该卷中保存，之后当你需要重新创建 Docker 容器的时候，只需指定同一个卷。
 
-推荐在使用本镜像时启用 IKEv2。如果你不想启用 IKEv2 而仅使用 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式连接到 VPN，可以去掉上面 `docker run` 命令中的 `-v` 选项。
+推荐在使用本镜像时启用 IKEv2。如果你不想启用 IKEv2 而仅使用 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式连接到 VPN，可以去掉上面 `docker run` 命令中的第一个 `-v` 选项。
 
 **注：** 高级用户也可以 [不启用 privileged 模式运行](docs/advanced-usage-zh.md#不启用-privileged-模式运行)。
 

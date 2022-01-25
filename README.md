@@ -35,6 +35,7 @@ docker run \
     --name ipsec-vpn-server \
     --restart=always \
     -v ikev2-vpn-data:/etc/ipsec.d \
+    -v /lib/modules:/lib/modules:ro \
     -p 500:500/udp \
     -p 4500:4500/udp \
     -d --privileged \
@@ -136,6 +137,7 @@ docker run \
     --env-file ./vpn.env \
     --restart=always \
     -v ikev2-vpn-data:/etc/ipsec.d \
+    -v /lib/modules:/lib/modules:ro \
     -p 500:500/udp \
     -p 4500:4500/udp \
     -d --privileged \
@@ -144,7 +146,7 @@ docker run \
 
 In this command, we use the `-v` option of `docker run` to create a new [Docker volume](https://docs.docker.com/storage/volumes/) named `ikev2-vpn-data`, and mount it into `/etc/ipsec.d` in the container. IKEv2 related data such as certificates and keys will persist in the volume, and later when you need to re-create the Docker container, just specify the same volume again.
 
-It is recommended to enable IKEv2 when using this image. However, if you prefer not to enable IKEv2 and use only the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes to connect to the VPN, remove the `-v` option from the `docker run` command above.
+It is recommended to enable IKEv2 when using this image. However, if you prefer not to enable IKEv2 and use only the IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes to connect to the VPN, remove the first `-v` option from the `docker run` command above.
 
 **Note:** Advanced users can also [run without privileged mode](docs/advanced-usage.md#run-without-privileged-mode).
 
