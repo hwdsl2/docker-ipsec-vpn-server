@@ -1,5 +1,8 @@
 version: '3'
 
+volumes:
+  ikev2-vpn-data:
+
 services:
   vpn:
     image: hwdsl2/ipsec-vpn-server
@@ -12,3 +15,5 @@ services:
     privileged: true
     hostname: ipsec-vpn-server
     container_name: ipsec-vpn-server
+    volumes:
+      - ikev2-vpn-data:/etc/ipsec.d
