@@ -636,13 +636,13 @@ else
 fi
 
 # Check for new Libreswan version
-ts_file="/opt/src/swanver_ts"
-if [ ! -f "$ts_file" ] || [ "$(find "$ts_file" -mmin +1440)" ]; then
+ts_file="/opt/src/swanver"
+if [ ! -f "$ts_file" ] || [ "$(find "$ts_file" -mmin +10080)" ]; then
   touch "$ts_file"
   ipsec_ver=$(ipsec --version 2>/dev/null)
   swan_ver=$(printf '%s' "$ipsec_ver" | sed -e 's/.*Libreswan U\?//' -e 's/\( (\|\/K\).*//')
-  base_url="https://github.com/hwdsl2/vpn-extras/raw/main/ver/upg"
-  swan_ver_url="$base_url/docker/$os_type/$os_arch/swanver"
+  base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
+  swan_ver_url="$base_url/upg-docker-$os_type-$os_arch-swanver"
   swan_ver_latest=$(wget -t 3 -T 15 -qO- "$swan_ver_url" | head -n 1)
   if printf '%s' "$swan_ver_latest" | grep -Eq '^([3-9]|[1-9][0-9]{1,2})(\.([0-9]|[1-9][0-9]{1,2})){1,2}$' \
     && [ -n "$swan_ver" ] && [ "$swan_ver" != "$swan_ver_latest" ] \
