@@ -15,60 +15,12 @@ on:
 
 jobs:
   check_update:
-    runs-on: ubuntu-20.04
     if: github.repository_owner == 'hwdsl2'
-    env:
-      DOCKER_USER: ${{ github.repository_owner }}
-    outputs:
-      should_test: ${{ steps.check.outputs.should_test }}
-      should_update: ${{ steps.check.outputs.should_update }}
-    steps:
-      - name: Cache
-        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed # 2.1.7
-        with:
-          path: |
-            ${{ runner.temp }}/.buildx-bin
-            ${{ runner.temp }}/.buildx-cache
-            ${{ runner.temp }}/.docker-images
-          key: ${{ secrets.CACHE_NAME2 }}-${{ github.sha }}-${{ github.run_id }}-check
-          restore-keys: |
-            ${{ secrets.CACHE_NAME2 }}-
-      - name: Prepare
-        run: |
-          docker pull alpine:3.15
-          docker pull "$DOCKER_USER/ipsec-vpn-server"
-      - name: Check
-        id: check
-        run: |
-          ALPINE_UPDATED=false
-
-          alpine_ts=$(docker inspect --format='{{.Created}}' alpine:3.15)
-          image_ts=$(docker inspect --format='{{.Created}}' "$DOCKER_USER/ipsec-vpn-server")
-
-          if [ -n "$alpine_ts" ] && [ -n "$image_ts" ]; then
-            alpine_ts_s=$(date -d "$alpine_ts" +%s)
-            image_ts_s=$(date -d "$image_ts" +%s)
-            ts_now=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-            ts_now_s=$(date -d "$ts_now" +%s)
-            diff_s=$((ts_now_s - alpine_ts_s))
-            diff=$(printf '%dd %dh:%dm:%ds\n' $(($diff_s/86400)) $(($diff_s%86400/3600)) $(($diff_s%3600/60)) $(($diff_s%60)))
-
-            echo "Alpine update time:     $alpine_ts"
-            echo "Image update time:      $image_ts"
-            echo "Current time:           $ts_now"
-            echo "Time diff (cur-alpine): $diff (${diff_s}s)"
-
-            if [ -n "$alpine_ts_s" ] && [ -n "$image_ts_s" ] \
-              && [ "$alpine_ts_s" -ge "$image_ts_s" ] \
-              && [ "$diff_s" -ge 14400 ]; then
-              echo "Starting build..."
-              ALPINE_UPDATED=true
-            else
-              echo "Not starting build."
-            fi
-          fi
-          echo ::set-output name=should_test::${ALPINE_UPDATED}
-          echo ::set-output name=should_update::${ALPINE_UPDATED}
+    uses: ./.github/workflows/check_update.yml
+    with:
+      os_type: alpine
+    secrets:
+      CACHE_NAME: ${{ secrets.CACHE_NAME2 }}
 
   vpn_test:
     needs: check_update
