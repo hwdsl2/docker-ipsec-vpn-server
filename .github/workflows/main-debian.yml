@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-20.04
     if: github.repository_owner == 'hwdsl2'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # 2.4.0
         with:
           persist-credentials: false
       - name: Check
@@ -38,7 +38,7 @@ jobs:
           pwd
           ls -ld vpn.env.example
 
-          export SHELLCHECK_OPTS="-e SC1090,SC1091,SC1117"
+          export SHELLCHECK_OPTS="-e SC1090,SC1091"
           shellcheck --version
           shopt -s globstar
           ls -ld -- **/*.sh
@@ -55,7 +55,7 @@ jobs:
     env:
       TEST_ID: ${{ matrix.test_id }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # 2.4.0
         with:
           persist-credentials: false
       - name: Test
@@ -190,11 +190,11 @@ jobs:
     needs: [shellcheck, vpn_test]
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # 2.4.0
         with:
           persist-credentials: false
       - name: Cache
-        uses: actions/cache@v2
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed # 2.1.7
         with:
           path: |
             ${{ runner.temp }}/.buildx-bin

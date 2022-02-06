@@ -24,7 +24,7 @@ jobs:
       should_update: ${{ steps.check.outputs.should_update }}
     steps:
       - name: Cache
-        uses: actions/cache@v2
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed # 2.1.7
         with:
           path: |
             ${{ runner.temp }}/.buildx-bin
@@ -81,7 +81,7 @@ jobs:
     env:
       TEST_ID: ${{ matrix.test_id }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # 2.4.0
         with:
           persist-credentials: false
       - name: Test
@@ -217,11 +217,11 @@ jobs:
     runs-on: ubuntu-20.04
     if: needs.check_update.outputs.should_update == 'true'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # 2.4.0
         with:
           persist-credentials: false
       - name: Cache
-        uses: actions/cache@v2
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed # 2.1.7
         with:
           path: |
             ${{ runner.temp }}/.buildx-bin
