@@ -1,0 +1,166 @@
+#
+# Copyright (C) 2020-2022 Lin Song <linsongui@gmail.com>
+#
+# This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
+# Unported License: http://creativecommons.org/licenses/by-sa/3.0/
+#
+# Attribution required: please include my name in any derivative and let me
+# know how you have improved it!
+
+name: vpn_test
+
+on:
+  workflow_call:
+    inputs:
+      os_type:
+        required: true
+        type: string
+
+jobs:
+  vpn_test:
+    runs-on: ubuntu-20.04
+    if: github.repository_owner == 'hwdsl2'
+    strategy:
+      matrix:
+        test_id: [no-env, with-env]
+      fail-fast: false
+    env:
+      OS_TYPE: ${{ inputs.os_type }}
+      TEST_ID: ${{ matrix.test_id }}
+    steps:
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # 2.4.0
+        with:
+          persist-credentials: false
+      - name: Test
+        run: |
+          [ ! -x /usr/bin/docker ] && exit 1
+
+          cd "$GITHUB_WORKSPACE"
+          pwd
+          ls -ld vpn.env.example
+          sed -i '/ swan_ver_latest=/s/^/#/' run.sh
+          sed -i \
+            -e '/VPN_IPSEC_PSK/s/# //' \
+            -e '/VPN_USER/s/# //' \
+            -e '/VPN_PASSWORD/s/# //' \
+            -e '/VPN_DNS_NAME/s/# //' \
+            -e '/VPN_CLIENT_NAME/s/# //' \
+            -e '/VPN_DNS_SRV1/s/# //' \
+            -e '/VPN_DNS_SRV2/s/# //' vpn.env.example
+
+          set -x
+
+          if [ "$OS_TYPE" = "alpine" ]; then
+            docker build -t vpn-test .
+          elif [ "$OS_TYPE" = "debian" ]; then
+            docker build -f Dockerfile.debian -t vpn-test .
+          else
+            exit 1
+          fi
+
+          if [ "$TEST_ID" = "with-env" ]; then
+            docker run \
+            --name "$TEST_ID" \
+            --env-file ./vpn.env.example \
+            --restart=always \
+            -v ikev2-vpn-data:/etc/ipsec.d \
+            -p 500:500/udp \
+            -p 4500:4500/udp \
+            -d --cap-add=NET_ADMIN \
+            --device=/dev/ppp \
+            --sysctl net.ipv4.ip_forward=1 \
+            --sysctl net.ipv4.conf.all.accept_redirects=0 \
+            --sysctl net.ipv4.conf.all.send_redirects=0 \
+            --sysctl net.ipv4.conf.all.rp_filter=0 \
+            --sysctl net.ipv4.conf.default.accept_redirects=0 \
+            --sysctl net.ipv4.conf.default.send_redirects=0 \
+            --sysctl net.ipv4.conf.default.rp_filter=0 \
+            --sysctl net.ipv4.conf.eth0.send_redirects=0 \
+            --sysctl net.ipv4.conf.eth0.rp_filter=0 \
+            vpn-test
+          elif [ "$TEST_ID" = "no-env" ]; then
+            docker run \
+            --name "$TEST_ID" \
+            --restart=always \
+            -p 500:500/udp \
+            -p 4500:4500/udp \
+            -d --privileged \
+            vpn-test
+          fi
+
+          sleep 30
+          docker ps | grep "$TEST_ID"
+          docker logs "$TEST_ID"
+          docker exec "$TEST_ID" netstat -anpu | grep pluto
+          docker exec "$TEST_ID" netstat -anpu | grep xl2tpd
+          docker exec "$TEST_ID" iptables -nvL
+          docker exec "$TEST_ID" iptables -nvL | grep -q 'ppp+'
+          docker exec "$TEST_ID" iptables -nvL | grep -q '192\.168\.43\.0/24'
+          docker exec "$TEST_ID" iptables -nvL -t nat
+          docker exec "$TEST_ID" iptables -nvL -t nat | grep -q '192\.168\.42\.0/24'
+          docker exec "$TEST_ID" iptables -nvL -t nat | grep -q '192\.168\.43\.0/24'
+          docker exec "$TEST_ID" ipsec status
+          docker exec "$TEST_ID" ipsec status | grep -q l2tp-psk
+          docker exec "$TEST_ID" ipsec status | grep -q xauth-psk
+          if [ "$TEST_ID" = "with-env" ]; then
+            source ./vpn.env.example
+            docker exec "$TEST_ID" grep "$VPN_IPSEC_PSK" /etc/ipsec.secrets
+            docker exec "$TEST_ID" grep "$VPN_USER" /etc/ppp/chap-secrets
+            docker exec "$TEST_ID" grep "$VPN_PASSWORD" /etc/ppp/chap-secrets
+            docker exec "$TEST_ID" grep "$VPN_USER" /etc/ipsec.d/passwd
+            docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp
+            docker exec "$TEST_ID" grep "leftid=vpn.example.com" /etc/ipsec.conf
+            docker exec "$TEST_ID" grep 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.conf
+            docker exec "$TEST_ID" grep 'ms-dns 1.1.1.1' /etc/ppp/options.xl2tpd
+            docker exec "$TEST_ID" grep 'ms-dns 1.0.0.1' /etc/ppp/options.xl2tpd
+            docker exec "$TEST_ID" grep 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
+            docker exec "$TEST_ID" grep 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.d/ikev2.conf
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/your_client_name.mobileconfig
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/your_client_name.sswan
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/your_client_name.p12
+            docker exec "$TEST_ID" grep 'vpn.example.com' /etc/ipsec.d/your_client_name.mobileconfig
+            docker exec "$TEST_ID" grep 'vpn.example.com' /etc/ipsec.d/your_client_name.sswan
+            docker exec "$TEST_ID" ikev2.sh --addclient vpnclient2
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.sswan
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.p12
+            docker exec "$TEST_ID" rm -f /etc/ipsec.d/vpnclient2*
+            docker exec "$TEST_ID" ikev2.sh --exportclient vpnclient2
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.sswan
+            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.p12
+            docker exec "$TEST_ID" ikev2.sh --listclients
+            echo "y" | docker exec -i "$TEST_ID" ikev2.sh --revokeclient vpnclient2
+          else
+            docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp && exit 1
+          fi
+
+          docker restart "$TEST_ID"
+
+          sleep 10
+          docker ps | grep "$TEST_ID"
+          docker logs "$TEST_ID"
+          docker exec "$TEST_ID" netstat -anpu | grep pluto
+          docker exec "$TEST_ID" netstat -anpu | grep xl2tpd
+          docker exec "$TEST_ID" iptables -nvL
+          docker exec "$TEST_ID" iptables -nvL | grep -q 'ppp+'
+          docker exec "$TEST_ID" iptables -nvL | grep -q '192\.168\.43\.0/24'
+          docker exec "$TEST_ID" iptables -nvL -t nat
+          docker exec "$TEST_ID" iptables -nvL -t nat | grep -q '192\.168\.42\.0/24'
+          docker exec "$TEST_ID" iptables -nvL -t nat | grep -q '192\.168\.43\.0/24'
+          docker exec "$TEST_ID" ipsec status
+          docker exec "$TEST_ID" ipsec status | grep -q l2tp-psk
+          docker exec "$TEST_ID" ipsec status | grep -q xauth-psk
+          if [ "$TEST_ID" = "with-env" ]; then
+            docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp
+            echo "y" | docker exec -i "$TEST_ID" ikev2.sh --removeikev2
+            sleep 3
+          fi
+          docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp && exit 1
+
+          exit 0
+      - name: Clear
+        if: always()
+        run: |
+          docker rm -f "$TEST_ID" || true
+          docker rmi vpn-test || true

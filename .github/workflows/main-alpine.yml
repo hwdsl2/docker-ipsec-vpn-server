@@ -13,301 +13,33 @@ on:
   push:
     branches: [master]
     paths:
-      - .github/workflows/main-alpine.yml
-      - .dockerignore
-      - Dockerfile
-      - run.sh
+      - '.github/workflows/main-alpine.yml'
+      - '.github/workflows/buildx.yml'
+      - '.github/workflows/shellcheck.yml'
+      - '.github/workflows/vpn_test.yml'
+      - '.dockerignore'
+      - 'Dockerfile'
+      - 'run.sh'
 
 jobs:
   shellcheck:
-    runs-on: ubuntu-20.04
     if: github.repository_owner == 'hwdsl2'
-    steps:
-      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # 2.4.0
-        with:
-          persist-credentials: false
-      - name: Check
-        run: |
-          if [ ! -x /usr/bin/shellcheck ]; then
-            export DEBIAN_FRONTEND=noninteractive
-            sudo apt-get -yq update
-            sudo apt-get -yq install shellcheck
-          fi
-
-          cd "$GITHUB_WORKSPACE"
-          pwd
-          ls -ld vpn.env.example
-
-          export SHELLCHECK_OPTS="-e SC1090,SC1091"
-          shellcheck --version
-          shopt -s globstar
-          ls -ld -- **/*.sh
-          shellcheck **/*.sh
-          shopt -u globstar
+    uses: ./.github/workflows/shellcheck.yml
 
   vpn_test:
-    runs-on: ubuntu-20.04
     if: github.repository_owner == 'hwdsl2'
-    strategy:
-      matrix:
-        test_id: [no-env, with-env]
-      fail-fast: false
-    env:
-      TEST_ID: ${{ matrix.test_id }}
-    steps:
-      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # 2.4.0
-        with:
-          persist-credentials: false
-      - name: Test
-        run: |
-          [ ! -x /usr/bin/docker ] && exit 1
-
-          cd "$GITHUB_WORKSPACE"
-          pwd
-          ls -ld vpn.env.example
-          sed -i '/ swan_ver_latest=/s/^/#/' run.sh
-          sed -i \
-            -e '/VPN_IPSEC_PSK/s/# //' \
-            -e '/VPN_USER/s/# //' \
-            -e '/VPN_PASSWORD/s/# //' \
-            -e '/VPN_DNS_NAME/s/# //' \
-            -e '/VPN_CLIENT_NAME/s/# //' \
-            -e '/VPN_DNS_SRV1/s/# //' \
-            -e '/VPN_DNS_SRV2/s/# //' vpn.env.example
-
-          set -x
-
-          docker build -t vpn-test .
-
-          if [ "$TEST_ID" = "with-env" ]; then
-            docker run \
-            --name "$TEST_ID" \
-            --env-file ./vpn.env.example \
-            --restart=always \
-            -v ikev2-vpn-data:/etc/ipsec.d \
-            -p 500:500/udp \
-            -p 4500:4500/udp \
-            -d --cap-add=NET_ADMIN \
-            --device=/dev/ppp \
-            --sysctl net.ipv4.ip_forward=1 \
-            --sysctl net.ipv4.conf.all.accept_redirects=0 \
-            --sysctl net.ipv4.conf.all.send_redirects=0 \
-            --sysctl net.ipv4.conf.all.rp_filter=0 \
-            --sysctl net.ipv4.conf.default.accept_redirects=0 \
-            --sysctl net.ipv4.conf.default.send_redirects=0 \
-            --sysctl net.ipv4.conf.default.rp_filter=0 \
-            --sysctl net.ipv4.conf.eth0.send_redirects=0 \
-            --sysctl net.ipv4.conf.eth0.rp_filter=0 \
-            vpn-test
-          elif [ "$TEST_ID" = "no-env" ]; then
-            docker run \
-            --name "$TEST_ID" \
-            --restart=always \
-            -p 500:500/udp \
-            -p 4500:4500/udp \
-            -d --privileged \
-            vpn-test
-          fi
-
-          sleep 30
-          docker ps | grep "$TEST_ID"
-          docker logs "$TEST_ID"
-          docker exec "$TEST_ID" netstat -anpu | grep pluto
-          docker exec "$TEST_ID" netstat -anpu | grep xl2tpd
-          docker exec "$TEST_ID" iptables -nvL
-          docker exec "$TEST_ID" iptables -nvL | grep -q 'ppp+'
-          docker exec "$TEST_ID" iptables -nvL | grep -q '192\.168\.43\.0/24'
-          docker exec "$TEST_ID" iptables -nvL -t nat
-          docker exec "$TEST_ID" iptables -nvL -t nat | grep -q '192\.168\.42\.0/24'
-          docker exec "$TEST_ID" iptables -nvL -t nat | grep -q '192\.168\.43\.0/24'
-          docker exec "$TEST_ID" ipsec status
-          docker exec "$TEST_ID" ipsec status | grep -q l2tp-psk
-          docker exec "$TEST_ID" ipsec status | grep -q xauth-psk
-          if [ "$TEST_ID" = "with-env" ]; then
-            source ./vpn.env.example
-            docker exec "$TEST_ID" grep "$VPN_IPSEC_PSK" /etc/ipsec.secrets
-            docker exec "$TEST_ID" grep "$VPN_USER" /etc/ppp/chap-secrets
-            docker exec "$TEST_ID" grep "$VPN_PASSWORD" /etc/ppp/chap-secrets
-            docker exec "$TEST_ID" grep "$VPN_USER" /etc/ipsec.d/passwd
-            docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp
-            docker exec "$TEST_ID" grep "leftid=vpn.example.com" /etc/ipsec.conf
-            docker exec "$TEST_ID" grep 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.conf
-            docker exec "$TEST_ID" grep 'ms-dns 1.1.1.1' /etc/ppp/options.xl2tpd
-            docker exec "$TEST_ID" grep 'ms-dns 1.0.0.1' /etc/ppp/options.xl2tpd
-            docker exec "$TEST_ID" grep 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
-            docker exec "$TEST_ID" grep 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.d/ikev2.conf
-            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/your_client_name.mobileconfig
-            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/your_client_name.sswan
-            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/your_client_name.p12
-            docker exec "$TEST_ID" grep 'vpn.example.com' /etc/ipsec.d/your_client_name.mobileconfig
-            docker exec "$TEST_ID" grep 'vpn.example.com' /etc/ipsec.d/your_client_name.sswan
-            docker exec "$TEST_ID" ikev2.sh --addclient vpnclient2
-            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
-            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.sswan
-            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.p12
-            docker exec "$TEST_ID" rm -f /etc/ipsec.d/vpnclient2*
-            docker exec "$TEST_ID" ikev2.sh --exportclient vpnclient2
-            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
-            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.sswan
-            docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.p12
-            docker exec "$TEST_ID" ikev2.sh --listclients
-            echo "y" | docker exec -i "$TEST_ID" ikev2.sh --revokeclient vpnclient2
-          else
-            docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp && exit 1
-          fi
-
-          docker restart "$TEST_ID"
-
-          sleep 10
-          docker ps | grep "$TEST_ID"
-          docker logs "$TEST_ID"
-          docker exec "$TEST_ID" netstat -anpu | grep pluto
-          docker exec "$TEST_ID" netstat -anpu | grep xl2tpd
-          docker exec "$TEST_ID" iptables -nvL
-          docker exec "$TEST_ID" iptables -nvL | grep -q 'ppp+'
-          docker exec "$TEST_ID" iptables -nvL | grep -q '192\.168\.43\.0/24'
-          docker exec "$TEST_ID" iptables -nvL -t nat
-          docker exec "$TEST_ID" iptables -nvL -t nat | grep -q '192\.168\.42\.0/24'
-          docker exec "$TEST_ID" iptables -nvL -t nat | grep -q '192\.168\.43\.0/24'
-          docker exec "$TEST_ID" ipsec status
-          docker exec "$TEST_ID" ipsec status | grep -q l2tp-psk
-          docker exec "$TEST_ID" ipsec status | grep -q xauth-psk
-          if [ "$TEST_ID" = "with-env" ]; then
-            docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp
-            echo "y" | docker exec -i "$TEST_ID" ikev2.sh --removeikev2
-            sleep 3
-          fi
-          docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp && exit 1
-
-          exit 0
-      - name: Clear
-        if: always()
-        run: |
-          docker rm -f "$TEST_ID" || true
-          docker rmi vpn-test || true
+    uses: ./.github/workflows/vpn_test.yml
+    with:
+      os_type: alpine
 
   buildx:
     needs: [shellcheck, vpn_test]
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # 2.4.0
-        with:
-          persist-credentials: false
-      - name: Cache
-        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed # 2.1.7
-        with:
-          path: |
-            ${{ runner.temp }}/.buildx-bin
-            ${{ runner.temp }}/.buildx-cache
-            ${{ runner.temp }}/.docker-images
-          key: ${{ secrets.CACHE_NAME2 }}-${{ github.sha }}-${{ github.run_id }}
-          restore-keys: |
-            ${{ secrets.CACHE_NAME2 }}-
-      - name: Set up Buildx
-        env:
-          RUNNER_TEMP: ${{ runner.temp }}
-        run: |
-          [ ! -x /usr/bin/docker ] && exit 1
-          if [ ! -x /usr/bin/wget ] || [ ! -x /usr/bin/jq ]; then
-            export DEBIAN_FRONTEND=noninteractive
-            sudo apt-get -yq update
-            sudo apt-get -yq install wget jq
-          fi
-
-          BUILDX_VER=$(wget -t 3 -T 30 -qO- "https://api.github.com/repos/docker/buildx/releases/latest" | jq -r ".tag_name")
-          [ -z "${BUILDX_VER}" ] && exit 1
-          echo "Buildx version: ${BUILDX_VER}"
-
-          DOCKER_DIR="${HOME}/.docker/cli-plugins"
-          CACHE_DIR="${RUNNER_TEMP}/.buildx-bin"
-          mkdir -p "${DOCKER_DIR}"
-          if [ -s "${CACHE_DIR}/docker-buildx-${BUILDX_VER}" ]; then
-            echo "Using buildx binary from cache..."
-            cp -f "${CACHE_DIR}/docker-buildx-${BUILDX_VER}" "${DOCKER_DIR}/docker-buildx"
-          else
-            echo "Downloading buildx..."
-            BUILDX_URL="https://github.com/docker/buildx/releases/download/${BUILDX_VER}/buildx-${BUILDX_VER}.linux-amd64"
-            wget -t 3 -T 30 -nv -O "${DOCKER_DIR}/docker-buildx" "${BUILDX_URL}"
-            [ ! -s "${DOCKER_DIR}/docker-buildx" ] && exit 1
-            /bin/rm -rf "${CACHE_DIR}"
-            mkdir -p "${CACHE_DIR}"
-            /bin/cp -f "${DOCKER_DIR}/docker-buildx" "${CACHE_DIR}/docker-buildx-${BUILDX_VER}"
-          fi
-          chmod a+x "${DOCKER_DIR}/docker-buildx"
-
-          docker info
-          docker buildx version
-
-          image_cache_dir="${RUNNER_TEMP}/.docker-images"
-          for image in "quay.io/hwdsl2/qemu-user-static:latest" "moby/buildkit:buildx-stable-1"; do
-            image_file=$(printf '%s' "${image}.tar.gz" | tr '/' '-' | tr ':' '-')
-            if [ -s "${image_cache_dir}/${image_file}" ]; then
-              echo "Using ${image} from cache..."
-              docker load -i "${image_cache_dir}/${image_file}"
-            else
-              echo "Downloading ${image}..."
-              docker pull -q "${image}"
-              mkdir -p "${image_cache_dir}"
-              docker save "${image}" | gzip > "${image_cache_dir}/${image_file}"
-            fi
-          done
-
-          docker run --rm --privileged quay.io/hwdsl2/qemu-user-static:latest --reset -p yes --credential yes
-          docker buildx create --name "builder-${GITHUB_SHA::8}" --driver docker-container --use
-          docker buildx inspect --bootstrap
-      - name: Docker Hub Login
-        env:
-          DOCKER_USER: ${{ github.repository_owner }}
-          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-        run: echo "$DOCKER_TOKEN" | docker login --username "$DOCKER_USER" --password-stdin 2>&1
-      - name: Quay.io Login
-        env:
-          QUAY_USER: ${{ secrets.QUAY_USER }}
-          QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
-        run: echo "$QUAY_TOKEN" | docker login quay.io --username "$QUAY_USER" --password-stdin 2>&1
-      - name: Docker Buildx
-        env:
-          DOCKER_USER: ${{ github.repository_owner }}
-          BUILD_ONLY: ${{ secrets.BUILD_ONLY }}
-          RUNNER_TEMP: ${{ runner.temp }}
-        run: |
-          cd "$GITHUB_WORKSPACE"
-          pwd
-          ls -ld vpn.env.example
-
-          [ "$BUILD_ONLY" = "true" ] && BUILD_ONLY=""
-          ts_now=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-
-          docker buildx build \
-            --progress plain \
-            --platform=linux/amd64,linux/arm64,linux/arm/v7 \
-            --build-arg BUILD_DATE=$ts_now \
-            --build-arg VCS_REF=${GITHUB_SHA::8} \
-            --build-arg VERSION=alpine-latest \
-            --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache" \
-            --cache-to type=local,dest="${RUNNER_TEMP}/.buildx-cache-new" \
-            -t "$DOCKER_USER/ipsec-vpn-server:latest" \
-            --pull \
-            ${BUILD_ONLY:+--push} \
-            .
-
-          docker buildx build \
-            --progress plain \
-            --platform=linux/amd64,linux/arm64,linux/arm/v7 \
-            --build-arg BUILD_DATE=$ts_now \
-            --build-arg VCS_REF=${GITHUB_SHA::8} \
-            --build-arg VERSION=alpine-latest \
-            --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache-new" \
-            -t "quay.io/$DOCKER_USER/ipsec-vpn-server:latest" \
-            --pull \
-            ${BUILD_ONLY:+--push} \
-            .
-
-          /bin/rm -rf "${RUNNER_TEMP}/.buildx-cache"
-          /bin/mv -f "${RUNNER_TEMP}/.buildx-cache-new" "${RUNNER_TEMP}/.buildx-cache"
-      - name: Clear
-        if: always()
-        run: |
-          shred -u "${HOME}/.docker/config.json"
-          rm -f "${HOME}/.docker/config.json"
-          docker buildx rm "builder-${GITHUB_SHA::8}" || true
+    uses: ./.github/workflows/buildx.yml
+    with:
+      os_type: alpine
+    secrets:
+      CACHE_NAME: ${{ secrets.CACHE_NAME2 }}
+      DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+      QUAY_USER: ${{ secrets.QUAY_USER }}
+      QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
+      BUILD_ONLY: ${{ secrets.BUILD_ONLY }}
