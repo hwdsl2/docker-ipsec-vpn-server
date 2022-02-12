@@ -459,8 +459,9 @@ if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
 cat >> /etc/ppp/chap-secrets <<EOF
 "$addl_user" l2tpd "$addl_password" ${addl_ip:-*}
 EOF
+addl_ip_xauth=$([ -n "$addl_ip" ] && echo ":$addl_ip" || echo "")
 cat >> /etc/ipsec.d/passwd <<EOF
-$addl_user:$addl_password_enc:xauth-psk
+$addl_user:$addl_password_enc:xauth-psk${addl_ip_xauth}
 EOF
     count=$((count+1))
     addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -s -d ' ' -f "$count")
