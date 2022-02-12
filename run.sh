@@ -623,10 +623,9 @@ cat <<EOF
 $status_text Details for IKEv2 mode:
 
 EOF
-  sed -n '/VPN server address:/,/Write this down/p' "$ikev2_log"
+  sed -n '/VPN server address:/,/Next steps:/p' "$ikev2_log"
 cat <<'EOF'
-
-To start using IKEv2, see: https://git.io/ikev2docker
+https://git.io/ikev2docker
 
 ================================================
 
