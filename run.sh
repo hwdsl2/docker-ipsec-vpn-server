@@ -105,7 +105,7 @@ VPN_USER=$(noquotes "$VPN_USER")
 VPN_PASSWORD=$(nospaces "$VPN_PASSWORD")
 VPN_PASSWORD=$(noquotes "$VPN_PASSWORD")
 
-if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ] && [ -n "$VPN_ADDL_IP_ADDRS" ]; then
+if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
   VPN_ADDL_USERS=$(nospaces "$VPN_ADDL_USERS")
   VPN_ADDL_USERS=$(noquotes "$VPN_ADDL_USERS")
   VPN_ADDL_USERS=$(onespace "$VPN_ADDL_USERS")
@@ -114,14 +114,16 @@ if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ] && [ -n "$VPN_ADDL_I
   VPN_ADDL_PASSWORDS=$(noquotes "$VPN_ADDL_PASSWORDS")
   VPN_ADDL_PASSWORDS=$(onespace "$VPN_ADDL_PASSWORDS")
   VPN_ADDL_PASSWORDS=$(noquotes2 "$VPN_ADDL_PASSWORDS")
-  VPN_ADDL_IP_ADDRS=$(nospaces "$VPN_ADDL_IP_ADDRS")
-  VPN_ADDL_IP_ADDRS=$(noquotes "$VPN_ADDL_IP_ADDRS")
-  VPN_ADDL_IP_ADDRS=$(onespace "$VPN_ADDL_IP_ADDRS")
-  VPN_ADDL_IP_ADDRS=$(noquotes2 "$VPN_ADDL_IP_ADDRS")
 else
   VPN_ADDL_USERS=""
   VPN_ADDL_PASSWORDS=""
-  VPN_ADDL_IP_ADDRS=""
+fi
+
+if [ -n "$VPN_ADDL_IP_ADDRS" ]; then
+    VPN_ADDL_IP_ADDRS=$(nospaces "$VPN_ADDL_IP_ADDRS")
+    VPN_ADDL_IP_ADDRS=$(noquotes "$VPN_ADDL_IP_ADDRS")
+    VPN_ADDL_IP_ADDRS=$(onespace "$VPN_ADDL_IP_ADDRS")
+    VPN_ADDL_IP_ADDRS=$(noquotes2 "$VPN_ADDL_IP_ADDRS")
 fi
 
 if [ -n "$VPN_DNS_SRV1" ]; then
