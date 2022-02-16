@@ -154,6 +154,11 @@ if [ -n "$VPN_SHA2_TRUNCBUG" ]; then
   VPN_SHA2_TRUNCBUG=$(noquotes "$VPN_SHA2_TRUNCBUG")
 fi
 
+if [ -n "$VPN_PROTECT_CONFIG" ]; then
+  VPN_PROTECT_CONFIG=$(nospaces "$VPN_PROTECT_CONFIG")
+  VPN_PROTECT_CONFIG=$(noquotes "$VPN_PROTECT_CONFIG")
+fi
+
 if [ -n "$VPN_DISABLE_IPSEC_L2TP" ]; then
   VPN_DISABLE_IPSEC_L2TP=$(nospaces "$VPN_DISABLE_IPSEC_L2TP")
   VPN_DISABLE_IPSEC_L2TP=$(noquotes "$VPN_DISABLE_IPSEC_L2TP")
@@ -599,8 +604,10 @@ ikev2_log="/etc/ipsec.d/ikev2setup.log"
 if grep -q " /etc/ipsec.d " /proc/mounts && [ -s "$ikev2_sh" ] && [ ! -f "$ikev2_conf" ]; then
   echo
   echo "Setting up IKEv2. This may take a few moments..."
-  if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" VPN_CLIENT_NAME="$VPN_CLIENT_NAME" \
+  if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" \
+    VPN_CLIENT_NAME="$VPN_CLIENT_NAME" \
     VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
+    VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
     bash "$ikev2_sh" --auto >"$ikev2_log" 2>&1; then
     status=1
     status_text="IKEv2 setup successful."
