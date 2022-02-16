@@ -125,7 +125,13 @@ VPN_DNS_NAME=vpn.example.com
 VPN_CLIENT_NAME=your_client_name
 ```
 
-请注意，如果在 Docker 容器中已经配置了 IKEv2，则 `VPN_DNS_NAME` 和 `VPN_CLIENT_NAME` 变量无效。
+默认情况下，导入 IKEv2 客户端配置文件时不需要密码。你可以选择使用随机密码保护客户端配置文件。这是可选的。
+
+```
+VPN_PROTECT_CONFIG=yes
+```
+
+请注意，如果在 Docker 容器中已经配置了 IKEv2，则 `VPN_DNS_NAME`, `VPN_CLIENT_NAME` 和 `VPN_PROTECT_CONFIG` 变量无效。
 
 ### 运行 IPsec VPN 服务器
 
