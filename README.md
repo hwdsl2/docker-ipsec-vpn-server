@@ -125,7 +125,7 @@ You may optionally specify a name for the first IKEv2 client. Use one word only,
 VPN_CLIENT_NAME=your_client_name
 ```
 
-By default, no password is required when importing IKEv2 client config files. You may optionally choose to protect client config files using a random password.
+By default, no password is required when importing IKEv2 client configuration. You may optionally choose to protect client config files using a random password.
 
 ```
 VPN_PROTECT_CONFIG=yes

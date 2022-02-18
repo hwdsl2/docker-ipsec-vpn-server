@@ -125,7 +125,7 @@ VPN_DNS_NAME=vpn.example.com
 VPN_CLIENT_NAME=your_client_name
 ```
 
-默认情况下，导入 IKEv2 客户端配置文件时不需要密码。你可以选择使用随机密码保护客户端配置文件。这是可选的。
+默认情况下，导入 IKEv2 客户端配置时不需要密码。你可以选择使用随机密码保护客户端配置文件。这是可选的。
 
 ```
 VPN_PROTECT_CONFIG=yes
