@@ -72,7 +72,7 @@ NET_IFACE=$(route 2>/dev/null | grep -m 1 '^default' | grep -o '[^ ]*$')
 [ -z "$NET_IFACE" ] && NET_IFACE=eth0
 
 mkdir -p /opt/src
-vpn_env="/opt/src/vpn.env"
+vpn_env=${VPN_ENVFILE:-"/opt/src/vpn.env"}
 vpn_gen_env="/etc/ipsec.d/vpn-gen.env"
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
   if [ -f "$vpn_env" ]; then
