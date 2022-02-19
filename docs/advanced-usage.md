@@ -223,7 +223,7 @@ As an alternative to the `--env-file` option, advanced users can bind mount the 
 docker run \
     --name ipsec-vpn-server \
     --restart=always \
-    -v "$(pwd)/vpn.env:/opt/src/vpn.env:ro" \
+    -v "$(pwd)/vpn.env:/opt/src/env/vpn.env:ro" \
     -v ikev2-vpn-data:/etc/ipsec.d \
     -v /lib/modules:/lib/modules:ro \
     -p 500:500/udp \
