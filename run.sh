@@ -609,10 +609,10 @@ if grep -q " /etc/ipsec.d " /proc/mounts && [ -s "$ikev2_sh" ] && [ ! -f "$ikev2
   echo
   echo "Setting up IKEv2. This may take a few moments..."
   if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" \
-    VPN_CLIENT_NAME="$VPN_CLIENT_NAME" \
+    VPN_CLIENT_NAME="$VPN_CLIENT_NAME" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
     VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
     VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
-    bash "$ikev2_sh" --auto >"$ikev2_log" 2>&1; then
+    /bin/bash "$ikev2_sh" --auto >"$ikev2_log" 2>&1; then
     status=1
     status_text="IKEv2 setup successful."
   else
