@@ -123,6 +123,13 @@ else
   VPN_ADDL_PASSWORDS=""
 fi
 
+if [ -n "$VPN_ADDL_IP_ADDRS" ]; then
+    VPN_ADDL_IP_ADDRS=$(nospaces "$VPN_ADDL_IP_ADDRS")
+    VPN_ADDL_IP_ADDRS=$(noquotes "$VPN_ADDL_IP_ADDRS")
+    VPN_ADDL_IP_ADDRS=$(onespace "$VPN_ADDL_IP_ADDRS")
+    VPN_ADDL_IP_ADDRS=$(noquotes2 "$VPN_ADDL_IP_ADDRS")
+fi
+
 if [ -n "$VPN_DNS_SRV1" ]; then
   VPN_DNS_SRV1=$(nospaces "$VPN_DNS_SRV1")
   VPN_DNS_SRV1=$(noquotes "$VPN_DNS_SRV1")
@@ -457,17 +464,20 @@ if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
   count=1
   addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -d ' ' -f 1)
   addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -d ' ' -f 1)
+  addl_ip=$(printf '%s' "$VPN_ADDL_IP_ADDRS" | cut -d ' ' -f 1)
   while [ -n "$addl_user" ] && [ -n "$addl_password" ]; do
     addl_password_enc=$(openssl passwd -1 "$addl_password")
 cat >> /etc/ppp/chap-secrets <<EOF
-"$addl_user" l2tpd "$addl_password" *
+"$addl_user" l2tpd "$addl_password" ${addl_ip:-*}
 EOF
+addl_ip_xauth=$([ -n "$addl_ip" ] && echo ":$addl_ip" || echo "")
 cat >> /etc/ipsec.d/passwd <<EOF
-$addl_user:$addl_password_enc:xauth-psk
+$addl_user:$addl_password_enc:xauth-psk${addl_ip_xauth}
 EOF
     count=$((count+1))
     addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -s -d ' ' -f "$count")
     addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -s -d ' ' -f "$count")
+    addl_ip=$(printf '%s' "$VPN_ADDL_IP_ADDRS" | cut -s -d ' ' -f "$count")
   done
 fi
 
