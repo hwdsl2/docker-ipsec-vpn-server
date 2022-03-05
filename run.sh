@@ -466,11 +466,27 @@ if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
   addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -d ' ' -f 1)
   addl_ip=$(printf '%s' "$VPN_ADDL_IP_ADDRS" | cut -d ' ' -f 1)
   while [ -n "$addl_user" ] && [ -n "$addl_password" ]; do
-    addl_password_enc=$(openssl passwd -1 "$addl_password")
+    addl_ip_l2tp="$addl_ip"
+    addl_ip_xauth="$addl_ip"
+    if [ "$addl_ip" = "*" ] || ! check_ip "$addl_ip"; then
+      addl_ip_l2tp=""
+      addl_ip_xauth=""
+    elif [ "$L2TP_NET" = "192.168.42.0/24" ] && [ "$XAUTH_NET" = "192.168.43.0/24" ]; then
+      addl_ip_part=$(printf '%s' "$addl_ip" | cut -f 1-3 -d '.')
+      if [ "$addl_ip_part" = "192.168.42" ]; then
+        addl_ip_xauth=""
+      elif [ "$addl_ip_part" = "192.168.43" ]; then
+        addl_ip_l2tp=""
+      else
+        addl_ip_l2tp=""
+        addl_ip_xauth=""
+      fi
+    fi
 cat >> /etc/ppp/chap-secrets <<EOF
-"$addl_user" l2tpd "$addl_password" ${addl_ip:-*}
+"$addl_user" l2tpd "$addl_password" ${addl_ip_l2tp:-*}
 EOF
-    addl_ip_xauth=$([ -n "$addl_ip" ] && printf '%s' ":$addl_ip" || printf '%s' "")
+    [ -n "$addl_ip_xauth" ] && addl_ip_xauth=$(printf '%s' ":$addl_ip_xauth")
+    addl_password_enc=$(openssl passwd -1 "$addl_password")
 cat >> /etc/ipsec.d/passwd <<EOF
 $addl_user:$addl_password_enc:xauth-psk${addl_ip_xauth}
 EOF
