@@ -7,6 +7,7 @@
 - [Select VPN modes](#select-vpn-modes)
 - [Access other containers on the Docker host](#access-other-containers-on-the-docker-host)
 - [Specify VPN server's public IP](#specify-vpn-servers-public-ip)
+- [Assign static IPs to VPN clients](#assign-static-ips-to-vpn-clients)
 - [About host network mode](#about-host-network-mode)
 - [Enable Libreswan logs](#enable-libreswan-logs)
 - [Check server status](#check-server-status)
@@ -111,6 +112,37 @@ iptables -t nat -I POSTROUTING -s 172.17.0.2 ! -o docker0 -j SNAT --to 192.0.2.2
 ```
 
 To check the "outgoing IP" for a connected VPN client, you may open a browser on the client and [look up the IP address on Google](https://www.google.com/search?q=my+ip).
+
+## Assign static IPs to VPN clients
+
+When connecting using IPsec/L2TP mode, the VPN server (Docker container) has internal IP `192.168.42.1` within the VPN subnet `192.168.42.0/24`. Clients are assigned internal IPs from `192.168.42.10` to `192.168.42.250`. To check which IP is assigned to a client, view the connection status on the VPN client.
+
+When connecting using IPsec/XAuth ("Cisco IPsec") or IKEv2 mode, the VPN server (Docker container) does NOT have an internal IP within the VPN subnet `192.168.43.0/24`. Clients are assigned internal IPs from `192.168.43.10` to `192.168.43.250`.
+
+Advanced users may optionally assign static IPs to VPN clients. IKEv2 mode does NOT support this feature. To assign static IPs, declare the `VPN_ADDL_IP_ADDRS` variable in your `env` file, then re-create the Docker container. Example:
+
+```
+VPN_ADDL_USERS=user1 user2 user3 user4 user5
+VPN_ADDL_PASSWORDS=pass1 pass2 pass3 pass4 pass5
+VPN_ADDL_IP_ADDRS=* * 192.168.42.2 192.168.43.2
+```
+
+In this example, we assign static IP `192.168.42.2` for `user3` for IPsec/L2TP mode, and assign static IP `192.168.43.2` for `user4` for IPsec/XAuth ("Cisco IPsec") mode. Internal IPs for `user1`, `user2` and `user5` will be auto-assigned. The internal IP for `user3` for IPsec/XAuth mode and the internal IP for `user4` for IPsec/L2TP mode will also be auto-assigned. You may use `*` to specify auto-assigned IPs, or put those user(s) at the end of the list.
+
+Static IPs that you specify for IPsec/L2TP mode must be within the range from `192.168.42.2` to `192.168.42.9`. Static IPs that you specify for IPsec/XAuth ("Cisco IPsec") mode must be within the range from `192.168.43.2` to `192.168.43.9`.
+
+If you need to assign more static IPs, you must shrink the pool of auto-assigned IP addresses. Example:
+
+```
+VPN_L2TP_POOL=192.168.42.100-192.168.42.250
+VPN_XAUTH_POOL=192.168.43.100-192.168.43.250
+```
+
+This will allow you to assign static IPs within the range from `192.168.42.2` to `192.168.42.99` for IPsec/L2TP mode, and within the range from `192.168.43.2` to `192.168.43.99` for IPsec/XAuth ("Cisco IPsec") mode.
+
+Note that if you specify `VPN_XAUTH_POOL` in the `env` file, and IKEv2 is already set up in the Docker container, you **must** manually edit `/etc/ipsec.d/ikev2.conf` inside the container and replace `rightaddresspool=192.168.43.10-192.168.43.250` with the **same value** as `VPN_XAUTH_POOL`, before re-creating the Docker container. Otherwise, IKEv2 may stop working.
+
+**Note:** In your `env` file, DO NOT put `""` or `''` around values, or add space around `=`. DO NOT use these special characters within values: `\ " '`.
 
 ## About host network mode
 

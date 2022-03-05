@@ -301,6 +301,7 @@ See [Advanced usage](docs/advanced-usage.md).
 - [Select VPN modes](docs/advanced-usage.md#select-vpn-modes)
 - [Access other containers on the Docker host](docs/advanced-usage.md#access-other-containers-on-the-docker-host)
 - [Specify VPN server's public IP](docs/advanced-usage.md#specify-vpn-servers-public-ip)
+- [Assign static IPs to VPN clients](docs/advanced-usage.md#assign-static-ips-to-vpn-clients)
 - [About host network mode](docs/advanced-usage.md#about-host-network-mode)
 - [Enable Libreswan logs](docs/advanced-usage.md#enable-libreswan-logs)
 - [Check server status](docs/advanced-usage.md#check-server-status)

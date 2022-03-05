@@ -7,6 +7,7 @@
 - [选择 VPN 模式](#选择-vpn-模式)
 - [访问 Docker 主机上的其它容器](#访问-docker-主机上的其它容器)
 - [指定 VPN 服务器的公有 IP](#指定-vpn-服务器的公有-ip)
+- [为 VPN 客户端指定静态 IP](#为-vpn-客户端指定静态-ip)
 - [关于 host network 模式](#关于-host-network-模式)
 - [启用 Libreswan 日志](#启用-libreswan-日志)
 - [查看服务器状态](#查看服务器状态)
@@ -111,6 +112,37 @@ iptables -t nat -I POSTROUTING -s 172.17.0.2 ! -o docker0 -j SNAT --to 192.0.2.2
 ```
 
 要检查一个已连接的 VPN 客户端的 "出站 IP"，你可以在该客户端上打开浏览器并到 [这里](https://www.ipchicken.com) 检测 IP 地址。
+
+## 为 VPN 客户端指定静态 IP
+
+在使用 IPsec/L2TP 模式连接时，VPN 服务器（Docker 容器）在虚拟网络 `192.168.42.0/24` 内具有内网 IP `192.168.42.1`。为客户端分配的内网 IP 在这个范围内：`192.168.42.10` 到 `192.168.42.250`。要找到为特定的客户端分配的 IP，可以查看该 VPN 客户端上的连接状态。
+
+在使用 IPsec/XAuth ("Cisco IPsec") 或 IKEv2 模式连接时，VPN 服务器（Docker 容器）在虚拟网络 `192.168.43.0/24` 内 **没有** 内网 IP。为客户端分配的内网 IP 在这个范围内：`192.168.43.10` 到 `192.168.43.250`。
+
+高级用户可以将静态 IP 分配给 VPN 客户端。这是可选的。IKEv2 模式 **不支持** 此功能。要分配静态 IP，在你的 `env` 文件中定义 `VPN_ADDL_IP_ADDRS` 变量，然后重新创建 Docker 容器。例如：
+
+```
+VPN_ADDL_USERS=user1 user2 user3 user4 user5
+VPN_ADDL_PASSWORDS=pass1 pass2 pass3 pass4 pass5
+VPN_ADDL_IP_ADDRS=* * 192.168.42.2 192.168.43.2
+```
+
+在此示例中，我们为 IPsec/L2TP 模式的 `user3` 分配静态 IP `192.168.42.2`，并为 IPsec/XAuth ("Cisco IPsec") 模式的 `user4` 分配静态 IP `192.168.43.2`。`user1`, `user2` 和 `user5` 的内网 IP 将被自动分配。`user3` 在 IPsec/XAuth 模式下的内网 IP 和 `user4` 在 IPsec/L2TP 模式下的内网 IP 也将被自动分配。你可以使用 `*` 来指定自动分配的 IP，或者将这些用户放在列表的末尾。
+
+你为 IPsec/L2TP 模式指定的静态 IP 必须在 `192.168.42.2` 到 `192.168.42.9` 范围内。你为 IPsec/XAuth ("Cisco IPsec") 模式指定的静态 IP 必须在 `192.168.43.2` 到 `192.168.43.9` 范围内。
+
+如果你需要分配更多静态 IP，则必须缩小自动分配的 IP 地址池。示例如下：
+
+```
+VPN_L2TP_POOL=192.168.42.100-192.168.42.250
+VPN_XAUTH_POOL=192.168.43.100-192.168.43.250
+```
+
+这将允许你为 IPsec/L2TP 模式在 `192.168.42.2` 到 `192.168.42.99` 范围内分配静态 IP，并且为 IPsec/XAuth ("Cisco IPsec") 模式在 `192.168.43.2` 到 `192.168.43.99` 范围内分配静态 IP。
+
+请注意，如果你在 `env` 文件中指定了 `VPN_XAUTH_POOL`，并且在 Docker 容器中已经配置了 IKEv2，你 **必须** 在重新创建 Docker 容器之前手动编辑容器内的 `/etc/ipsec.d/ikev2.conf` 并将 `rightaddresspool=192.168.43.10-192.168.43.250` 替换为与 `VPN_XAUTH_POOL` **相同的值**。否则 IKEv2 可能会停止工作。
+
+**注：** 在你的 `env` 文件中，**不要**为变量值添加 `""` 或者 `''`，或在 `=` 两边添加空格。**不要**在值中使用这些字符： `\ " '`。
 
 ## 关于 host network 模式
 
