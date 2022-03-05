@@ -146,6 +146,8 @@ sed -i '/pluto\.pid/a service rsyslog restart' /opt/src/run.sh
 exit
 ```
 
+**Note:** The error `rsyslogd: imklog: cannot open kernel log` is normal if you use this Docker image without privileged mode.
+
 When finished, you may check Libreswan logs with:
 
 ```

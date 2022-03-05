@@ -113,25 +113,38 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 **Note:** In your `env` file, DO NOT put `""` or `''` around values, or add space around `=`. DO NOT use these special characters within values: `\ " '`. A secure IPsec PSK should consist of at least 20 random characters.
 
-Advanced users can optionally specify a DNS name for the VPN server's address. The DNS name must be a fully qualified domain name (FQDN). It will be included in the server certificate for IKEv2 mode. Example:
+<details>
+<summary>
+You may optionally specify a DNS name, client name and/or custom DNS servers.
+</summary>
+
+Advanced users can optionally specify a DNS name for the IKEv2 server address. The DNS name must be a fully qualified domain name (FQDN). Example:
 
 ```
 VPN_DNS_NAME=vpn.example.com
 ```
 
-You may optionally specify a name for the first IKEv2 client. Use one word only, no special characters except `-` and `_`. The default is `vpnclient` if not specified.
+You may specify a name for the first IKEv2 client. Use one word only, no special characters except `-` and `_`. The default is `vpnclient` if not specified.
 
 ```
 VPN_CLIENT_NAME=your_client_name
 ```
 
-By default, no password is required when importing IKEv2 client configuration. You may optionally choose to protect client config files using a random password.
+By default, clients are set to use [Google Public DNS](https://developers.google.com/speed/public-dns/) when the VPN is active. You may specify custom DNS server(s) for all VPN modes. Example:
+
+```
+VPN_DNS_SRV1=1.1.1.1
+VPN_DNS_SRV2=1.0.0.1
+```
+
+By default, no password is required when importing IKEv2 client configuration. You can choose to protect client config files using a random password.
 
 ```
 VPN_PROTECT_CONFIG=yes
 ```
 
-Note that the `VPN_DNS_NAME`, `VPN_CLIENT_NAME` and `VPN_PROTECT_CONFIG` variables have no effect if IKEv2 is already set up in the Docker container.
+**Note:** The variables above have no effect if IKEv2 is already set up in the Docker container.
+</details>
 
 ### Start the IPsec VPN server
 
@@ -231,7 +244,7 @@ Otherwise, it will download the latest version. To update your Docker container,
 
 *Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn).*
 
-Using this Docker image, advanced users can configure and use IKEv2. This mode has improvements over IPsec/L2TP and IPsec/XAuth ("Cisco IPsec"), and does not require an IPsec PSK, username or password. Read more [here](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md).
+IKEv2 mode has improvements over IPsec/L2TP and IPsec/XAuth ("Cisco IPsec"), and does not require an IPsec PSK, username or password. Read more [here](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md).
 
 First, check container logs to view details for IKEv2:
 
@@ -251,9 +264,9 @@ docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
 docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
 ```
 
-After that, use the IKEv2 details from above to [configure IKEv2 VPN clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#configure-ikev2-vpn-clients).
+After that, you may [configure IKEv2 VPN clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#configure-ikev2-vpn-clients).
 
-You can manage IKEv2 clients using the [helper script](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#set-up-ikev2-using-helper-script). See examples below. To customize client options, run the script without arguments.
+You can manage IKEv2 clients using the helper script. See examples below. To customize client options, run the script without arguments.
 
 ```bash
 # Add a new client (using default options)
@@ -268,7 +281,7 @@ docker exec -it ipsec-vpn-server ikev2.sh -h
 
 **Note:** If you encounter error "executable file not found", replace `ikev2.sh` above with `/opt/src/ikev2.sh`.
 
-In certain circumstances, advanced users may need to remove IKEv2 and set it up again using custom options. This can be done using the helper script. Note that this will override variables you specified in the `env` file, such as `VPN_DNS_NAME` and `VPN_CLIENT_NAME`, and the Docker container's logs will no longer show up-to-date information for IKEv2.
+In certain circumstances, you may need to remove IKEv2 and set it up again using custom options. This can be done using the helper script. Note that this will override variables you specified in the `env` file, such as `VPN_DNS_NAME` and `VPN_CLIENT_NAME`, and the container logs will no longer show up-to-date information for IKEv2.
 
 **Warning:** All IKEv2 configuration including certificates and keys will be **permanently deleted**. This **cannot be undone**!
 

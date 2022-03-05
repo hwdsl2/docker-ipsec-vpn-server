@@ -146,6 +146,8 @@ sed -i '/pluto\.pid/a service rsyslog restart' /opt/src/run.sh
 exit
 ```
 
+**注：** 如果你在不启用 privileged 模式的情况下使用本镜像，则错误 `rsyslogd: imklog: cannot open kernel log` 是正常的。
+
 完成后你可以这样查看 Libreswan 日志：
 
 ```
