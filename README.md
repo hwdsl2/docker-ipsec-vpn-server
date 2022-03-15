@@ -115,7 +115,7 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 <details>
 <summary>
-You may optionally specify a DNS name, client name and/or custom DNS servers.
+:information_source: You may optionally specify a DNS name, client name and/or custom DNS servers. Click for details.
 </summary>
 
 Advanced users can optionally specify a DNS name for the IKEv2 server address. The DNS name must be a fully qualified domain name (FQDN). Example:

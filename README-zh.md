@@ -115,7 +115,7 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 <details>
 <summary>
-你可以指定一个域名，客户端名称和/或另外的 DNS 服务器。这是可选的。
+:information_source: 你可以指定一个域名，客户端名称和/或另外的 DNS 服务器。这是可选的。单击查看详情。
 </summary>
 
 高级用户可以指定一个域名作为 IKEv2 服务器地址。这是可选的。该域名必须是一个全称域名 (FQDN)。示例如下：
