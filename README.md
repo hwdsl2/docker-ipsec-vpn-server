@@ -15,7 +15,6 @@ Based on Alpine 3.15 or Debian 11 with [Libreswan](https://libreswan.org) (IPsec
 - [Quick start](#quick-start)
 - [Install Docker](#install-docker)
 - [Download](#download)
-- [Image comparison](#image-comparison)
 - [How to use this image](#how-to-use-this-image)
 - [Next steps](#next-steps)
 - [Important notes](#important-notes)
@@ -23,7 +22,6 @@ Based on Alpine 3.15 or Debian 11 with [Libreswan](https://libreswan.org) (IPsec
 - [Configure and use IKEv2 VPN](#configure-and-use-ikev2-vpn)
 - [Advanced usage](#advanced-usage)
 - [Technical details](#technical-details)
-- [See also](#see-also)
 - [License](#license)
 
 ## Quick start
@@ -71,7 +69,7 @@ Supported platforms: `linux/amd64`, `linux/arm64` and `linux/arm/v7`.
 
 Advanced users can [build from source code](docs/advanced-usage.md#build-from-source-code) on GitHub.
 
-## Image comparison
+### Image comparison
 
 Two pre-built images are available. The default Alpine-based image is only ~17MB.
 
@@ -322,10 +320,6 @@ The default IPsec configuration supports:
 The ports that are exposed for this container to work are:
 
 * 4500/udp and 500/udp for IPsec
-
-## See also
-
-* [IPsec VPN Server on Ubuntu, Debian and CentOS](https://github.com/hwdsl2/setup-ipsec-vpn)
 
 ## License
 

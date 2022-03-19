@@ -15,7 +15,6 @@
 - [快速开始](#快速开始)
 - [安装 Docker](#安装-docker)
 - [下载](#下载)
-- [镜像对照表](#镜像对照表)
 - [如何使用本镜像](#如何使用本镜像)
 - [下一步](#下一步)
 - [重要提示](#重要提示)
@@ -23,7 +22,6 @@
 - [配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)
 - [高级用法](#高级用法)
 - [技术细节](#技术细节)
-- [另见](#另见)
 - [授权协议](#授权协议)
 
 ## 快速开始
@@ -71,7 +69,7 @@ docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
 
 高级用户可以自己从 GitHub [编译源代码](docs/advanced-usage-zh.md#从源代码构建)。
 
-## 镜像对照表
+### 镜像对照表
 
 有两个预构建的镜像可用。默认的基于 Alpine 的镜像大小仅 ~17MB。
 
@@ -321,10 +319,6 @@ docker exec -it ipsec-vpn-server ikev2.sh
 为使 VPN 服务器正常工作，将会打开以下端口：
 
 * 4500/udp and 500/udp for IPsec
-
-## 另见
-
-* [IPsec VPN Server on Ubuntu, Debian and CentOS](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)
 
 ## 授权协议
 
