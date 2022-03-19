@@ -664,6 +664,8 @@ EOF
 cat <<'EOF'
 https://git.io/ikev2docker
 
+Send feedback: https://bit.ly/vpn-feedback
+
 ================================================
 
 EOF
