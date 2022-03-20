@@ -662,9 +662,8 @@ $status_text Details for IKEv2 mode:
 EOF
   sed -n '/VPN server address:/,/Next steps:/p' "$ikev2_log"
 cat <<'EOF'
-https://git.io/ikev2docker
-
-Send feedback: https://bit.ly/vpn-feedback
+  https://git.io/ikev2docker
+Feedback: bit.ly/vpn-feedback
 
 ================================================
 
