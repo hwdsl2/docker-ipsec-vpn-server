@@ -113,7 +113,7 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 <details>
 <summary>
-:information_source: You may optionally specify a DNS name, client name and/or custom DNS servers. Click for details.
+:information_source: You may optionally specify a DNS name, client name and/or custom DNS servers. :information_source:
 </summary>
 
 Advanced users can optionally specify a DNS name for the IKEv2 server address. The DNS name must be a fully qualified domain name (FQDN). Example:
@@ -271,9 +271,9 @@ You can manage IKEv2 clients using the helper script. See examples below. To cus
 docker exec -it ipsec-vpn-server ikev2.sh --addclient [client name]
 # Export configuration for an existing client
 docker exec -it ipsec-vpn-server ikev2.sh --exportclient [client name]
-# List the names of existing clients
+# List existing clients
 docker exec -it ipsec-vpn-server ikev2.sh --listclients
-# Show usage information
+# Show usage
 docker exec -it ipsec-vpn-server ikev2.sh -h
 ```
 

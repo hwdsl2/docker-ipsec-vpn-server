@@ -113,7 +113,7 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 <details>
 <summary>
-:information_source: 你可以指定一个域名，客户端名称和/或另外的 DNS 服务器。这是可选的。单击查看详情。
+:information_source: 你可以指定一个域名，客户端名称和/或另外的 DNS 服务器。这是可选的。:information_source:
 </summary>
 
 高级用户可以指定一个域名作为 IKEv2 服务器地址。这是可选的。该域名必须是一个全称域名 (FQDN)。示例如下：
@@ -270,7 +270,7 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
 docker exec -it ipsec-vpn-server ikev2.sh --addclient [client name]
 # 导出一个已有的客户端的配置
 docker exec -it ipsec-vpn-server ikev2.sh --exportclient [client name]
-# 列出已有的客户端的名称
+# 列出已有的客户端
 docker exec -it ipsec-vpn-server ikev2.sh --listclients
 # 显示使用信息
 docker exec -it ipsec-vpn-server ikev2.sh -h
