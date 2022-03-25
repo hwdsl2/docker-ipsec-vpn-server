@@ -8,7 +8,7 @@ Based on Alpine 3.15 or Debian 11 with [Libreswan](https://libreswan.org) (IPsec
 
 [**&raquo; See also: IPsec VPN Server on Ubuntu, Debian and CentOS**](https://github.com/hwdsl2/setup-ipsec-vpn)
 
-*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
+*Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
 #### Table of Contents
 
@@ -92,7 +92,7 @@ Two pre-built images are available. The default Alpine-based image is only ~17MB
 
 **Note:** All the variables to this image are optional, which means you don't have to type in any variable, and you can have an IPsec VPN server out of the box! To do that, create an empty `env` file using `touch vpn.env`, and skip to the next section.
 
-This Docker image uses the following variables, that can be declared in an `env` file (see [example](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/vpn.env.example)):
+This Docker image uses the following variables, that can be declared in an `env` file (see [example](vpn.env.example)):
 
 ```
 VPN_IPSEC_PSK=your_ipsec_pre_shared_key
@@ -210,7 +210,7 @@ Enjoy your very own VPN!
 
 ## Important notes
 
-*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#important-notes), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#重要提示). Have a comment or suggestion? [Send feedback](https://bit.ly/vpn-feedback).*
+*Read this in other languages: [English](README.md#important-notes), [简体中文](README-zh.md#重要提示). Have a comment or suggestion? [Send feedback](https://bit.ly/vpn-feedback).*
 
 **Windows users**: For IPsec/L2TP mode, a [one-time registry change](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#windows-error-809) is required if the VPN server or client is behind NAT (e.g. home router).
 
@@ -240,7 +240,7 @@ Otherwise, it will download the latest version. To update your Docker container,
 
 ## Configure and use IKEv2 VPN
 
-*Read this in other languages: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn). Have a comment or suggestion? [Send feedback](https://bit.ly/vpn-feedback).*
+*Read this in other languages: [English](README.md#configure-and-use-ikev2-vpn), [简体中文](README-zh.md#配置并使用-ikev2-vpn). Have a comment or suggestion? [Send feedback](https://bit.ly/vpn-feedback).*
 
 IKEv2 mode has improvements over IPsec/L2TP and IPsec/XAuth ("Cisco IPsec"), and does not require an IPsec PSK, username or password. Read more [here](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md).
 
