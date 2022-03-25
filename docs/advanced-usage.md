@@ -1,6 +1,6 @@
 # Advanced Usage
 
-*Read this in other languages: [English](advanced-usage.md), [简体中文](advanced-usage-zh.md).*
+*Read this in other languages: [English](advanced-usage.md), [简体中文](advanced-usage-zh.md). Have a comment or suggestion? [Send feedback](https://bit.ly/vpn-feedback).*
 
 - [Use alternative DNS servers](#use-alternative-dns-servers)
 - [Run without privileged mode](#run-without-privileged-mode)
