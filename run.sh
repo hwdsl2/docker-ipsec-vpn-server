@@ -566,7 +566,7 @@ if [ "$os_type" = "alpine" ]; then
   sed -i '1c\#!/sbin/openrc-run' /etc/init.d/ipsec
   rc-status >/dev/null 2>&1
   rc-service ipsec zap >/dev/null
-  rc-service ipsec start >/dev/null
+  rc-service ipsec start >/dev/null 2>&1
   mkdir -p /etc/crontabs
   cron_cmd="if rc-service ipsec status 2>&1 | grep -qi crashed; then rc-service ipsec zap; rc-service ipsec start; fi"
 cat > /etc/crontabs/root <<EOF
