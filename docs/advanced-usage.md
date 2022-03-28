@@ -166,8 +166,7 @@ Then run the following commands:
 # For Alpine-based image
 apk add --no-cache rsyslog
 rsyslogd
-ipsec whack --shutdown
-ipsec pluto --config /etc/ipsec.conf
+rc-service ipsec restart
 sed -i '/pluto\.pid/a rsyslogd' /opt/src/run.sh
 exit
 # For Debian-based image

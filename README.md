@@ -71,12 +71,12 @@ Advanced users can [build from source code](docs/advanced-usage.md#build-from-so
 
 ### Image comparison
 
-Two pre-built images are available. The default Alpine-based image is only ~17MB.
+Two pre-built images are available. The default Alpine-based image is only ~16MB.
 
 |                   | Alpine-based             | Debian-based                   |
 | ----------------- | ------------------------ | ------------------------------ |
 | Image name        | hwdsl2/ipsec-vpn-server  | hwdsl2/ipsec-vpn-server:debian |
-| Compressed size   | ~ 17 MB                  | ~ 61 MB                        |
+| Compressed size   | ~ 16 MB                  | ~ 61 MB                        |
 | Base image        | Alpine Linux 3.15        | Debian Linux 11                |
 | Platforms         | amd64, arm64, arm/v7     | amd64, arm64, arm/v7           |
 | Libreswan version | 4.6                      | 4.6                            |
