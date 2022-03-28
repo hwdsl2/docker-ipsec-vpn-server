@@ -563,8 +563,10 @@ echo "Starting IPsec service..."
 mkdir -p /run/pluto /var/run/pluto
 rm -f /run/pluto/pluto.pid /var/run/pluto/pluto.pid
 if [ "$os_type" = "alpine" ]; then
-  ipsec initnss >/dev/null
-  ipsec pluto --config /etc/ipsec.conf
+  sed -i '1c\#!/sbin/openrc-run' /etc/init.d/ipsec
+  rc-status >/dev/null 2>&1
+  rc-service ipsec zap >/dev/null
+  rc-service ipsec start >/dev/null
 else
   service ipsec start >/dev/null 2>&1
 fi

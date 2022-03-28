@@ -15,7 +15,7 @@ WORKDIR /opt/src
 RUN set -x \
     && apk add --no-cache \
          bash bind-tools coreutils openssl uuidgen wget xl2tpd iproute2 \
-         libcap-ng libcurl libevent linux-pam musl nspr nss nss-tools \
+         libcap-ng libcurl libevent linux-pam musl nspr nss nss-tools openrc \
          bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev \
          nss-dev libcap-ng-dev libevent-dev curl-dev nspr-dev \
     && wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://github.com/libreswan/libreswan/archive/v${SWAN_VER}.tar.gz" \
@@ -29,6 +29,8 @@ RUN set -x \
     && make -s base \
     && make -s install-base \
     && cd /opt/src \
+    && mkdir -p /run/openrc \
+    && touch /run/openrc/softlevel \
     && rm -rf "/opt/src/libreswan-${SWAN_VER}" \
     && apk del --no-cache \
          bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev \
