@@ -40,7 +40,9 @@ check_client_name() {
     || case $1 in -*) true;; *) false;; esac; }
 }
 
-if [ ! -f "/.dockerenv" ] && [ ! -f "/run/.containerenv" ] && ! head -n 1 /proc/1/sched | grep -q '^run\.sh '; then
+if [ ! -f "/.dockerenv" ] && [ ! -f "/run/.containerenv" ] \
+  && [ -z "$KUBERNETES_SERVICE_HOST" ] \
+  && ! head -n 1 /proc/1/sched 2>/dev/null | grep -q '^run\.sh '; then
   exiterr "This script ONLY runs in a container (e.g. Docker, Podman)."
 fi
 
