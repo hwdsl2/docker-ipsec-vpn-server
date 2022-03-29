@@ -166,7 +166,7 @@ docker exec -it ipsec-vpn-server env TERM=xterm bash -l
 # For Alpine-based image
 apk add --no-cache rsyslog
 rsyslogd
-rc-service ipsec restart >/dev/null 2>&1
+rc-service ipsec stop; rc-service -D ipsec start >/dev/null 2>&1
 sed -i '/pluto\.pid/a rsyslogd' /opt/src/run.sh
 exit
 # For Debian-based image
