@@ -262,7 +262,12 @@ docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
 docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
 ```
 
-After that, you may [configure IKEv2 VPN clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#configure-ikev2-vpn-clients).
+**Next steps:** [Configure your devices](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#configure-ikev2-vpn-clients) to use the IKEv2 VPN.
+
+<details>
+<summary>
+Learn how to manage IKEv2 clients.
+</summary>
 
 You can manage IKEv2 clients using the helper script. See examples below. To customize client options, run the script without arguments.
 
@@ -278,6 +283,18 @@ docker exec -it ipsec-vpn-server ikev2.sh -h
 ```
 
 **Note:** If you encounter error "executable file not found", replace `ikev2.sh` above with `/opt/src/ikev2.sh`.
+</details>
+<details>
+<summary>
+Learn how to change the IKEv2 server address.
+</summary>
+
+In certain circumstances, you may need to change the IKEv2 server address. For example, to switch to use a DNS name, or after server IP changes. To change the IKEv2 server address, first [open a bash shell inside the container](docs/advanced-usage.md#bash-shell-inside-container), then [follow these instructions](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#change-ikev2-server-address).
+</details>
+<details>
+<summary>
+Remove IKEv2 and set it up again using custom options.
+</summary>
 
 In certain circumstances, you may need to remove IKEv2 and set it up again using custom options. This can be done using the helper script. Note that this will override variables you specified in the `env` file, such as `VPN_DNS_NAME` and `VPN_CLIENT_NAME`, and the container logs will no longer show up-to-date information for IKEv2.
 
@@ -289,6 +306,7 @@ docker exec -it ipsec-vpn-server ikev2.sh --removeikev2
 # Set up IKEv2 again using custom options
 docker exec -it ipsec-vpn-server ikev2.sh
 ```
+</details>
 
 ## Advanced usage
 

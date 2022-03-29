@@ -261,7 +261,12 @@ docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
 docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
 ```
 
-然后你可以 [配置 IKEv2 VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。
+**下一步：** [配置你的设备](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#配置-ikev2-vpn-客户端) 以使用 IKEv2 VPN。
+
+<details>
+<summary>
+了解如何管理 IKEv2 客户端。
+</summary>
 
 你可以使用辅助脚本管理 IKEv2 客户端。示例如下。如需自定义客户端选项，可以在不添加参数的情况下运行脚本。
 
@@ -277,6 +282,18 @@ docker exec -it ipsec-vpn-server ikev2.sh -h
 ```
 
 **注：** 如果你遇到错误 "executable file not found"，将上面的 `ikev2.sh` 换成 `/opt/src/ikev2.sh`。
+</details>
+<details>
+<summary>
+了解如何更改 IKEv2 服务器地址。
+</summary>
+
+在某些情况下，你可能需要更改 IKEv2 服务器地址。例如切换为使用域名，或者在服务器的 IP 更改之后。要更改 IKEv2 服务器地址，首先[在容器中运行 Bash shell](docs/advanced-usage-zh.md#在容器中运行-bash-shell)，然后[按照这里的说明操作](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#更改-ikev2-服务器地址)。
+</details>
+<details>
+<summary>
+移除 IKEv2 并使用自定义选项重新配置。
+</summary>
 
 在某些情况下，你可能需要移除 IKEv2 并使用自定义选项重新配置它。这可以使用辅助脚本来完成。请注意，这将覆盖你在 `env` 文件中指定的变量，例如 `VPN_DNS_NAME` 和 `VPN_CLIENT_NAME`，并且容器的日志将不再显示 IKEv2 的最新信息。
 
@@ -288,6 +305,7 @@ docker exec -it ipsec-vpn-server ikev2.sh --removeikev2
 # 使用自定义选项重新配置 IKEv2
 docker exec -it ipsec-vpn-server ikev2.sh
 ```
+</details>
 
 ## 高级用法
 
