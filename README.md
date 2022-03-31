@@ -289,7 +289,7 @@ docker exec -it ipsec-vpn-server ikev2.sh -h
 Learn how to change the IKEv2 server address.
 </summary>
 
-In certain circumstances, you may need to change the IKEv2 server address. For example, to switch to use a DNS name, or after server IP changes. To change the IKEv2 server address, first [open a bash shell inside the container](docs/advanced-usage.md#bash-shell-inside-container), then [follow these instructions](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#change-ikev2-server-address).
+In certain circumstances, you may need to change the IKEv2 server address. For example, to switch to use a DNS name, or after server IP changes. To change the IKEv2 server address, first [open a bash shell inside the container](docs/advanced-usage.md#bash-shell-inside-container), then [follow these instructions](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#change-ikev2-server-address). Note that this will override the `VPN_DNS_NAME` variable you specified in the `env` file, and the container logs will no longer show up-to-date information for IKEv2.
 </details>
 <details>
 <summary>
