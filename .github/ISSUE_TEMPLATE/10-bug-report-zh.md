@@ -12,12 +12,12 @@ assignees: ''
 - [ ] 我已阅读 [自述文件](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md)
 - [ ] 我已阅读 [重要提示](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#重要提示)
 - [ ] 我已按照说明 [配置 VPN 客户端](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#下一步)
-- [ ] 我检查了 [故障排除](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#故障排除)，[启用日志](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage-zh.md#启用-libreswan-日志) 并查看了 [VPN 状态](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#检查日志及-vpn-状态)
+- [ ] 我检查了 [故障排除](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#故障排除)，[IKEv2 故障排除](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#故障排除)，[启用日志](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage-zh.md#启用-libreswan-日志) 并查看了 [VPN 状态](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#检查日志及-vpn-状态)
 - [ ] 我搜索了已有的 [Issues](https://github.com/hwdsl2/docker-ipsec-vpn-server/issues?q=is%3Aissue)
 - [ ] 这个 bug 是关于 IPsec VPN 服务器 Docker 镜像，而不是 IPsec VPN 本身
 
 <!---
-如果你需要关于 IPsec VPN 本身的帮助，请参见 [问题和反馈](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md#问题和反馈)。VPN 的相关问题可在 [Libreswan](https://lists.libreswan.org/mailman/listinfo/swan) 或 [strongSwan](https://lists.strongswan.org/mailman/listinfo/users) 邮件列表提问，或者搜索比如 [Stack Overflow](https://stackoverflow.com/questions/tagged/vpn) 等网站。
+如果你发现了 IPsec VPN 的一个可重复的程序漏洞，请在 https://github.com/libreswan/libreswan 提交一个错误报告。VPN 的相关问题可在 [Libreswan](https://lists.libreswan.org/mailman/listinfo/swan) 或 [strongSwan](https://lists.strongswan.org/mailman/listinfo/users) 用户邮件列表提问，或者搜索比如 [Stack Overflow](https://stackoverflow.com/questions/tagged/vpn) 等网站。
 --->
 
 **问题描述**
@@ -40,8 +40,8 @@ assignees: ''
 - 服务提供商（如果适用）: [比如 GCP, AWS]
 
 **客户端信息（请填写以下信息）**
-- 设备: [比如 iPhone 8]
-- 操作系统: [比如 iOS 13.6]
+- 设备: [比如 iPhone 12]
+- 操作系统: [比如 iOS 15]
 - VPN 模式: [IPsec/L2TP, IPsec/XAuth ("Cisco IPsec") 或 IKEv2]
 
 **其它信息**
