@@ -676,7 +676,7 @@ EOF
   sed -n '/VPN server address:/,/Next steps:/p' "$ikev2_log"
 cat <<'EOF'
   https://git.io/ikev2docker
-Feedback: bit.ly/vpn-feedback
+Feedback: https://bit.ly/vpn-feedback
 
 ================================================
 
