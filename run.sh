@@ -571,12 +571,14 @@ if [ "$os_type" = "alpine" ]; then
   rc-service -D ipsec start >/dev/null 2>&1
   mkdir -p /etc/crontabs
   cron_cmd="rc-service -c -D ipsec zap start"
-cat > /etc/crontabs/root <<EOF
+if ! grep -qs "$cron_cmd" /etc/crontabs/root; then
+cat >> /etc/crontabs/root <<EOF
 * * * * * $cron_cmd
 * * * * * sleep 15; $cron_cmd
 * * * * * sleep 30; $cron_cmd
 * * * * * sleep 45; $cron_cmd
 EOF
+fi
   /usr/sbin/crond -L /dev/null
 else
   service ipsec start >/dev/null 2>&1
