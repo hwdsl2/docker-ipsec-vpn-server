@@ -37,7 +37,7 @@ check_dns_name() {
 
 check_client_name() {
   ! { [ "${#1}" -gt "64" ] || printf '%s' "$1" | LC_ALL=C grep -q '[^A-Za-z0-9_-]\+' \
-    || case $1 in -*) true;; *) false;; esac; }
+    || case $1 in -*) true ;; *) false ;; esac; }
 }
 
 if [ ! -f "/.dockerenv" ] && [ ! -f "/run/.containerenv" ] \
@@ -677,8 +677,7 @@ $status_text Details for IKEv2 mode:
 EOF
   sed -n '/VPN server address:/,/Next steps:/p' "$ikev2_log"
 cat <<'EOF'
-  https://git.io/ikev2docker
-Feedback: https://bit.ly/vpn-feedback
+https://git.io/ikev2docker
 
 ================================================
 
