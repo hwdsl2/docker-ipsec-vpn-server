@@ -64,8 +64,8 @@ if [ ! -e /dev/ppp ]; then
 cat <<'EOF'
 
 Warning: /dev/ppp is missing, and IPsec/L2TP mode may not work. Please use
-         IKEv2 (https://git.io/ikev2docker) or IPsec/XAuth mode to connect.
-         Debian 11/10 users, see https://git.io/vpndebian10
+         IKEv2 (vpnsetup.net/ikev2docker) or IPsec/XAuth mode to connect.
+         Debian 11/10 users, see vpnsetup.net/debian10
 EOF
 fi
 
@@ -323,7 +323,7 @@ EOF
 cat <<'EOF'
 
 Warning: /etc/ipsec.d not mounted. IKEv2 setup requires a Docker volume
-         to be mounted at /etc/ipsec.d. See: https://git.io/ikev2docker
+         to be mounted at /etc/ipsec.d. See: vpnsetup.net/ikev2docker
 EOF
   fi
 elif [ "$disable_ipsec_l2tp" = "yes" ]; then
@@ -627,12 +627,12 @@ cat <<'EOF'
 
 Write these down. You'll need them to connect!
 
-Important notes:   https://git.io/vpnnotes2
-Setup VPN clients: https://git.io/vpnclients
+Important notes:   vpnsetup.net/notes2
+Setup VPN clients: vpnsetup.net/clients
 EOF
 
   if ! grep -q " /etc/ipsec.d " /proc/mounts; then
-    echo "IKEv2 guide:       https://git.io/ikev2docker"
+    echo "IKEv2 guide:       vpnsetup.net/ikev2docker"
   fi
 
 cat <<'EOF'
@@ -677,7 +677,7 @@ $status_text Details for IKEv2 mode:
 EOF
   sed -n '/VPN server address:/,/Next steps:/p' "$ikev2_log"
 cat <<'EOF'
-https://git.io/ikev2docker
+vpnsetup.net/ikev2docker
 
 ================================================
 
@@ -700,7 +700,7 @@ if [ ! -f "$ts_file" ] || [ "$(find "$ts_file" -mmin +10080)" ]; then
     && printf '%s\n%s' "$swan_ver" "$swan_ver_latest" | sort -C -V; then
 cat <<EOF
 Note: A newer version of Libreswan ($swan_ver_latest) is available.
-To update this Docker image, see: https://git.io/updatedockervpn
+To update this Docker image, see: vpnsetup.net/dockerupdate
 
 EOF
   fi
