@@ -63,7 +63,7 @@ os_arch=$(uname -m | tr -dc 'A-Za-z0-9_-')
 if [ ! -e /dev/ppp ]; then
 cat <<'EOF'
 
-Warning: /dev/ppp is missing, and IPsec/L2TP mode may not work. Please use
+WARNING: /dev/ppp is missing, and IPsec/L2TP mode may not work. Please use
          IKEv2 (vpnsetup.net/ikev2docker) or IPsec/XAuth mode to connect.
          Debian 11/10 users, see vpnsetup.net/debian10
 EOF
@@ -211,7 +211,7 @@ if [ -n "$VPN_DNS_SRV1" ]; then
   if ! check_ip "$VPN_DNS_SRV1"; then
 cat <<'EOF'
 
-Warning: Invalid DNS server. Check VPN_DNS_SRV1 in your 'env' file.
+WARNING: Invalid DNS server. Check VPN_DNS_SRV1 in your 'env' file.
 EOF
     VPN_DNS_SRV1=""
   fi
@@ -222,7 +222,7 @@ if [ -n "$VPN_DNS_SRV2" ]; then
   if ! check_ip "$VPN_DNS_SRV2"; then
 cat <<'EOF'
 
-Warning: Invalid DNS server. Check VPN_DNS_SRV2 in your 'env' file.
+WARNING: Invalid DNS server. Check VPN_DNS_SRV2 in your 'env' file.
 EOF
     VPN_DNS_SRV2=""
   fi
@@ -232,7 +232,7 @@ if [ -n "$VPN_CLIENT_NAME" ]; then
   if ! check_client_name "$VPN_CLIENT_NAME"; then
 cat <<'EOF'
 
-Warning: Invalid client name. Use one word only, no special characters except '-' and '_'.
+WARNING: Invalid client name. Use one word only, no special characters except '-' and '_'.
          Falling back to default client name 'vpnclient'.
 EOF
     VPN_CLIENT_NAME=""
@@ -243,7 +243,7 @@ if [ -n "$VPN_DNS_NAME" ]; then
   if ! check_dns_name "$VPN_DNS_NAME"; then
 cat <<'EOF'
 
-Warning: Invalid DNS name. 'VPN_DNS_NAME' must be a fully qualified domain name (FQDN).
+WARNING: Invalid DNS name. 'VPN_DNS_NAME' must be a fully qualified domain name (FQDN).
          Falling back to using this server's IP address.
 EOF
     VPN_DNS_NAME=""
@@ -322,7 +322,7 @@ EOF
   if ! grep -q " /etc/ipsec.d " /proc/mounts; then
 cat <<'EOF'
 
-Warning: /etc/ipsec.d not mounted. IKEv2 setup requires a Docker volume
+WARNING: /etc/ipsec.d not mounted. IKEv2 setup requires a Docker volume
          to be mounted at /etc/ipsec.d. See: vpnsetup.net/ikev2docker
 EOF
   fi
