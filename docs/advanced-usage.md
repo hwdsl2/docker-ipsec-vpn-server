@@ -8,6 +8,7 @@
 - [Access other containers on the Docker host](#access-other-containers-on-the-docker-host)
 - [Specify VPN server's public IP](#specify-vpn-servers-public-ip)
 - [Assign static IPs to VPN clients](#assign-static-ips-to-vpn-clients)
+- [Customize VPN subnets](#customize-vpn-subnets)
 - [About host network mode](#about-host-network-mode)
 - [Enable Libreswan logs](#enable-libreswan-logs)
 - [Check server status](#check-server-status)
@@ -143,6 +144,33 @@ This will allow you to assign static IPs within the range from `192.168.42.2` to
 Note that if you specify `VPN_XAUTH_POOL` in the `env` file, and IKEv2 is already set up in the Docker container, you **must** manually edit `/etc/ipsec.d/ikev2.conf` inside the container and replace `rightaddresspool=192.168.43.10-192.168.43.250` with the **same value** as `VPN_XAUTH_POOL`, before re-creating the Docker container. Otherwise, IKEv2 may stop working.
 
 **Note:** In your `env` file, DO NOT put `""` or `''` around values, or add space around `=`. DO NOT use these special characters within values: `\ " '`.
+
+## Customize VPN subnets
+
+By default, IPsec/L2TP VPN clients will use internal VPN subnet `192.168.42.0/24`, while IPsec/XAuth ("Cisco IPsec") and IKEv2 VPN clients will use internal VPN subnet `192.168.43.0/24`. For more details, read the previous section.
+
+For most use cases, it is NOT necessary and NOT recommended to customize these subnets. If your use case requires it, however, you may specify custom subnet(s) in your `env` file, then you must re-create the Docker container.
+
+```
+# Example: Specify custom VPN subnet for IPsec/L2TP mode
+# Note: All three variables must be specified.
+VPN_L2TP_NET=10.1.0.0/16
+VPN_L2TP_LOCAL=10.1.0.1
+VPN_L2TP_POOL=10.1.0.10-10.1.254.254
+```
+
+```
+# Example: Specify custom VPN subnet for IPsec/XAuth and IKEv2 modes
+# Note: Both variables must be specified.
+VPN_XAUTH_NET=10.2.0.0/16
+VPN_XAUTH_POOL=10.2.0.10-10.2.254.254
+```
+
+**Note:** In your `env` file, DO NOT put `""` or `''` around values, or add space around `=`.
+
+In the examples above, `VPN_L2TP_LOCAL` is the VPN server's internal IP for IPsec/L2TP mode. `VPN_L2TP_POOL` and `VPN_XAUTH_POOL` are the pools of auto-assigned IP addresses for VPN clients.
+
+Note that if you specify `VPN_XAUTH_POOL` in the `env` file, and IKEv2 is already set up in the Docker container, you **must** manually edit `/etc/ipsec.d/ikev2.conf` inside the container and replace `rightaddresspool=192.168.43.10-192.168.43.250` with the **same value** as `VPN_XAUTH_POOL`, before re-creating the Docker container. Otherwise, IKEv2 may stop working.
 
 ## About host network mode
 

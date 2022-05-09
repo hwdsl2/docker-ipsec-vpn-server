@@ -317,6 +317,7 @@ docker exec -it ipsec-vpn-server ikev2.sh
 - [访问 Docker 主机上的其它容器](docs/advanced-usage-zh.md#访问-docker-主机上的其它容器)
 - [指定 VPN 服务器的公有 IP](docs/advanced-usage-zh.md#指定-vpn-服务器的公有-ip)
 - [为 VPN 客户端指定静态 IP](docs/advanced-usage-zh.md#为-vpn-客户端指定静态-ip)
+- [自定义 VPN 子网](docs/advanced-usage-zh.md#自定义-vpn-子网)
 - [关于 host network 模式](docs/advanced-usage-zh.md#关于-host-network-模式)
 - [启用 Libreswan 日志](docs/advanced-usage-zh.md#启用-libreswan-日志)
 - [查看服务器状态](docs/advanced-usage-zh.md#查看服务器状态)
