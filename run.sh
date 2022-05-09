@@ -187,6 +187,31 @@ if [ -n "$VPN_IKEV2_ONLY" ]; then
   VPN_IKEV2_ONLY=$(noquotes "$VPN_IKEV2_ONLY")
 fi
 
+if [ -n "$VPN_L2TP_NET" ]; then
+  VPN_L2TP_NET=$(nospaces "$VPN_L2TP_NET")
+  VPN_L2TP_NET=$(noquotes "$VPN_L2TP_NET")
+fi
+
+if [ -n "$VPN_L2TP_LOCAL" ]; then
+  VPN_L2TP_LOCAL=$(nospaces "$VPN_L2TP_LOCAL")
+  VPN_L2TP_LOCAL=$(noquotes "$VPN_L2TP_LOCAL")
+fi
+
+if [ -n "$VPN_L2TP_POOL" ]; then
+  VPN_L2TP_POOL=$(nospaces "$VPN_L2TP_POOL")
+  VPN_L2TP_POOL=$(noquotes "$VPN_L2TP_POOL")
+fi
+
+if [ -n "$VPN_XAUTH_NET" ]; then
+  VPN_XAUTH_NET=$(nospaces "$VPN_XAUTH_NET")
+  VPN_XAUTH_NET=$(noquotes "$VPN_XAUTH_NET")
+fi
+
+if [ -n "$VPN_XAUTH_POOL" ]; then
+  VPN_XAUTH_POOL=$(nospaces "$VPN_XAUTH_POOL")
+  VPN_XAUTH_POOL=$(noquotes "$VPN_XAUTH_POOL")
+fi
+
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
 fi
