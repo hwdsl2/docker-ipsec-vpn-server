@@ -36,7 +36,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Cache
-        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed # 2.1.7
+        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # 3.0.1
         with:
           path: |
             ${{ runner.temp }}/.buildx-bin
