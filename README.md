@@ -6,6 +6,8 @@ Docker image to run an IPsec VPN server, with IPsec/L2TP, Cisco IPsec and IKEv2.
 
 Based on Alpine 3.15 or Debian 11 with [Libreswan](https://libreswan.org) (IPsec VPN software) and [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP daemon).
 
+An IPsec VPN encrypts your network traffic, so that nobody between you and the VPN server can eavesdrop on your data as it travels via the Internet. This is especially useful when using unsecured networks, e.g. at coffee shops, airports or hotel rooms.
+
 [**&raquo; See also: IPsec VPN Server on Ubuntu, Debian and CentOS**](https://github.com/hwdsl2/setup-ipsec-vpn)
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
@@ -29,6 +31,14 @@ docker run \
 Your VPN login details will be randomly generated. See [Retrieve VPN login details](#retrieve-vpn-login-details).
 
 To learn more about how to use this image, read the sections below.
+
+## Features
+
+- Supports IKEv2 with strong and fast ciphers (e.g. AES-GCM)
+- Generates Apple profiles to auto-configure iOS and macOS clients
+- Supports Windows, macOS, iOS, Android and Linux as VPN clients
+- Includes a helper script to manage IKEv2 users and certificates
+- Detailed documentation for client setup, advanced usage and more
 
 ## Install Docker
 

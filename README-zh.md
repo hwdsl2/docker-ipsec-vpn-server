@@ -6,6 +6,8 @@
 
 本镜像以 Alpine 3.15 或 Debian 11 为基础，并使用 [Libreswan](https://libreswan.org) (IPsec VPN 软件) 和 [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP 服务进程)。
 
+IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时，你和 VPN 服务器之间的任何人对你的数据的未经授权的访问。在使用不安全的网络时，这是特别有用的，例如在咖啡厅，机场或旅馆房间。
+
 [**&raquo; 另见：IPsec VPN 服务器一键安装脚本**](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)
 
 *其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
@@ -29,6 +31,14 @@ docker run \
 你的 VPN 登录凭证将会被自动随机生成。请参见 [获取 VPN 登录信息](#获取-vpn-登录信息)。
 
 要了解更多有关如何使用本镜像的信息，请继续阅读以下部分。
+
+## 功能特性
+
+- 支持具有强大和快速加密算法（例如 AES-GCM）的 IKEv2 模式
+- 生成 Apple 配置文件以自动配置 iOS 和 macOS 客户端
+- 支持 Windows、macOS、iOS、Android 和 Linux 作为 VPN 客户端
+- 包括辅助脚本以管理 IKEv2 用户和证书
+- 客户端设置、高级用法等的详细文档
 
 ## 安装 Docker
 
