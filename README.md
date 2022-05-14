@@ -10,20 +10,6 @@ Based on Alpine 3.15 or Debian 11 with [Libreswan](https://libreswan.org) (IPsec
 
 *Read this in other languages: [English](README.md), [简体中文](README-zh.md).*
 
-#### Table of Contents
-
-- [Quick start](#quick-start)
-- [Install Docker](#install-docker)
-- [Download](#download)
-- [How to use this image](#how-to-use-this-image)
-- [Next steps](#next-steps)
-- [Important notes](#important-notes)
-- [Update Docker image](#update-docker-image)
-- [Configure and use IKEv2 VPN](#configure-and-use-ikev2-vpn)
-- [Advanced usage](#advanced-usage)
-- [Technical details](#technical-details)
-- [License](#license)
-
 ## Quick start
 
 Use this command to set up an IPsec VPN server on Docker:

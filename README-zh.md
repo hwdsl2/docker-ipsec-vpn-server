@@ -10,20 +10,6 @@
 
 *其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md), [简体中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md).*
 
-#### 目录
-
-- [快速开始](#快速开始)
-- [安装 Docker](#安装-docker)
-- [下载](#下载)
-- [如何使用本镜像](#如何使用本镜像)
-- [下一步](#下一步)
-- [重要提示](#重要提示)
-- [更新 Docker 镜像](#更新-docker-镜像)
-- [配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)
-- [高级用法](#高级用法)
-- [技术细节](#技术细节)
-- [授权协议](#授权协议)
-
 ## 快速开始
 
 使用以下命令在 Docker 上快速搭建 IPsec VPN 服务器：
