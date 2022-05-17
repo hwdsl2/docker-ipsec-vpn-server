@@ -25,6 +25,8 @@ VPN_DNS_SRV1=1.1.1.1
 VPN_DNS_SRV2=1.0.0.1
 ```
 
+Note that if IKEv2 is already set up in the Docker container, you will also need to edit `/etc/ipsec.d/ikev2.conf` inside the Docker container and replace `8.8.8.8` and `8.8.4.4` with your alternative DNS server(s), then restart the Docker container.
+
 ## Run without privileged mode
 
 Advanced users can create a Docker container from this image without using [privileged mode](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities) (replace `./vpn.env` in the command below with your own `env` file).

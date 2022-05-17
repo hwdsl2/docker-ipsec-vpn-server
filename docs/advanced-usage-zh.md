@@ -25,6 +25,8 @@ VPN_DNS_SRV1=1.1.1.1
 VPN_DNS_SRV2=1.0.0.1
 ```
 
+请注意，如果 Docker 容器中已经配置了 IKEv2，你还需要编辑 Docker 容器内的 `/etc/ipsec.d/ikev2.conf` 并将 `8.8.8.8` 和 `8.8.4.4` 替换为你的其他的 DNS 服务器，然后重新启动 Docker 容器。
+
 ## 不启用 privileged 模式运行
 
 高级用户可以在不启用 [privileged 模式](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities) 的情况下使用本镜像创建一个 Docker 容器（将以下命令中的 `./vpn.env` 替换为你自己的 `env` 文件）。
