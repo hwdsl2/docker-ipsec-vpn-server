@@ -104,7 +104,7 @@ docker run \
 VPN_PUBLIC_IP=192.0.2.2
 ```
 
-请注意，如果在 Docker 容器中已经配置了 IKEv2，则此变量无效。在这种情况下，你可以移除 IKEv2 并使用自定义选项重新配置它。参见 [配置并使用 IKEv2 VPN](../README-zh.md#配置并使用-ikev2-vpn)。
+请注意，如果在 Docker 容器中已经配置了 IKEv2，则此变量对 IKEv2 模式无效。在这种情况下，你可以移除 IKEv2 并使用自定义选项重新配置它。参见 [配置并使用 IKEv2 VPN](../README-zh.md#配置并使用-ikev2-vpn)。
 
 如果你想要 VPN 客户端在 VPN 连接处于活动状态时使用指定的公有 IP 作为其 "出站 IP"，并且指定的 IP **不是** Docker 主机上的主 IP（或默认路由），则可能需要额外的配置。在这种情况下，你可以尝试在 Docker 主机上添加一个 IPTables `SNAT` 规则。如果要在重启后继续有效，你可以将命令添加到 `/etc/rc.local`。
 

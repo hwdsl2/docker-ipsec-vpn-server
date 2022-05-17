@@ -136,7 +136,7 @@ By default, no password is required when importing IKEv2 client configuration. Y
 VPN_PROTECT_CONFIG=yes
 ```
 
-**Note:** The variables above have no effect if IKEv2 is already set up in the Docker container.
+**Note:** The variables above have no effect for IKEv2 mode, if IKEv2 is already set up in the Docker container. In this case, you may remove IKEv2 and set it up again using custom options. Refer to [Configure and use IKEv2 VPN](#configure-and-use-ikev2-vpn).
 </details>
 
 ### Start the IPsec VPN server

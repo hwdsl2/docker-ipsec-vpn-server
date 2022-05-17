@@ -104,7 +104,7 @@ On Docker hosts with multiple public IP addresses, advanced users can specify a 
 VPN_PUBLIC_IP=192.0.2.2
 ```
 
-Note that this variable has no effect if IKEv2 is already set up in the Docker container. In this case, you may remove IKEv2 and set it up again using custom options. Refer to [Configure and use IKEv2 VPN](../README.md#configure-and-use-ikev2-vpn).
+Note that this variable has no effect for IKEv2 mode, if IKEv2 is already set up in the Docker container. In this case, you may remove IKEv2 and set it up again using custom options. Refer to [Configure and use IKEv2 VPN](../README.md#configure-and-use-ikev2-vpn).
 
 Additional configuration may be required if you want VPN clients to use the specified public IP as their "outgoing IP" when the VPN connection is active, and the specified IP is NOT the main IP (or default route) on the Docker host. In this case, you can try adding an IPTables `SNAT` rule on the Docker host. To persist after reboot, you may add the command to `/etc/rc.local`.
 

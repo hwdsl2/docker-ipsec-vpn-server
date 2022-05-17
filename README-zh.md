@@ -136,7 +136,7 @@ VPN_DNS_SRV2=1.0.0.1
 VPN_PROTECT_CONFIG=yes
 ```
 
-**注：** 如果在 Docker 容器中已经配置了 IKEv2，则以上变量无效。
+**注：** 如果在 Docker 容器中已经配置了 IKEv2，则以上变量对 IKEv2 模式无效。在这种情况下，你可以移除 IKEv2 并使用自定义选项重新配置它。参见 [配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)。
 </details>
 
 ### 运行 IPsec VPN 服务器
