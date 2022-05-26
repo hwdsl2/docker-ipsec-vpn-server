@@ -9,7 +9,7 @@
 
 FROM debian:bullseye-slim
 
-ENV SWAN_VER 4.6
+ENV SWAN_VER 4.7
 WORKDIR /opt/src
 
 RUN apt-get -yqq update \
