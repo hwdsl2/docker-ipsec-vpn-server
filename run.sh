@@ -702,7 +702,7 @@ $status_text Details for IKEv2 mode:
 EOF
   sed -n '/VPN server address:/,/Next steps:/p' "$ikev2_log"
 cat <<'EOF'
-vpnsetup.net/ikev2docker
+https://vpnsetup.net/ikev2docker
 
 ================================================
 
