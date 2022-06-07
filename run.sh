@@ -656,10 +656,6 @@ Important notes:   vpnsetup.net/notes2
 Setup VPN clients: vpnsetup.net/clients
 EOF
 
-  if ! grep -q " /etc/ipsec.d " /proc/mounts; then
-    echo "IKEv2 guide:       vpnsetup.net/ikev2docker"
-  fi
-
 cat <<'EOF'
 
 ================================================
