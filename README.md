@@ -257,7 +257,7 @@ docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
 docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
 ```
 
-**Next steps:** [Configure your devices](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#configure-ikev2-vpn-clients) to use the IKEv2 VPN.
+**Next steps:** [Configure your devices](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md) to use the IKEv2 VPN.
 
 <details>
 <summary>
