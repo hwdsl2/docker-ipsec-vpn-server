@@ -652,8 +652,8 @@ cat <<'EOF'
 
 Write these down. You'll need them to connect!
 
-Important notes:   vpnsetup.net/notes2
-Setup VPN clients: vpnsetup.net/clients
+Important notes:  vpnsetup.net/notes2
+VPN client setup: vpnsetup.net/clients2
 EOF
 
 cat <<'EOF'
