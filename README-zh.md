@@ -191,9 +191,11 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 
 ## 下一步
 
+*其他语言版本: [English](README.md#next-steps), [中文](README-zh.md#下一步)。*
+
 配置你的计算机或其它设备使用 VPN。请参见：
 
-**[配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)**
+**[配置并使用 IKEv2 VPN（推荐）](#配置并使用-ikev2-vpn)**
 
 **[配置 IPsec/L2TP VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md)**
 
@@ -205,7 +207,7 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 
 ## 重要提示
 
-*其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#important-notes), [中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#重要提示)。*
+*其他语言版本: [English](README.md#important-notes), [中文](README-zh.md#重要提示)。*
 
 **Windows 用户** 对于 IPsec/L2TP 模式，在首次连接之前需要 [修改注册表](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器或客户端与 NAT（比如家用路由器）的兼容问题。
 
@@ -235,7 +237,7 @@ Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 
 ## 配置并使用 IKEv2 VPN
 
-*其他语言版本: [English](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#configure-and-use-ikev2-vpn), [中文](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh.md#配置并使用-ikev2-vpn)。*
+*其他语言版本: [English](README.md#configure-and-use-ikev2-vpn), [中文](README-zh.md#配置并使用-ikev2-vpn)。*
 
 IKEv2 模式是比 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 更佳的连接模式，该模式无需 IPsec PSK, 用户名或密码。更多信息请看[这里](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md)。
 

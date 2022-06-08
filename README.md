@@ -191,9 +191,11 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 
 ## Next steps
 
+*Read this in other languages: [English](README.md#next-steps), [中文](README-zh.md#下一步).*
+
 Get your computer or device to use the VPN. Please refer to:
 
-**[Configure and use IKEv2 VPN](#configure-and-use-ikev2-vpn)**
+**[Configure and use IKEv2 VPN (recommended)](#configure-and-use-ikev2-vpn)**
 
 **[Configure IPsec/L2TP VPN Clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md)**
 
