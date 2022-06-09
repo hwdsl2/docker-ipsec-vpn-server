@@ -65,7 +65,7 @@ cat <<'EOF'
 
 WARNING: /dev/ppp is missing, and IPsec/L2TP mode may not work.
          Please use IKEv2 or IPsec/XAuth mode to connect.
-         Debian 11/10 users, see vpnsetup.net/debian10
+         Debian 11/10 users, see https://vpnsetup.net/debian10
 EOF
 fi
 
@@ -348,7 +348,7 @@ EOF
 cat <<'EOF'
 
 WARNING: /etc/ipsec.d not mounted. IKEv2 setup requires a Docker volume
-         to be mounted at /etc/ipsec.d. See: vpnsetup.net/ikev2docker
+         mounted at /etc/ipsec.d.
 EOF
   fi
 elif [ "$disable_ipsec_l2tp" = "yes" ]; then
@@ -652,8 +652,7 @@ cat <<'EOF'
 
 Write these down. You'll need them to connect!
 
-Important notes:  vpnsetup.net/notes2
-VPN client setup: vpnsetup.net/clients2
+VPN client setup: https://vpnsetup.net/clients2
 EOF
 
 cat <<'EOF'
@@ -698,7 +697,7 @@ $status_text Details for IKEv2 mode:
 EOF
   sed -n '/VPN server address:/,/Next steps:/p' "$ikev2_log"
 cat <<'EOF'
-https://vpnsetup.net/ikev2docker
+https://vpnsetup.net/clients2
 
 ================================================
 
@@ -721,7 +720,7 @@ if [ ! -f "$ts_file" ] || [ "$(find "$ts_file" -mmin +10080)" ]; then
     && printf '%s\n%s' "$swan_ver" "$swan_ver_latest" | sort -C -V; then
 cat <<EOF
 Note: A newer version of Libreswan ($swan_ver_latest) is available.
-To update this Docker image, see: vpnsetup.net/dockerupdate
+To update this Docker image, see: https://vpnsetup.net/dockerupdate
 
 EOF
   fi
