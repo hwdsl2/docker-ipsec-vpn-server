@@ -203,7 +203,9 @@ Get your computer or device to use the VPN. Please refer to:
 
 If you get an error when trying to connect, see [Troubleshooting](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#troubleshooting).
 
-Enjoy your very own VPN!
+Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
+
+Like this project? You can show your appreciation [here](https://coindrop.to/hwdsl2).
 
 ## Important notes
 

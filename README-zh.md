@@ -203,7 +203,9 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 
 如果在连接过程中遇到错误，请参见 [故障排除](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#故障排除)。
 
-开始使用自己的专属 VPN!
+开始使用自己的专属 VPN! :sparkles::tada::rocket::sparkles:
+
+如果你喜欢这个项目，可以在 [这里](https://coindrop.to/hwdsl2) 表达你的感谢。
 
 ## 重要提示
 
