@@ -311,6 +311,20 @@ docker exec -it ipsec-vpn-server ikev2.sh
 
 See [Advanced usage](docs/advanced-usage.md).
 
+- [Use alternative DNS servers](docs/advanced-usage.md#use-alternative-dns-servers)
+- [Run without privileged mode](docs/advanced-usage.md#run-without-privileged-mode)
+- [Select VPN modes](docs/advanced-usage.md#select-vpn-modes)
+- [Access other containers on the Docker host](docs/advanced-usage.md#access-other-containers-on-the-docker-host)
+- [Specify VPN server's public IP](docs/advanced-usage.md#specify-vpn-servers-public-ip)
+- [Assign static IPs to VPN clients](docs/advanced-usage.md#assign-static-ips-to-vpn-clients)
+- [Customize VPN subnets](docs/advanced-usage.md#customize-vpn-subnets)
+- [About host network mode](docs/advanced-usage.md#about-host-network-mode)
+- [Enable Libreswan logs](docs/advanced-usage.md#enable-libreswan-logs)
+- [Check server status](docs/advanced-usage.md#check-server-status)
+- [Build from source code](docs/advanced-usage.md#build-from-source-code)
+- [Bash shell inside container](docs/advanced-usage.md#bash-shell-inside-container)
+- [Bind mount the env file](docs/advanced-usage.md#bind-mount-the-env-file)
+
 ## Technical details
 
 There are two services running: `Libreswan (pluto)` for the IPsec VPN, and `xl2tpd` for L2TP support.
