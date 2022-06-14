@@ -201,15 +201,13 @@ Get your computer or device to use the VPN. Please refer to:
 
 **[Configure IPsec/XAuth ("Cisco IPsec") VPN Clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md)**
 
-If you get an error when trying to connect, see [Troubleshooting](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#troubleshooting).
-
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 Like this project? You can [show your support or appreciation](https://coindrop.to/hwdsl2).
 
-## Important notes
+<a href="https://coindrop.to/hwdsl2" target="_blank"><img src="docs/images/embed-button.png" height="38" width="153" alt="Coindrop.to me"></img></a>
 
-*Read this in other languages: [English](README.md#important-notes), [中文](README-zh.md#重要提示).*
+## Important notes
 
 **Windows users**: For IPsec/L2TP mode, a [one-time registry change](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#windows-error-809) is required if the VPN server or client is behind NAT (e.g. home router).
 
@@ -238,8 +236,6 @@ Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 Otherwise, it will download the latest version. To update your Docker container, first write down all your [VPN login details](#retrieve-vpn-login-details). Then remove the Docker container with `docker rm -f ipsec-vpn-server`. Finally, re-create it using instructions from [How to use this image](#how-to-use-this-image).
 
 ## Configure and use IKEv2 VPN
-
-*Read this in other languages: [English](README.md#configure-and-use-ikev2-vpn), [中文](README-zh.md#配置并使用-ikev2-vpn).*
 
 IKEv2 mode has improvements over IPsec/L2TP and IPsec/XAuth ("Cisco IPsec"), and does not require an IPsec PSK, username or password. Read more [here](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md).
 
