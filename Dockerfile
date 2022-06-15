@@ -36,7 +36,7 @@ RUN set -x \
          bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev \
          nss-dev libcap-ng-dev libevent-dev curl-dev nspr-dev
 
-RUN wget -t 3 -T 30 -nv -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/0e24f8b0860696280976c5c902667ed2f5487a77/extras/ikev2setup.sh \
+RUN wget -t 3 -T 30 -nv -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/d36c435c95ed12df474d823960de840cfd452d4c/extras/ikev2setup.sh \
     && chmod +x /opt/src/ikev2.sh \
     && ln -s /opt/src/ikev2.sh /usr/bin
 
