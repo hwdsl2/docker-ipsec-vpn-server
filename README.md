@@ -181,7 +181,7 @@ Username: your_vpn_username
 Password: your_vpn_password
 ```
 
-The output will also include details for IKEv2 mode, if enabled. To start using IKEv2, see [Configure and use IKEv2 VPN](#configure-and-use-ikev2-vpn).
+The output will also include details for IKEv2 mode, if enabled.
 
 (Optional) Backup the generated VPN login details (if any) to the current directory:
 
