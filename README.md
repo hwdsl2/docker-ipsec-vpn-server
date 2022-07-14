@@ -203,9 +203,9 @@ Get your computer or device to use the VPN. Please refer to:
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
-Like this project? You can [show your support or appreciation](https://coindrop.to/hwdsl2).
-
-<a href="https://coindrop.to/hwdsl2" target="_blank"><img src="docs/images/embed-button.png" height="38" width="153" alt="Coindrop.to me"></img></a>
+> Like this project? You can show your support or appreciation.
+>
+> <a href="https://ko-fi.com/hwdsl2" target="_blank"><img height="36" width="187" src="docs/images/kofi2.png" border="0" alt="Buy Me a Coffee at ko-fi.com" /></a> &nbsp;<a href="https://coindrop.to/hwdsl2" target="_blank"><img src="docs/images/embed-button.png" height="36" width="145" border="0" alt="Coindrop.to me" /></a>
 
 ## Important notes
 
