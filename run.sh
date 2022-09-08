@@ -95,7 +95,6 @@ if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
     VPN_IPSEC_PSK=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' </dev/urandom 2>/dev/null | head -c 20)
     VPN_USER=vpnuser
     VPN_PASSWORD=$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' </dev/urandom 2>/dev/null | head -c 16)
-
     printf '%s\n' "VPN_IPSEC_PSK='$VPN_IPSEC_PSK'" > "$vpn_gen_env"
     printf '%s\n' "VPN_USER='$VPN_USER'" >> "$vpn_gen_env"
     printf '%s\n' "VPN_PASSWORD='$VPN_PASSWORD'" >> "$vpn_gen_env"
@@ -110,7 +109,6 @@ VPN_USER=$(nospaces "$VPN_USER")
 VPN_USER=$(noquotes "$VPN_USER")
 VPN_PASSWORD=$(nospaces "$VPN_PASSWORD")
 VPN_PASSWORD=$(noquotes "$VPN_PASSWORD")
-
 if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
   VPN_ADDL_USERS=$(nospaces "$VPN_ADDL_USERS")
   VPN_ADDL_USERS=$(noquotes "$VPN_ADDL_USERS")
@@ -131,82 +129,66 @@ else
   VPN_ADDL_PASSWORDS=""
   VPN_ADDL_IP_ADDRS=""
 fi
-
 if [ -n "$VPN_DNS_SRV1" ]; then
   VPN_DNS_SRV1=$(nospaces "$VPN_DNS_SRV1")
   VPN_DNS_SRV1=$(noquotes "$VPN_DNS_SRV1")
 fi
-
 if [ -n "$VPN_DNS_SRV2" ]; then
   VPN_DNS_SRV2=$(nospaces "$VPN_DNS_SRV2")
   VPN_DNS_SRV2=$(noquotes "$VPN_DNS_SRV2")
 fi
-
 if [ -n "$VPN_CLIENT_NAME" ]; then
   VPN_CLIENT_NAME=$(nospaces "$VPN_CLIENT_NAME")
   VPN_CLIENT_NAME=$(noquotes "$VPN_CLIENT_NAME")
 fi
-
 if [ -n "$VPN_DNS_NAME" ]; then
   VPN_DNS_NAME=$(nospaces "$VPN_DNS_NAME")
   VPN_DNS_NAME=$(noquotes "$VPN_DNS_NAME")
 fi
-
 if [ -n "$VPN_PUBLIC_IP" ]; then
   VPN_PUBLIC_IP=$(nospaces "$VPN_PUBLIC_IP")
   VPN_PUBLIC_IP=$(noquotes "$VPN_PUBLIC_IP")
 fi
-
 if [ -n "$VPN_ANDROID_MTU_FIX" ]; then
   VPN_ANDROID_MTU_FIX=$(nospaces "$VPN_ANDROID_MTU_FIX")
   VPN_ANDROID_MTU_FIX=$(noquotes "$VPN_ANDROID_MTU_FIX")
 fi
-
 if [ -n "$VPN_SHA2_TRUNCBUG" ]; then
   VPN_SHA2_TRUNCBUG=$(nospaces "$VPN_SHA2_TRUNCBUG")
   VPN_SHA2_TRUNCBUG=$(noquotes "$VPN_SHA2_TRUNCBUG")
 fi
-
 if [ -n "$VPN_PROTECT_CONFIG" ]; then
   VPN_PROTECT_CONFIG=$(nospaces "$VPN_PROTECT_CONFIG")
   VPN_PROTECT_CONFIG=$(noquotes "$VPN_PROTECT_CONFIG")
 fi
-
 if [ -n "$VPN_DISABLE_IPSEC_L2TP" ]; then
   VPN_DISABLE_IPSEC_L2TP=$(nospaces "$VPN_DISABLE_IPSEC_L2TP")
   VPN_DISABLE_IPSEC_L2TP=$(noquotes "$VPN_DISABLE_IPSEC_L2TP")
 fi
-
 if [ -n "$VPN_DISABLE_IPSEC_XAUTH" ]; then
   VPN_DISABLE_IPSEC_XAUTH=$(nospaces "$VPN_DISABLE_IPSEC_XAUTH")
   VPN_DISABLE_IPSEC_XAUTH=$(noquotes "$VPN_DISABLE_IPSEC_XAUTH")
 fi
-
 if [ -n "$VPN_IKEV2_ONLY" ]; then
   VPN_IKEV2_ONLY=$(nospaces "$VPN_IKEV2_ONLY")
   VPN_IKEV2_ONLY=$(noquotes "$VPN_IKEV2_ONLY")
 fi
-
 if [ -n "$VPN_L2TP_NET" ]; then
   VPN_L2TP_NET=$(nospaces "$VPN_L2TP_NET")
   VPN_L2TP_NET=$(noquotes "$VPN_L2TP_NET")
 fi
-
 if [ -n "$VPN_L2TP_LOCAL" ]; then
   VPN_L2TP_LOCAL=$(nospaces "$VPN_L2TP_LOCAL")
   VPN_L2TP_LOCAL=$(noquotes "$VPN_L2TP_LOCAL")
 fi
-
 if [ -n "$VPN_L2TP_POOL" ]; then
   VPN_L2TP_POOL=$(nospaces "$VPN_L2TP_POOL")
   VPN_L2TP_POOL=$(noquotes "$VPN_L2TP_POOL")
 fi
-
 if [ -n "$VPN_XAUTH_NET" ]; then
   VPN_XAUTH_NET=$(nospaces "$VPN_XAUTH_NET")
   VPN_XAUTH_NET=$(noquotes "$VPN_XAUTH_NET")
 fi
-
 if [ -n "$VPN_XAUTH_POOL" ]; then
   VPN_XAUTH_POOL=$(nospaces "$VPN_XAUTH_POOL")
   VPN_XAUTH_POOL=$(noquotes "$VPN_XAUTH_POOL")
@@ -215,17 +197,14 @@ fi
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
 fi
-
 if printf '%s' "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD $VPN_ADDL_USERS $VPN_ADDL_PASSWORDS" | LC_ALL=C grep -q '[^ -~]\+'; then
   exiterr "VPN credentials must not contain non-ASCII characters."
 fi
-
 case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD $VPN_ADDL_USERS $VPN_ADDL_PASSWORDS" in
   *[\\\"\']*)
     exiterr "VPN credentials must not contain these special characters: \\ \" '"
     ;;
 esac
-
 if printf '%s' "$VPN_USER $VPN_ADDL_USERS" | tr ' ' '\n' | sort | uniq -c | grep -qv '^ *1 '; then
   exiterr "VPN usernames must not contain duplicates."
 fi
@@ -241,7 +220,6 @@ EOF
     VPN_DNS_SRV1=""
   fi
 fi
-
 if [ -n "$VPN_DNS_SRV2" ]; then
   check_ip "$VPN_DNS_SRV2" || VPN_DNS_SRV2=$(dig -t A -4 +short "$VPN_DNS_SRV2")
   if ! check_ip "$VPN_DNS_SRV2"; then
@@ -252,7 +230,6 @@ EOF
     VPN_DNS_SRV2=""
   fi
 fi
-
 if [ -n "$VPN_CLIENT_NAME" ]; then
   if ! check_client_name "$VPN_CLIENT_NAME"; then
 cat <<'EOF'
@@ -263,7 +240,6 @@ EOF
     VPN_CLIENT_NAME=""
   fi
 fi
-
 if [ -n "$VPN_DNS_NAME" ]; then
   if ! check_dns_name "$VPN_DNS_NAME"; then
 cat <<'EOF'
@@ -280,7 +256,6 @@ if [ -n "$VPN_DNS_NAME" ]; then
 else
   echo
   echo 'Trying to auto discover IP of this server...'
-
   # In case auto IP discovery fails, manually define the public IP
   # of this server in your 'env' file, as variable 'VPN_PUBLIC_IP'.
   public_ip=${VPN_PUBLIC_IP:-''}
@@ -316,21 +291,18 @@ case $VPN_SHA2_TRUNCBUG in
     sha2_truncbug=yes
     ;;
 esac
-
 disable_ipsec_l2tp=no
 case $VPN_DISABLE_IPSEC_L2TP in
   [yY][eE][sS])
     disable_ipsec_l2tp=yes
     ;;
 esac
-
 disable_ipsec_xauth=no
 case $VPN_DISABLE_IPSEC_XAUTH in
   [yY][eE][sS])
     disable_ipsec_xauth=yes
     ;;
 esac
-
 case $VPN_IKEV2_ONLY in
   [yY][eE][sS])
     disable_ipsec_l2tp=yes
@@ -403,7 +375,6 @@ conn l2tp-psk
 
 EOF
 fi
-
 if [ "$disable_ipsec_xauth" != "yes" ]; then
 cat >> /etc/ipsec.conf <<EOF
 conn xauth-psk
@@ -429,7 +400,6 @@ EOF
 if uname -r | grep -qi 'coreos'; then
   sed -i '/phase2alg/s/,aes256-sha2_512//' /etc/ipsec.conf
 fi
-
 if grep -qs ike-frag /etc/ipsec.d/ikev2.conf; then
   sed -i 's/^[[:space:]]\+ike-frag=/  fragmentation=/' /etc/ipsec.d/ikev2.conf
 fi
@@ -539,7 +509,7 @@ $syt "net.ipv4.conf.$NET_IFACE.send_redirects=0" 2>/dev/null
 $syt "net.ipv4.conf.$NET_IFACE.rp_filter=0" 2>/dev/null
 $syt net.ipv4.tcp_rmem="4096 87380 16777216" 2>/dev/null
 $syt net.ipv4.tcp_wmem="4096 87380 16777216" 2>/dev/null
-if modprobe -q tcp_bbr \
+if modprobe -q tcp_bbr 2>/dev/null \
   && printf '%s\n%s' "4.20" "$(uname -r)" | sort -C -V; then
   $syt net.ipv4.tcp_congestion_control=bbr 2>/dev/null
 fi
@@ -635,7 +605,6 @@ IPsec PSK: $VPN_IPSEC_PSK
 Username: $VPN_USER
 Password: $VPN_PASSWORD
 EOF
-
   if [ -n "$VPN_ADDL_USERS" ] && [ -n "$VPN_ADDL_PASSWORDS" ]; then
     count=1
     addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -d ' ' -f 1)
@@ -653,15 +622,11 @@ EOF
       addl_password=$(printf '%s' "$VPN_ADDL_PASSWORDS" | cut -s -d ' ' -f "$count")
     done
   fi
-
 cat <<'EOF'
 
 Write these down. You'll need them to connect!
 
 VPN client setup: https://vpnsetup.net/clients2
-EOF
-
-cat <<'EOF'
 
 ================================================
 EOF
