@@ -537,6 +537,8 @@ $syt net.ipv4.conf.default.send_redirects=0 2>/dev/null
 $syt net.ipv4.conf.default.rp_filter=0 2>/dev/null
 $syt "net.ipv4.conf.$NET_IFACE.send_redirects=0" 2>/dev/null
 $syt "net.ipv4.conf.$NET_IFACE.rp_filter=0" 2>/dev/null
+$syt net.ipv4.tcp_rmem="4096 87380 16777216" 2>/dev/null
+$syt net.ipv4.tcp_wmem="4096 87380 16777216" 2>/dev/null
 if modprobe -q tcp_bbr \
   && printf '%s\n%s' "4.20" "$(uname -r)" | sort -C -V; then
   $syt net.ipv4.tcp_congestion_control=bbr 2>/dev/null
