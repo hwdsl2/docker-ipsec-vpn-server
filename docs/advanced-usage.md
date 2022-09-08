@@ -15,6 +15,7 @@
 - [Build from source code](#build-from-source-code)
 - [Bash shell inside container](#bash-shell-inside-container)
 - [Bind mount the env file](#bind-mount-the-env-file)
+- [Deploy Google BBR congestion control](#deploy-google-bbr-congestion-control)
 
 ## Use alternative DNS servers
 
@@ -293,6 +294,18 @@ docker run \
     -p 4500:4500/udp \
     -d --privileged \
     hwdsl2/ipsec-vpn-server
+```
+
+## Deploy Google BBR congestion control
+
+After the VPN server is set up, the performance can be improved by deploying the Google BBR congestion control algorithm on your Docker host.
+
+This is usually done by modifying the configuration file `/etc/sysctl.conf`. However, some Linux distributions may additionally require updates to the Linux kernel.
+
+For detailed deployment methods, please refer to [this document](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/bbr.md). When finished, restart the Docker container:
+
+```
+docker restart ipsec-vpn-server
 ```
 
 ## License

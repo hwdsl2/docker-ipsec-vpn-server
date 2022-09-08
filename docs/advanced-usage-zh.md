@@ -15,6 +15,7 @@
 - [从源代码构建](#从源代码构建)
 - [在容器中运行 Bash shell](#在容器中运行-bash-shell)
 - [绑定挂载 env 文件](#绑定挂载-env-文件)
+- [部署 Google BBR 拥塞控制](#部署-google-bbr-拥塞控制)
 
 ## 使用其他的 DNS 服务器
 
@@ -293,6 +294,18 @@ docker run \
     -p 4500:4500/udp \
     -d --privileged \
     hwdsl2/ipsec-vpn-server
+```
+
+## 部署 Google BBR 拥塞控制
+
+VPN 服务器搭建完成后，可以通过在 Docker 主机上部署 Google BBR 拥塞控制算法提升性能。
+
+这通常只需要在配置文件 `/etc/sysctl.conf` 中插入设定即可完成。但是部分 Linux 发行版可能需要额外更新 Linux 内核。
+
+详细的部署方法，可以参考[这篇文档](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/bbr-zh.md)。在完成后重启 Docker 容器：
+
+```
+docker restart ipsec-vpn-server
 ```
 
 ## 授权协议

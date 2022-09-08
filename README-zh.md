@@ -321,6 +321,7 @@ docker exec -it ipsec-vpn-server ikev2.sh
 - [从源代码构建](docs/advanced-usage-zh.md#从源代码构建)
 - [在容器中运行 Bash shell](docs/advanced-usage-zh.md#在容器中运行-bash-shell)
 - [绑定挂载 env 文件](docs/advanced-usage-zh.md#绑定挂载-env-文件)
+- [部署 Google BBR 拥塞控制](docs/advanced-usage-zh.md#部署-google-bbr-拥塞控制)
 
 ## 技术细节
 
