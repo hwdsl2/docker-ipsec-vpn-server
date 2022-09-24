@@ -311,7 +311,7 @@ case $VPN_IKEV2_ONLY in
     ;;
 esac
 
-if [ "$disable_ipsec_l2tp" = "yes" ] && [ "$disable_ipsec_xauth" = "yes" ]; then
+if [ "$disable_ipsec_l2tp" = yes ] && [ "$disable_ipsec_xauth" = yes ]; then
 cat <<'EOF'
 
 Note: Running in IKEv2-only mode via env file option.
@@ -324,12 +324,12 @@ WARNING: /etc/ipsec.d not mounted. IKEv2 setup requires a Docker volume
          mounted at /etc/ipsec.d.
 EOF
   fi
-elif [ "$disable_ipsec_l2tp" = "yes" ]; then
+elif [ "$disable_ipsec_l2tp" = yes ]; then
 cat <<'EOF'
 
 Note: IPsec/L2TP mode is disabled via env file option.
 EOF
-elif [ "$disable_ipsec_xauth" = "yes" ]; then
+elif [ "$disable_ipsec_xauth" = yes ]; then
 cat <<'EOF'
 
 Note: IPsec/XAuth ("Cisco IPsec") mode is disabled via env file option.
@@ -365,7 +365,7 @@ conn shared
 
 EOF
 
-if [ "$disable_ipsec_l2tp" != "yes" ]; then
+if [ "$disable_ipsec_l2tp" != yes ]; then
 cat >> /etc/ipsec.conf <<'EOF'
 conn l2tp-psk
   auto=add
@@ -376,7 +376,7 @@ conn l2tp-psk
 
 EOF
 fi
-if [ "$disable_ipsec_xauth" != "yes" ]; then
+if [ "$disable_ipsec_xauth" != yes ]; then
 cat >> /etc/ipsec.conf <<EOF
 conn xauth-psk
   auto=add
@@ -592,7 +592,7 @@ else
   server_text="Server IP"
 fi
 
-if [ "$disable_ipsec_l2tp" != "yes" ] || [ "$disable_ipsec_xauth" != "yes" ]; then
+if [ "$disable_ipsec_l2tp" != yes ] || [ "$disable_ipsec_xauth" != yes ]; then
 cat <<EOF
 
 ================================================
@@ -655,11 +655,11 @@ if grep -q " /etc/ipsec.d " /proc/mounts && [ -s "$ikev2_sh" ] && [ ! -f "$ikev2
   fi
   chmod 600 "$ikev2_log"
 fi
-if [ "$status" = "0" ] && [ -f "$ikev2_conf" ] && [ -s "$ikev2_log" ]; then
+if [ "$status" = 0 ] && [ -f "$ikev2_conf" ] && [ -s "$ikev2_log" ]; then
   status=2
   status_text="IKEv2 is already set up."
 fi
-if [ "$status" = "1" ] || [ "$status" = "2" ]; then
+if [ "$status" = 1 ] || [ "$status" = 2 ]; then
 cat <<EOF
 
 ================================================
