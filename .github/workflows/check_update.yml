@@ -93,5 +93,5 @@ jobs:
               echo "Not starting build."
             fi
           fi
-          echo ::set-output name=should_test::${BASE_UPDATED}
-          echo ::set-output name=should_update::${BASE_UPDATED}
+          echo "should_test=${BASE_UPDATED}" >> "$GITHUB_OUTPUT"
+          echo "should_update=${BASE_UPDATED}" >> "$GITHUB_OUTPUT"
