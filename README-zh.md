@@ -36,7 +36,7 @@ docker run \
 
 - 支持具有强大和快速加密算法（例如 AES-GCM）的 IKEv2 模式
 - 生成 VPN 配置文件以自动配置 iOS, macOS 和 Android 设备
-- 支持 Windows, macOS, iOS, Android 和 Linux 作为 VPN 客户端
+- 支持 Windows, macOS, iOS, Android, Chrome OS 和 Linux 客户端
 - 包括辅助脚本以管理 IKEv2 用户和证书
 
 ## 安装 Docker

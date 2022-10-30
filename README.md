@@ -36,7 +36,7 @@ To learn more about how to use this image, read the sections below.
 
 - Supports IKEv2 with strong and fast ciphers (e.g. AES-GCM)
 - Generates VPN profiles to auto-configure iOS, macOS and Android devices
-- Supports Windows, macOS, iOS, Android and Linux as VPN clients
+- Supports Windows, macOS, iOS, Android, Chrome OS and Linux as VPN clients
 - Includes a helper script to manage IKEv2 users and certificates
 
 ## Install Docker
