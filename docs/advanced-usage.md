@@ -32,7 +32,7 @@ Note that if IKEv2 is already set up in the Docker container, you will also need
 
 Advanced users can create a Docker container from this image without using [privileged mode](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities) (replace `./vpn.env` in the command below with your own `env` file).
 
-**Note:** If your Docker host runs CentOS 8, Oracle Linux 8, Rocky Linux or AlmaLinux, it is recommended to use [privileged mode](../README.md#start-the-ipsec-vpn-server). If you want to run without privileged mode, you **must** run `modprobe ip_tables` before creating the Docker container and also on boot.
+**Note:** If your Docker host runs CentOS Stream, Oracle Linux 8+, Rocky Linux or AlmaLinux, it is recommended to use [privileged mode](../README.md#start-the-ipsec-vpn-server). If you want to run without privileged mode, you **must** run `modprobe ip_tables` before creating the Docker container and also on boot.
 
 ```
 docker run \
