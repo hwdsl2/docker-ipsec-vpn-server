@@ -703,6 +703,19 @@ else
   echo
 fi
 
+if [ "$status" = 2 ] && [ -n "$VPN_DNS_NAME" ]; then
+  server_addr_cur=$(grep -s "leftcert=" /etc/ipsec.d/ikev2.conf | cut -f2 -d=)
+  if [ "$VPN_DNS_NAME" != "$server_addr_cur" ]; then
+cat <<'EOF'
+Warning: The VPN_DNS_NAME variable you specified has no effect
+         for IKEv2 mode, because IKEv2 is already set up in this
+         container. To change the IKEv2 server address, see:
+         https://vpnsetup.net/ikev2docker
+
+EOF
+  fi
+fi
+
 # Check for new Libreswan version
 ts_file="/opt/src/swanver"
 if [ ! -f "$ts_file" ] || [ "$(find "$ts_file" -mmin +10080)" ]; then
