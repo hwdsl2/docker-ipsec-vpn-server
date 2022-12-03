@@ -283,7 +283,7 @@ docker exec -it ipsec-vpn-server ikev2.sh -h
 了解如何更改 IKEv2 服务器地址。
 </summary>
 
-在某些情况下，你可能需要更改 IKEv2 服务器地址。例如切换为使用域名，或者在服务器的 IP 更改之后。要更改 IKEv2 服务器地址，首先[在容器中运行 Bash shell](docs/advanced-usage-zh.md#在容器中运行-bash-shell)，然后[按照这里的说明操作](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#更改-ikev2-服务器地址)。请注意，这将覆盖你在 `env` 文件中指定的 `VPN_DNS_NAME` 变量，并且容器的日志将不再显示 IKEv2 的最新信息。
+在某些情况下，你可能需要更改 IKEv2 服务器地址。例如切换为使用域名，或者在服务器的 IP 更改之后。要更改 IKEv2 服务器地址，首先[在容器中运行 Bash shell](docs/advanced-usage-zh.md#在容器中运行-bash-shell)，然后[按照这里的说明操作](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#更改-ikev2-服务器地址)。请注意，容器的日志在你重启 Docker 容器之前将不显示新的 IKEv2 服务器地址。
 </details>
 <details>
 <summary>
