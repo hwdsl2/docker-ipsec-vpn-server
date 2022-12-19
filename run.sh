@@ -145,6 +145,10 @@ if [ -n "$VPN_DNS_NAME" ]; then
   VPN_DNS_NAME=$(nospaces "$VPN_DNS_NAME")
   VPN_DNS_NAME=$(noquotes "$VPN_DNS_NAME")
 fi
+if [ -n "$VPN_IKEV2_USER_CERTS" ]; then
+  VPN_IKEV2_USER_CERTS=$(nospaces "$VPN_IKEV2_USER_CERTS")
+  VPN_IKEV2_USER_CERTS=$(noquotes "$VPN_IKEV2_USER_CERTS")
+fi
 if [ -n "$VPN_PUBLIC_IP" ]; then
   VPN_PUBLIC_IP=$(nospaces "$VPN_PUBLIC_IP")
   VPN_PUBLIC_IP=$(noquotes "$VPN_PUBLIC_IP")
@@ -348,6 +352,17 @@ cat <<'EOF'
 Warning: /etc/ipsec.d not mounted. IKEv2 setup requires a Docker volume
          mounted at /etc/ipsec.d.
 EOF
+  fi
+
+  vpn_ikev2_user_certs=no
+  if grep -q " /user-certs " /proc/mounts; then
+    vpn_ikev2_user_certs=yes
+cat <<'EOF'
+
+/user-certs mounted. IKEv2 setup will use the provided certs.
+EOF
+  elif [ "$VPN_IKEV2_USER_CERTS" = yes ]; then
+  exiterr "VPN_IKEV2_USER_CERTS is set to 'yes' but /user-certs is NOT mounted."
   fi
 elif [ "$disable_ipsec_l2tp" = yes ]; then
 cat <<'EOF'
@@ -670,6 +685,8 @@ if grep -q " /etc/ipsec.d " /proc/mounts && [ -s "$ikev2_sh" ] && [ ! -f "$ikev2
     VPN_CLIENT_NAME="$VPN_CLIENT_NAME" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
     VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
     VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
+    VPN_IKEV2_USER_CERTS="$vpn_ikev2_user_certs" \
+    VPN_IKEV2_USER_CERTS_PASS="$VPN_IKEV2_USER_CERTS_PASS" \
     /bin/bash "$ikev2_sh" --auto >"$ikev2_log" 2>&1; then
     status=1
     status_text="IKEv2 setup successful."
