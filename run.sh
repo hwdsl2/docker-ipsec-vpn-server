@@ -679,11 +679,49 @@ if grep -q " /etc/ipsec.d " /proc/mounts && [ -s "$ikev2_sh" ] && [ ! -f "$ikev2
     echo "IKEv2 setup failed."
   fi
   chmod 600 "$ikev2_log"
+
+  ###
+  if [ -n "$VPN_ADDL_USERS" ]; then
+    count=1
+    addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -d ' ' -f 1)
+cat <<'EOF'
+
+  Additional IKEv2 VPN users (username):
+EOF
+    while [ -n "$addl_user" ]; do
+cat <<EOF
+  $addl_user
+EOF
+      echo "" >> "$ikev2_log"
+
+      if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" \
+        VPN_CLIENT_NAME="$VPN_CLIENT_NAME" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
+        VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
+        VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
+        VPN_IKEV2_USER_CERTS="$vpn_ikev2_user_certs" \
+        VPN_IKEV2_USER_CERTS_PASS="$VPN_IKEV2_USER_CERTS_PASS" \
+        /bin/bash "$ikev2_sh" --addclient $addl_user >>"$ikev2_log" 2>&1; then
+        status=1
+        status_text="User $addl_user added. $status_text"
+      else
+        status=4
+        rm -f "$ikev2_conf"
+        echo "IKEv2 setting up additional users failed. :"
+        cat "$ikev2_log"
+      fi
+      chmod 600 "$ikev2_log"
+      count=$((count+1))
+      addl_user=$(printf '%s' "$VPN_ADDL_USERS" | cut -s -d ' ' -f "$count")
+
+    done
+  fi
 fi
+
 if [ "$status" = 0 ] && [ -f "$ikev2_conf" ] && [ -s "$ikev2_log" ]; then
   status=2
   status_text="IKEv2 is already set up."
 fi
+
 if [ "$status" = 1 ] || [ "$status" = 2 ]; then
 cat <<EOF
 
