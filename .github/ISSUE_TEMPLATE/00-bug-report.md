@@ -12,7 +12,7 @@ assignees: ''
 - [ ] I read the [README](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md)
 - [ ] I read the [Important notes](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#important-notes)
 - [ ] I followed instructions to [configure VPN clients](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#next-steps)
-- [ ] I checked [Troubleshooting](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#troubleshooting), [IKEv2 troubleshooting](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#troubleshooting), [enabled logs](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage.md#enable-libreswan-logs) and checked [VPN status](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#check-logs-and-vpn-status)
+- [ ] I checked [IKEv1 troubleshooting](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#ikev1-troubleshooting), [IKEv2 troubleshooting](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#ikev2-troubleshooting), [enabled logs](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage.md#enable-libreswan-logs) and checked [VPN status](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#check-logs-and-vpn-status)
 - [ ] I searched existing [Issues](https://github.com/hwdsl2/docker-ipsec-vpn-server/issues?q=is%3Aissue)
 - [ ] This bug is about the IPsec VPN server Docker image, and not IPsec VPN itself
 
