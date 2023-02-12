@@ -7,7 +7,7 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-FROM alpine:3.16
+FROM alpine:3.17
 
 ENV SWAN_VER 4.9
 WORKDIR /opt/src
