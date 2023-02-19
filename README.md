@@ -106,6 +106,8 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 **Note:** In your `env` file, DO NOT put `""` or `''` around values, or add space around `=`. DO NOT use these special characters within values: `\ " '`. A secure IPsec PSK should consist of at least 20 random characters.
 
+**Note:** If you modify the `env` file after the Docker container is already created, you must remove and re-create the container for the changes to take effect. Refer to [Update Docker image](#update-docker-image).
+
 <details>
 <summary>
 :information_source: You may optionally specify a DNS name, client name and/or custom DNS servers. :information_source:
@@ -291,9 +293,13 @@ In certain circumstances, you may need to change the IKEv2 server address. For e
 Remove IKEv2 and set it up again using custom options.
 </summary>
 
-In certain circumstances, you may need to remove IKEv2 and set it up again using custom options. This can be done using the helper script. Note that this will override variables you specified in the `env` file, such as `VPN_DNS_NAME` and `VPN_CLIENT_NAME`, and the container logs will no longer show up-to-date information for IKEv2.
+In certain circumstances, you may need to remove IKEv2 and set it up again using custom options.
 
 **Warning:** All IKEv2 configuration including certificates and keys will be **permanently deleted**. This **cannot be undone**!
+
+**Option 1:** Remove IKEv2 and set it up again using the helper script.
+
+Note that this will override variables you specified in the `env` file, such as `VPN_DNS_NAME` and `VPN_CLIENT_NAME`, and the container logs will no longer show up-to-date information for IKEv2.
 
 ```bash
 # Remove IKEv2 and delete all IKEv2 configuration
@@ -301,6 +307,13 @@ docker exec -it ipsec-vpn-server ikev2.sh --removeikev2
 # Set up IKEv2 again using custom options
 docker exec -it ipsec-vpn-server ikev2.sh
 ```
+
+**Option 2:** Remove `ikev2-vpn-data` and re-create the container.
+
+1. Write down all your [VPN login details](#retrieve-vpn-login-details).
+1. Remove the Docker container: `docker rm -f ipsec-vpn-server`.
+1. Remove the `ikev2-vpn-data` volume: `docker volume rm ikev2-vpn-data`.
+1. Update your `env` file and add custom IKEv2 options such as `VPN_DNS_NAME` and `VPN_CLIENT_NAME`, then re-create the container. Refer to [How to use this image](#how-to-use-this-image).
 </details>
 
 ## Advanced usage

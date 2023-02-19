@@ -106,6 +106,8 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 **注：** 在你的 `env` 文件中，**不要**为变量值添加 `""` 或者 `''`，或在 `=` 两边添加空格。**不要**在值中使用这些字符： `\ " '`。一个安全的 IPsec PSK 应该至少包含 20 个随机字符。
 
+**注：** 如果在创建 Docker 容器后修改 `env` 文件，则必须删除并重新创建容器才能使更改生效。参见[更新 Docker 镜像](#更新-docker-镜像)。
+
 <details>
 <summary>
 :information_source: 你可以指定一个域名，客户端名称和/或另外的 DNS 服务器。这是可选的。:information_source:
@@ -290,9 +292,13 @@ docker exec -it ipsec-vpn-server ikev2.sh -h
 移除 IKEv2 并使用自定义选项重新配置。
 </summary>
 
-在某些情况下，你可能需要移除 IKEv2 并使用自定义选项重新配置它。这可以使用辅助脚本来完成。请注意，这将覆盖你在 `env` 文件中指定的变量，例如 `VPN_DNS_NAME` 和 `VPN_CLIENT_NAME`，并且容器的日志将不再显示 IKEv2 的最新信息。
+在某些情况下，你可能需要移除 IKEv2 并使用自定义选项重新配置它。
 
 **警告：** 这将**永久删除**所有的 IKEv2 配置（包括证书和密钥），并且**不可撤销**！
+
+**选项 1:** 使用辅助脚本移除 IKEv2 并重新配置。
+
+请注意，这将覆盖你在 `env` 文件中指定的变量，例如 `VPN_DNS_NAME` 和 `VPN_CLIENT_NAME`，并且容器的日志将不再显示 IKEv2 的最新信息。
 
 ```bash
 # 移除 IKEv2 并删除所有的 IKEv2 配置
@@ -300,6 +306,13 @@ docker exec -it ipsec-vpn-server ikev2.sh --removeikev2
 # 使用自定义选项重新配置 IKEv2
 docker exec -it ipsec-vpn-server ikev2.sh
 ```
+
+**选项 2:** 移除 `ikev2-vpn-data` 并重新创建容器。
+
+1. 在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)。
+1. 删除 Docker 容器：`docker rm -f ipsec-vpn-server`。
+1. 删除 `ikev2-vpn-data` 卷：`docker volume rm ikev2-vpn-data`。
+1. 更新你的 `env` 文件并添加自定义 IKEv2 选项，例如 `VPN_DNS_NAME` 和 `VPN_CLIENT_NAME`，然后重新创建容器。参见[如何使用本镜像](#如何使用本镜像)。
 </details>
 
 ## 高级用法
