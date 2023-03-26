@@ -36,7 +36,7 @@ jobs:
       should_update: ${{ steps.check.outputs.should_update }}
     steps:
       - name: Cache
-        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # 3.0.11
+        uses: actions/cache@v3
         with:
           path: |
             ${{ runner.temp }}/.buildx-bin
