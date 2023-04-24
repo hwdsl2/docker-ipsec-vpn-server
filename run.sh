@@ -566,7 +566,9 @@ if ! iptables -t nat -C POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
   # $ipf 4 -i ppp+ -d "$XAUTH_NET" -j DROP
   # $ipf 5 -s "$XAUTH_NET" -o ppp+ -j DROP
   iptables -A FORWARD -j DROP
-  $ipp -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
+  if ! $ipp -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE; then
+    $ipp -s "$XAUTH_NET" -o "$NET_IFACE" ! -d "$XAUTH_NET" -j MASQUERADE
+  fi
   $ipp -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
 fi
 
