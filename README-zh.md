@@ -203,7 +203,7 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 
 **[配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)**
 
-**[:book: 电子书：搭建自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器](https://mybook.to/vpnzhs)**
+**[:book: Book: 搭建自己的 IPsec VPN, OpenVPN 和 WireGuard 服务器](https://books2read.com/vpnzh)**
 
 开始使用自己的专属 VPN! :sparkles::tada::rocket::sparkles:
 

@@ -203,7 +203,7 @@ Get your computer or device to use the VPN. Please refer to:
 
 **[Configure IPsec/XAuth ("Cisco IPsec") VPN Clients](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md)**
 
-**[:book: Book: Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server](https://mybook.to/vpn)**
+**[:book: Book: Set Up Your Own IPsec VPN, OpenVPN and WireGuard Server](https://books2read.com/vpn)**
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
