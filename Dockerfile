@@ -9,7 +9,7 @@
 
 FROM alpine:3.18
 
-ENV SWAN_VER 4.11
+ENV SWAN_VER 4.12
 WORKDIR /opt/src
 
 RUN set -x \
