@@ -6,7 +6,7 @@
 
 Docker image to run an IPsec VPN server, with IPsec/L2TP, Cisco IPsec and IKEv2.
 
-Based on Alpine 3.17 or Debian 11 with [Libreswan](https://libreswan.org) (IPsec VPN software) and [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP daemon).
+Based on Alpine 3.18 or Debian 11 with [Libreswan](https://libreswan.org) (IPsec VPN software) and [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP daemon).
 
 An IPsec VPN encrypts your network traffic, so that nobody between you and the VPN server can eavesdrop on your data as it travels via the Internet. This is especially useful when using unsecured networks, e.g. at coffee shops, airports or hotel rooms.
 
@@ -72,9 +72,9 @@ Two pre-built images are available. The default Alpine-based image is only ~17MB
 | ----------------- | ------------------------ | ------------------------------ |
 | Image name        | hwdsl2/ipsec-vpn-server  | hwdsl2/ipsec-vpn-server:debian |
 | Compressed size   | ~ 17 MB                  | ~ 62 MB                        |
-| Base image        | Alpine Linux 3.17        | Debian Linux 11                |
+| Base image        | Alpine Linux 3.18        | Debian Linux 11                |
 | Platforms         | amd64, arm64, arm/v7     | amd64, arm64, arm/v7           |
-| Libreswan version | 4.11                     | 4.11                           |
+| Libreswan version | 4.12                     | 4.12                           |
 | IPsec/L2TP        | ✅                       | ✅                              |
 | Cisco IPsec       | ✅                       | ✅                              |
 | IKEv2             | ✅                       | ✅                              |
