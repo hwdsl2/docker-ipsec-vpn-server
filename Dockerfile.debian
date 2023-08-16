@@ -7,7 +7,7 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 ENV SWAN_VER 4.12
 WORKDIR /opt/src
