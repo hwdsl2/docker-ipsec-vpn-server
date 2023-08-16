@@ -202,9 +202,9 @@ sed -i '/pluto\.pid/a rsyslogd' /opt/src/run.sh
 exit
 # For Debian-based image
 apt-get update && apt-get -y install rsyslog
-service rsyslog restart
+rsyslogd
 service ipsec restart
-sed -i '/pluto\.pid/a service rsyslog restart' /opt/src/run.sh
+sed -i '/pluto\.pid/a rsyslogd' /opt/src/run.sh
 exit
 ```
 
