@@ -51,7 +51,7 @@ jobs:
             docker pull alpine:3.18
             docker pull "$DOCKER_USER/ipsec-vpn-server"
           elif [ "$OS_TYPE" = "debian" ]; then
-            docker pull debian:bullseye-slim
+            docker pull debian:bookworm-slim
             docker pull "$DOCKER_USER/ipsec-vpn-server:debian"
           else
             exit 1
@@ -65,7 +65,7 @@ jobs:
             base_ts=$(docker inspect --format='{{.Created}}' alpine:3.18)
             image_ts=$(docker inspect --format='{{.Created}}' "$DOCKER_USER/ipsec-vpn-server")
           elif [ "$OS_TYPE" = "debian" ]; then
-            base_ts=$(docker inspect --format='{{.Created}}' debian:bullseye-slim)
+            base_ts=$(docker inspect --format='{{.Created}}' debian:bookworm-slim)
             image_ts=$(docker inspect --format='{{.Created}}' "$DOCKER_USER/ipsec-vpn-server:debian")
           else
             exit 1
