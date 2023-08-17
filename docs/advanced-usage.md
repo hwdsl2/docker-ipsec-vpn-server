@@ -56,7 +56,7 @@ docker run \
     hwdsl2/ipsec-vpn-server
 ```
 
-When running without privileged mode, the container is unable to change `sysctl` settings. This could affect certain features of this image. A known issue is that the [Android MTU/MSS fix](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#android-mtumss-issues) also requires adding `--sysctl net.ipv4.ip_no_pmtu_disc=1` to the `docker run` command. If you encounter any issues, try re-creating the container using [privileged mode](../README.md#start-the-ipsec-vpn-server).
+When running without privileged mode, the container is unable to change `sysctl` settings. This could affect certain features of this image. A known issue is that the [Android/Linux MTU/MSS fix](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#androidlinux-mtumss-issues) also requires adding `--sysctl net.ipv4.ip_no_pmtu_disc=1` to the `docker run` command. If you encounter any issues, try re-creating the container using [privileged mode](../README.md#start-the-ipsec-vpn-server).
 
 After creating the Docker container, see [Retrieve VPN login details](../README.md#retrieve-vpn-login-details).
 
