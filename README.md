@@ -132,6 +132,8 @@ VPN_DNS_SRV1=1.1.1.1
 VPN_DNS_SRV2=1.0.0.1
 ```
 
+For more details, see [Use alternative DNS servers](docs/advanced-usage.md#use-alternative-dns-servers).
+
 By default, no password is required when importing IKEv2 client configuration. You can choose to protect client config files using a random password.
 
 ```
