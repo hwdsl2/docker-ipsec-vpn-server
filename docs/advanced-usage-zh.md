@@ -19,7 +19,7 @@
 
 ## 使用其他的 DNS 服务器
 
-在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，你可以在 `env` 文件中定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`（可选），然后按照[说明](../README-zh.md#更新-docker-镜像)重新创建 Docker 容器。示例如下：
+在 VPN 已连接时，客户端默认配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，你可以在 `env` 文件中定义 `VPN_DNS_SRV1` 和 `VPN_DNS_SRV2`（可选），然后按照[说明](../README-zh.md#更新-docker-镜像)重新创建 Docker 容器。示例如下：
 
 ```
 VPN_DNS_SRV1=1.1.1.1
