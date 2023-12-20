@@ -10,7 +10,7 @@ Based on Alpine 3.18 or Debian 12 with [Libreswan](https://libreswan.org) (IPsec
 
 An IPsec VPN encrypts your network traffic, so that nobody between you and the VPN server can eavesdrop on your data as it travels via the Internet. This is especially useful when using unsecured networks, e.g. at coffee shops, airports or hotel rooms.
 
-[**&raquo; See also: IPsec VPN Server Auto Setup Scripts**](https://github.com/hwdsl2/setup-ipsec-vpn)
+**[&raquo; :book: Book: Build Your Own VPN Server: A Step by Step Guide](https://books2read.com/vpnguide?store=amazon)**
 
 ## Quick start
 
@@ -30,7 +30,7 @@ docker run \
 
 Your VPN login details will be randomly generated. See [Retrieve VPN login details](#retrieve-vpn-login-details).
 
-To learn more about how to use this image, read the sections below.
+Alternatively, you may [set up IPsec VPN without Docker](https://github.com/hwdsl2/setup-ipsec-vpn). To learn more about how to use this image, read the sections below.
 
 ## Features
 
@@ -108,9 +108,13 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 **Note:** If you modify the `env` file after the Docker container is already created, you must remove and re-create the container for the changes to take effect. Refer to [Update Docker image](#update-docker-image).
 
+### Additional environment variables
+
+Advanced users can optionally specify a DNS name, client name and/or custom DNS servers.
+
 <details>
 <summary>
-:information_source: You may optionally specify a DNS name, client name and/or custom DNS servers. :information_source:
+Learn how to specify a DNS name, client name and/or custom DNS servers.
 </summary>
 
 Advanced users can optionally specify a DNS name for the IKEv2 server address. The DNS name must be a fully qualified domain name (FQDN). Example:
@@ -132,7 +136,7 @@ VPN_DNS_SRV1=1.1.1.1
 VPN_DNS_SRV2=1.0.0.1
 ```
 
-For more details, see [Use alternative DNS servers](docs/advanced-usage.md#use-alternative-dns-servers).
+For more details and a list of some popular public DNS providers, see [Use alternative DNS servers](docs/advanced-usage.md).
 
 By default, no password is required when importing IKEv2 client configuration. You can choose to protect client config files using a random password.
 

@@ -10,7 +10,7 @@
 
 IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时，你和 VPN 服务器之间的任何人对你的数据的未经授权的访问。在使用不安全的网络时，这是特别有用的，例如在咖啡厅，机场或旅馆房间。
 
-[**&raquo; 另见：IPsec VPN 服务器一键安装脚本**](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)
+**[&raquo; :book: Book: 搭建自己的 VPN 服务器分步指南](https://books2read.com/vpnguidezh)**
 
 ## 快速开始
 
@@ -30,7 +30,7 @@ docker run \
 
 你的 VPN 登录凭证将会被自动随机生成。请参见 [获取 VPN 登录信息](#获取-vpn-登录信息)。
 
-要了解更多有关如何使用本镜像的信息，请继续阅读以下部分。
+另外，你也可以在不使用 Docker 的情况下[安装 IPsec VPN](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)。要了解更多有关如何使用本镜像的信息，请继续阅读以下部分。
 
 ## 功能特性
 
@@ -108,9 +108,13 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 **注：** 如果在创建 Docker 容器后修改 `env` 文件，则必须删除并重新创建容器才能使更改生效。参见[更新 Docker 镜像](#更新-docker-镜像)。
 
+### 其他环境变量
+
+高级用户可以指定一个域名，客户端名称和/或另外的 DNS 服务器。这是可选的。
+
 <details>
 <summary>
-:information_source: 你可以指定一个域名，客户端名称和/或另外的 DNS 服务器。这是可选的。:information_source:
+了解如何指定一个域名，客户端名称和/或另外的 DNS 服务器。
 </summary>
 
 高级用户可以指定一个域名作为 IKEv2 服务器地址。这是可选的。该域名必须是一个全称域名 (FQDN)。示例如下：
@@ -132,7 +136,7 @@ VPN_DNS_SRV1=1.1.1.1
 VPN_DNS_SRV2=1.0.0.1
 ```
 
-有关更多详细信息，参见[使用其他的 DNS 服务器](docs/advanced-usage-zh.md#使用其他的-dns-服务器)。
+有关详细信息以及一些流行的公共 DNS 提供商的列表，参见[使用其他的 DNS 服务器](docs/advanced-usage-zh.md)。
 
 默认情况下，导入 IKEv2 客户端配置时不需要密码。你可以选择使用随机密码保护客户端配置文件。
 
