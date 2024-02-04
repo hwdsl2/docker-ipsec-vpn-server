@@ -28,7 +28,7 @@ jobs:
       OS_TYPE: ${{ inputs.os_type }}
       TEST_ID: ${{ matrix.test_id }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - name: Test
