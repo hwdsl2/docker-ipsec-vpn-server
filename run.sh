@@ -545,6 +545,7 @@ ipi='iptables -I INPUT'
 ipf='iptables -I FORWARD'
 ipp='iptables -t nat -I POSTROUTING'
 res='RELATED,ESTABLISHED'
+modprobe -q ip_tables 2>/dev/null
 if ! iptables -t nat -C POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE 2>/dev/null; then
   $ipi 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
   $ipi 2 -m conntrack --ctstate INVALID -j DROP

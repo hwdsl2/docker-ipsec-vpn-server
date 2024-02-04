@@ -7,17 +7,20 @@
 # Attribution required: please include my name in any derivative and let me
 # know how you have improved it!
 
-FROM alpine:3.18
+FROM alpine:3.19
 
 ENV SWAN_VER 4.12
 WORKDIR /opt/src
 
 RUN set -x \
     && apk add --no-cache \
-         bash bind-tools coreutils openssl uuidgen wget xl2tpd iproute2 \
-         libcap-ng libcurl libevent linux-pam musl nspr nss nss-tools openrc \
+         bash bind-tools coreutils openssl uuidgen wget xl2tpd iptables iptables-legacy \
+         iproute2 libcap-ng libcurl libevent linux-pam musl nspr nss nss-tools openrc \
          bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev \
          nss-dev libcap-ng-dev libevent-dev curl-dev nspr-dev \
+    && cd /sbin \
+    && for fn in iptables iptables-save iptables-restore; do ln -fs xtables-legacy-multi "$fn"; done \
+    && cd /opt/src \
     && wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://github.com/libreswan/libreswan/archive/v${SWAN_VER}.tar.gz" \
     || wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz" \
     && tar xzf libreswan.tar.gz \
@@ -34,7 +37,7 @@ RUN set -x \
          bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev \
          nss-dev libcap-ng-dev libevent-dev curl-dev nspr-dev
 
-RUN wget -t 3 -T 30 -nv -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/9268ad2e05424e169464487aed0fbd6090757d89/extras/ikev2setup.sh \
+RUN wget -t 3 -T 30 -nv -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/5bb63dac28627cbf06c526c5ad3e08cc7117d67b/extras/ikev2setup.sh \
     && chmod +x /opt/src/ikev2.sh \
     && ln -s /opt/src/ikev2.sh /usr/bin
 
