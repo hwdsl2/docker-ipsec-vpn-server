@@ -133,6 +133,10 @@ if [ -n "$VPN_DNS_SRV1" ]; then
   VPN_DNS_SRV1=$(nospaces "$VPN_DNS_SRV1")
   VPN_DNS_SRV1=$(noquotes "$VPN_DNS_SRV1")
 fi
+if [ -n "$SPLIT_VPN_IKEV2" ]; then
+  SPLIT_VPN_IKEV2=$(nospaces "$SPLIT_VPN_IKEV2")
+  SPLIT_VPN_IKEV2=$(noquotes "$SPLIT_VPN_IKEV2")
+fi
 if [ -n "$VPN_DNS_SRV2" ]; then
   VPN_DNS_SRV2=$(nospaces "$VPN_DNS_SRV2")
   VPN_DNS_SRV2=$(noquotes "$VPN_DNS_SRV2")
@@ -667,6 +671,10 @@ ikev2_sh="/opt/src/ikev2.sh"
 ikev2_conf="/etc/ipsec.d/ikev2.conf"
 ikev2_log="/etc/ipsec.d/ikev2setup.log"
 if grep -q " /etc/ipsec.d " /proc/mounts && [ -s "$ikev2_sh" ] && [ ! -f "$ikev2_conf" ]; then
+if [ -n "$SPLIT_VPN_IKEV2" ]; then
+	sed -i "s|^  leftsubnet=.*|  leftsubnet=$SPLIT_VPN_IKEV2 |g" /opt/src/ikev2.sh
+fi
+
   echo
   echo "Setting up IKEv2. This may take a few moments..."
   if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" \
