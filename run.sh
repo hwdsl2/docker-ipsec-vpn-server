@@ -24,6 +24,10 @@ nospaces() { printf '%s' "$1" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//
 onespace() { printf '%s' "$1" | tr -s ' '; }
 noquotes() { printf '%s' "$1" | sed -e 's/^"\(.*\)"$/\1/' -e "s/^'\(.*\)'$/\1/"; }
 noquotes2() { printf '%s' "$1" | sed -e 's/" "/ /g' -e "s/' '/ /g"; }
+check_cidr() {
+  CIDR_REGEX='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/(3[0-2]|[1-2][0-9]|[0-9]))$'
+  printf '%s' "$1" | tr -d '\n' | grep -Eq "$CIDR_REGEX"
+}
 
 check_ip() {
   IP_REGEX='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
@@ -133,9 +137,9 @@ if [ -n "$VPN_DNS_SRV1" ]; then
   VPN_DNS_SRV1=$(nospaces "$VPN_DNS_SRV1")
   VPN_DNS_SRV1=$(noquotes "$VPN_DNS_SRV1")
 fi
-if [ -n "$SPLIT_VPN_IKEV2" ]; then
-  SPLIT_VPN_IKEV2=$(nospaces "$SPLIT_VPN_IKEV2")
-  SPLIT_VPN_IKEV2=$(noquotes "$SPLIT_VPN_IKEV2")
+if [ -n "$VPN_SPLIT_IKEV2" ]; then
+  VPN_SPLIT_IKEV2=$(nospaces "$VPN_SPLIT_IKEV2")
+  VPN_SPLIT_IKEV2=$(noquotes "$VPN_SPLIT_IKEV2")
 fi
 if [ -n "$VPN_DNS_SRV2" ]; then
   VPN_DNS_SRV2=$(nospaces "$VPN_DNS_SRV2")
@@ -671,8 +675,14 @@ ikev2_sh="/opt/src/ikev2.sh"
 ikev2_conf="/etc/ipsec.d/ikev2.conf"
 ikev2_log="/etc/ipsec.d/ikev2setup.log"
 if grep -q " /etc/ipsec.d " /proc/mounts && [ -s "$ikev2_sh" ] && [ ! -f "$ikev2_conf" ]; then
-if [ -n "$SPLIT_VPN_IKEV2" ]; then
-	sed -i "s|^  leftsubnet=.*|  leftsubnet=$SPLIT_VPN_IKEV2 |g" /opt/src/ikev2.sh
+if [ -n "$VPN_SPLIT_IKEV2" ]; then
+  if ! check_cidr "$VPN_SPLIT_IKEV2"; then
+cat <<'EOF'
+
+Warning: Invalid split VPN subnet. Check VPN_SPLIT_IKEV2 in your 'env' file.
+EOF
+else
+	sed -i "s|^  leftsubnet=.*|  leftsubnet=$VPN_SPLIT_IKEV2 |g" /opt/src/ikev2.sh
 fi
 
   echo
