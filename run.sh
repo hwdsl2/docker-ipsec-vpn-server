@@ -677,12 +677,13 @@ ikev2_log="/etc/ipsec.d/ikev2setup.log"
 if grep -q " /etc/ipsec.d " /proc/mounts && [ -s "$ikev2_sh" ] && [ ! -f "$ikev2_conf" ]; then
 if [ -n "$VPN_SPLIT_IKEV2" ]; then
   if ! check_cidr "$VPN_SPLIT_IKEV2"; then
-cat <<'EOF'
+  cat <<'EOF'
 
 Warning: Invalid split VPN subnet. Check VPN_SPLIT_IKEV2 in your 'env' file.
 EOF
-else
+  else
 	sed -i "s|^  leftsubnet=.*|  leftsubnet=$VPN_SPLIT_IKEV2 |g" /opt/src/ikev2.sh
+  fi
 fi
 
   echo
