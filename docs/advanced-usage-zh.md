@@ -9,6 +9,7 @@
 - [指定 VPN 服务器的公有 IP](#指定-vpn-服务器的公有-ip)
 - [为 VPN 客户端指定静态 IP](#为-vpn-客户端指定静态-ip)
 - [自定义 VPN 子网](#自定义-vpn-子网)
+- [VPN 分流](#vpn-分流)
 - [关于 host network 模式](#关于-host-network-模式)
 - [启用 Libreswan 日志](#启用-libreswan-日志)
 - [查看服务器状态](#查看服务器状态)
@@ -188,6 +189,24 @@ VPN_XAUTH_POOL=10.2.0.10-10.2.254.254
 在上面的例子中，`VPN_L2TP_LOCAL` 是在 IPsec/L2TP 模式下的 VPN 服务器的内网 IP。`VPN_L2TP_POOL` 和 `VPN_XAUTH_POOL` 是为 VPN 客户端自动分配的 IP 地址池。
 
 请注意，如果你在 `env` 文件中指定了 `VPN_XAUTH_POOL`，并且在 Docker 容器中已经配置了 IKEv2，你 **必须** 在重新创建 Docker 容器之前手动编辑容器内的 `/etc/ipsec.d/ikev2.conf` 并将 `rightaddresspool=192.168.43.10-192.168.43.250` 替换为与 `VPN_XAUTH_POOL` **相同的值**。否则 IKEv2 可能会停止工作。
+
+## VPN 分流
+
+在启用 VPN 分流 (split tunneling) 时，VPN 客户端将仅通过 VPN 隧道发送特定目标子网的流量。其他流量 **不会** 通过 VPN 隧道。这允许你通过 VPN 安全访问指定的网络，而无需通过 VPN 发送所有客户端的流量。VPN 分流有一些局限性，而且并非所有的 VPN 客户端都支持。
+
+高级用户可以为 IKEv2 模式启用 VPN 分流。这是可选的。将变量 `VPN_SPLIT_IKEV2` 添加到你的 `env` 文件，然后重新创建 Docker 容器。例如，如果目标子网是 `10.123.123.0/24`：
+
+```
+VPN_SPLIT_IKEV2=10.123.123.0/24
+```
+
+请注意，如果在 Docker 容器中已经配置了 IKEv2，则此变量无效。在这种情况下，有两个选项：
+
+**选项 1：** 首先[在容器中运行 Bash shell](#在容器中运行-bash-shell)，然后编辑 `/etc/ipsec.d/ikev2.conf` 并将 `leftsubnet=0.0.0.0/0` 替换为你想要的子网。在完成后，退出容器并运行 `docker restart ipsec-vpn-server`。
+
+**选项 2：** 删除 Docker 容器以及 `ikev2-vpn-data` 卷，然后重新创建容器。这将**永久删除**所有的 VPN 配置。参见[配置并使用 IKEv2 VPN](../README-zh.md#配置并使用-ikev2-vpn) 中的"移除 IKEv2"部分。
+
+另外，Windows 用户也可以通过手动添加路由的方式启用 VPN 分流。有关详细信息，请参阅 [VPN 分流](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/advanced-usage-zh.md#vpn-分流)。
 
 ## 关于 host network 模式
 

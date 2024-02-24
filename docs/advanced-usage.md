@@ -9,6 +9,7 @@
 - [Specify VPN server's public IP](#specify-vpn-servers-public-ip)
 - [Assign static IPs to VPN clients](#assign-static-ips-to-vpn-clients)
 - [Customize VPN subnets](#customize-vpn-subnets)
+- [Split tunneling](#split-tunneling)
 - [About host network mode](#about-host-network-mode)
 - [Enable Libreswan logs](#enable-libreswan-logs)
 - [Check server status](#check-server-status)
@@ -16,7 +17,6 @@
 - [Bash shell inside container](#bash-shell-inside-container)
 - [Bind mount the env file](#bind-mount-the-env-file)
 - [Deploy Google BBR congestion control](#deploy-google-bbr-congestion-control)
-- [Use a split VPN configuration](#use-a-split-VPN-configuration)
 
 ## Use alternative DNS servers
 
@@ -190,6 +190,24 @@ In the examples above, `VPN_L2TP_LOCAL` is the VPN server's internal IP for IPse
 
 Note that if you specify `VPN_XAUTH_POOL` in the `env` file, and IKEv2 is already set up in the Docker container, you **must** manually edit `/etc/ipsec.d/ikev2.conf` inside the container and replace `rightaddresspool=192.168.43.10-192.168.43.250` with the **same value** as `VPN_XAUTH_POOL`, before re-creating the Docker container. Otherwise, IKEv2 may stop working.
 
+## Split tunneling
+
+With split tunneling, VPN clients will only send traffic for a specific destination subnet through the VPN tunnel. Other traffic will NOT go through the VPN tunnel. This allows you to gain secure access to a network through your VPN, without routing all your client's traffic through the VPN. Split tunneling has some limitations, and is not supported by all VPN clients.
+
+Advanced users can optionally enable split tunneling for IKEv2 mode. Add the variable `VPN_SPLIT_IKEV2` to your `env` file, then re-create the Docker container. For example, if the destination subnet is `10.123.123.0/24`:
+
+```
+VPN_SPLIT_IKEV2=10.123.123.0/24
+```
+
+Note that this variable has no effect if IKEv2 is already set up in the Docker container. In this case, you have two options:
+
+**Option 1:** First start a [bash shell inside the container](#bash-shell-inside-container), then edit `/etc/ipsec.d/ikev2.conf` and replace `leftsubnet=0.0.0.0/0` with your desired subnet. When finished, `exit` the container and run `docker restart ipsec-vpn-server`.
+
+**Option 2:** Remove both the Docker container and the `ikev2-vpn-data` volume, then re-create the Docker container. All VPN configuration will be **permanently deleted**. Refer to "remove IKEv2" in [Configure and use IKEv2 VPN](../README.md#configure-and-use-ikev2-vpn).
+
+Alternatively, Windows users can enable split tunneling by manually adding routes. For more details, see [Split tunneling](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/advanced-usage.md#split-tunneling).
+
 ## About host network mode
 
 Advanced users can run this image in [host network mode](https://docs.docker.com/network/host/), by adding `--network=host` to the `docker run` command. In addition, if [running without privileged mode](#run-without-privileged-mode), you may also need to replace `eth0` with the network interface name of your Docker host.
@@ -321,15 +339,6 @@ For detailed deployment methods, please refer to [this document](https://github.
 
 ```
 docker restart ipsec-vpn-server
-```
-
-## Use a split VPN configuration
-
-With IKEv2 only, you can use `VPN_SPLIT_IKEV2` in the `env` file to specify a subnet. Only addresses belonging to this subnet will be routed through the VPN. This allows you to gain secure access to a LAN through your vpn without routing all your client's traffic through the VPN.
-
-Example: Make subnet 192.168.0.0/8 the only routed through the VPN : add to the `env` file :
-```
-VPN_SPLIT_IKEV2=192.168.0.0/8
 ```
 
 ## License

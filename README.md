@@ -331,6 +331,7 @@ See [Advanced usage](docs/advanced-usage.md).
 - [Specify VPN server's public IP](docs/advanced-usage.md#specify-vpn-servers-public-ip)
 - [Assign static IPs to VPN clients](docs/advanced-usage.md#assign-static-ips-to-vpn-clients)
 - [Customize VPN subnets](docs/advanced-usage.md#customize-vpn-subnets)
+- [Split tunneling](docs/advanced-usage.md#split-tunneling)
 - [About host network mode](docs/advanced-usage.md#about-host-network-mode)
 - [Enable Libreswan logs](docs/advanced-usage.md#enable-libreswan-logs)
 - [Check server status](docs/advanced-usage.md#check-server-status)
@@ -338,7 +339,6 @@ See [Advanced usage](docs/advanced-usage.md).
 - [Bash shell inside container](docs/advanced-usage.md#bash-shell-inside-container)
 - [Bind mount the env file](docs/advanced-usage.md#bind-mount-the-env-file)
 - [Deploy Google BBR congestion control](docs/advanced-usage.md#deploy-google-bbr-congestion-control)
-- [Use a split VPN configuration](docs/advanced-usage.md#use-a-split-VPN-configuration)
 
 ## Technical details
 
