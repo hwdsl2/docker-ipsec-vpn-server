@@ -338,6 +338,7 @@ See [Advanced usage](docs/advanced-usage.md).
 - [Bash shell inside container](docs/advanced-usage.md#bash-shell-inside-container)
 - [Bind mount the env file](docs/advanced-usage.md#bind-mount-the-env-file)
 - [Deploy Google BBR congestion control](docs/advanced-usage.md#deploy-google-bbr-congestion-control)
+- [Use a split VPN configuration](docs/advanced-usage.md#use-a-split-VPN-configuration)
 
 ## Technical details
 

@@ -16,6 +16,7 @@
 - [Bash shell inside container](#bash-shell-inside-container)
 - [Bind mount the env file](#bind-mount-the-env-file)
 - [Deploy Google BBR congestion control](#deploy-google-bbr-congestion-control)
+- [Use a split VPN configuration](#use-a-split-VPN-configuration)
 
 ## Use alternative DNS servers
 
@@ -320,6 +321,15 @@ For detailed deployment methods, please refer to [this document](https://github.
 
 ```
 docker restart ipsec-vpn-server
+```
+
+## Use a split VPN configuration
+
+With IKEv2 only, you can use `VPN_SPLIT_IKEV2` in the `env` file to specify a subnet. Only addresses belonging to this subnet will be routed through the VPN. This allows you to gain secure access to a LAN through your vpn without routing all your client's traffic through the VPN.
+
+Example: Make subnet 192.168.0.0/8 the only routed through the VPN : add to the `env` file :
+```
+VPN_SPLIT_IKEV2=192.168.0.0/8
 ```
 
 ## License
