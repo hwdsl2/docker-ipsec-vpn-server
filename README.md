@@ -74,7 +74,7 @@ Two pre-built images are available. The default Alpine-based image is only ~17MB
 | Compressed size   | ~ 17 MB                  | ~ 63 MB                        |
 | Base image        | Alpine Linux 3.19        | Debian Linux 12                |
 | Platforms         | amd64, arm64, arm/v7     | amd64, arm64, arm/v7           |
-| Libreswan version | 4.12                     | 4.12                           |
+| Libreswan version | 4.14                     | 4.14                           |
 | IPsec/L2TP        | ✅                       | ✅                              |
 | Cisco IPsec       | ✅                       | ✅                              |
 | IKEv2             | ✅                       | ✅                              |
