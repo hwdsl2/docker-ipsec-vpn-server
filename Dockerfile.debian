@@ -9,7 +9,7 @@
 
 FROM debian:bookworm-slim
 
-ENV SWAN_VER 4.12
+ENV SWAN_VER 4.14
 WORKDIR /opt/src
 
 RUN apt-get -yqq update \
