@@ -66,8 +66,6 @@ docker run \
     --sysctl net.ipv4.conf.default.accept_redirects=0 \
     --sysctl net.ipv4.conf.default.send_redirects=0 \
     --sysctl net.ipv4.conf.default.rp_filter=0 \
-    --sysctl net.ipv4.conf.eth0.send_redirects=0 \
-    --sysctl net.ipv4.conf.eth0.rp_filter=0 \
     hwdsl2/ipsec-vpn-server
 ```
 
@@ -90,8 +88,6 @@ docker run \
     - net.ipv4.conf.default.accept_redirects=0
     - net.ipv4.conf.default.send_redirects=0
     - net.ipv4.conf.default.rp_filter=0
-    - net.ipv4.conf.eth0.send_redirects=0
-    - net.ipv4.conf.eth0.rp_filter=0
 ```
 
 更多信息请参见 [compose file reference](https://docs.docker.com/compose/compose-file/)。
