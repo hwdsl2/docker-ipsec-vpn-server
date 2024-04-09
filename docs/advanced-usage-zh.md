@@ -227,13 +227,13 @@ docker exec -it ipsec-vpn-server env TERM=xterm bash -l
 apk add --no-cache rsyslog
 rsyslogd
 rc-service ipsec stop; rc-service -D ipsec start >/dev/null 2>&1
-sed -i '/pluto\.pid/a rsyslogd' /opt/src/run.sh
+sed -i '\|pluto\.pid|a rm -f /var/run/rsyslogd.pid; rsyslogd' /opt/src/run.sh
 exit
 # For Debian-based image
 apt-get update && apt-get -y install rsyslog
 rsyslogd
 service ipsec restart
-sed -i '/pluto\.pid/a rsyslogd' /opt/src/run.sh
+sed -i '\|pluto\.pid|a rm -f /var/run/rsyslogd.pid; rsyslogd' /opt/src/run.sh
 exit
 ```
 
