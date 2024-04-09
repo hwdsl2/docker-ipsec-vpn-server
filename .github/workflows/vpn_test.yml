@@ -75,8 +75,6 @@ jobs:
             --sysctl net.ipv4.conf.default.accept_redirects=0 \
             --sysctl net.ipv4.conf.default.send_redirects=0 \
             --sysctl net.ipv4.conf.default.rp_filter=0 \
-            --sysctl net.ipv4.conf.eth0.send_redirects=0 \
-            --sysctl net.ipv4.conf.eth0.rp_filter=0 \
             vpn-test
           elif [ "$TEST_ID" = "no-env" ]; then
             docker run \
