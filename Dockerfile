@@ -9,7 +9,7 @@
 
 FROM alpine:3.19
 
-ENV SWAN_VER 4.15
+ENV SWAN_VER 5.0
 WORKDIR /opt/src
 
 RUN set -x \
@@ -26,7 +26,8 @@ RUN set -x \
     && tar xzf libreswan.tar.gz \
     && rm -f libreswan.tar.gz \
     && cd "libreswan-${SWAN_VER}" \
-    && printf 'WERROR_CFLAGS=-w -s\nUSE_DNSSEC=false\nUSE_DH2=true\nFINALNSSDIR=/etc/ipsec.d\n' > Makefile.inc.local \
+    && printf 'WERROR_CFLAGS=-w -s\nUSE_DNSSEC=false\nUSE_DH2=true\n' > Makefile.inc.local \
+    && printf 'FINALNSSDIR=/etc/ipsec.d\nNSSDIR=/etc/ipsec.d\n' >> Makefile.inc.local \
     && make -s base \
     && make -s install-base \
     && cd /opt/src \

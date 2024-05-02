@@ -9,7 +9,7 @@
 
 FROM debian:bookworm-slim
 
-ENV SWAN_VER 4.15
+ENV SWAN_VER 5.0
 WORKDIR /opt/src
 
 RUN apt-get -yqq update \
@@ -27,7 +27,7 @@ RUN apt-get -yqq update \
     && rm -f libreswan.tar.gz \
     && cd "libreswan-${SWAN_VER}" \
     && printf 'WERROR_CFLAGS=-w -s\nUSE_DNSSEC=false\nUSE_SYSTEMD_WATCHDOG=false\n' > Makefile.inc.local \
-    && printf 'USE_DH2=true\nUSE_NSS_KDF=false\nFINALNSSDIR=/etc/ipsec.d\n' >> Makefile.inc.local \
+    && printf 'USE_DH2=true\nUSE_NSS_KDF=false\nFINALNSSDIR=/etc/ipsec.d\nNSSDIR=/etc/ipsec.d\n' >> Makefile.inc.local \
     && make -s base \
     && make -s install-base \
     && cd /opt/src \
