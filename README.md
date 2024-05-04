@@ -81,6 +81,25 @@ Two pre-built images are available. The default Alpine-based image is only ~19MB
 
 **Note:** To use the Debian-based image, replace every `hwdsl2/ipsec-vpn-server` with `hwdsl2/ipsec-vpn-server:debian` in this README. These images are not currently compatible with Synology NAS systems.
 
+<details>
+<summary>
+I want to use the older Libreswan version 4.
+</summary>
+
+It is generally recommended to use the latest [Libreswan](https://libreswan.org/) version 5, which is the default version in this project. However, if you want to use the older Libreswan version 4, you can build the Docker image from source code:
+
+```
+git clone https://github.com/hwdsl2/docker-ipsec-vpn-server
+cd docker-ipsec-vpn-server
+# Specify Libreswan version 4
+sed -i 's/SWAN_VER 5\.0/SWAN_VER 4.15/' Dockerfile Dockerfile.debian
+# To build Alpine-based image
+docker build -t hwdsl2/ipsec-vpn-server .
+# To build Debian-based image
+docker build -f Dockerfile.debian -t hwdsl2/ipsec-vpn-server:debian .
+```
+</details>
+
 ## How to use this image
 
 ### Environment variables

@@ -81,6 +81,25 @@ docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
 
 **注：** 要使用基于 Debian 的镜像，请将本自述文件中所有的 `hwdsl2/ipsec-vpn-server` 替换为 `hwdsl2/ipsec-vpn-server:debian`。这些镜像当前与 Synology NAS 系统不兼容。
 
+<details>
+<summary>
+我需要使用较旧版本的 Libreswan 版本 4。
+</summary>
+
+一般建议使用最新的 [Libreswan](https://libreswan.org/) 版本 5，它是本项目的默认版本。但是，如果你想要使用较旧版本的 Libreswan 版本 4，你可以从源代码构建 Docker 镜像：
+
+```
+git clone https://github.com/hwdsl2/docker-ipsec-vpn-server
+cd docker-ipsec-vpn-server
+# Specify Libreswan version 4
+sed -i 's/SWAN_VER 5\.0/SWAN_VER 4.15/' Dockerfile Dockerfile.debian
+# To build Alpine-based image
+docker build -t hwdsl2/ipsec-vpn-server .
+# To build Debian-based image
+docker build -f Dockerfile.debian -t hwdsl2/ipsec-vpn-server:debian .
+```
+</details>
+
 ## 如何使用本镜像
 
 ### 环境变量
