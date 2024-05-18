@@ -277,18 +277,19 @@ EOF
   fi
 fi
 
+echo
+echo 'Trying to auto discover IP of this server...'
+# In case auto IP discovery fails, manually define the public IP
+# of this server in your 'env' file, as variable 'VPN_PUBLIC_IP'.
+public_ip=${VPN_PUBLIC_IP:-''}
+check_ip "$public_ip" || public_ip=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
+check_ip "$public_ip" || public_ip=$(wget -t 2 -T 10 -qO- http://ipv4.icanhazip.com)
+check_ip "$public_ip" || public_ip=$(wget -t 2 -T 10 -qO- http://ip1.dynupdate.no-ip.com)
+check_ip "$public_ip" || exiterr "Cannot detect this server's public IP. Define it in your 'env' file as 'VPN_PUBLIC_IP'."
+
 if [ -n "$VPN_DNS_NAME" ]; then
   server_addr="$VPN_DNS_NAME"
 else
-  echo
-  echo 'Trying to auto discover IP of this server...'
-  # In case auto IP discovery fails, manually define the public IP
-  # of this server in your 'env' file, as variable 'VPN_PUBLIC_IP'.
-  public_ip=${VPN_PUBLIC_IP:-''}
-  check_ip "$public_ip" || public_ip=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
-  check_ip "$public_ip" || public_ip=$(wget -t 2 -T 10 -qO- http://ipv4.icanhazip.com)
-  check_ip "$public_ip" || public_ip=$(wget -t 2 -T 10 -qO- http://ip1.dynupdate.no-ip.com)
-  check_ip "$public_ip" || exiterr "Cannot detect this server's public IP. Define it in your 'env' file as 'VPN_PUBLIC_IP'."
   server_addr="$public_ip"
 fi
 
@@ -390,7 +391,7 @@ config setup
 
 conn shared
   left=%defaultroute
-  leftid=$server_addr
+  leftid=$public_ip
   right=%any
   encapsulation=yes
   authby=secret
