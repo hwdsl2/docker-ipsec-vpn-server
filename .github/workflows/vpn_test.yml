@@ -47,7 +47,6 @@ jobs:
             -e '/VPN_CLIENT_NAME/s/# //' \
             -e '/VPN_DNS_SRV1/s/# //' \
             -e '/VPN_DNS_SRV2/s/# //' \
-            -e '/vpn\.example\.com/s/vpn\.//' \
             vpn.env.example
 
           set -x
@@ -109,17 +108,16 @@ jobs:
             docker exec "$TEST_ID" grep "$VPN_PASSWORD" /etc/ppp/chap-secrets
             docker exec "$TEST_ID" grep "$VPN_USER" /etc/ipsec.d/passwd
             docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp
-            docker exec "$TEST_ID" grep "leftid=example.com" /etc/ipsec.conf
             docker exec "$TEST_ID" grep 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.conf
             docker exec "$TEST_ID" grep 'ms-dns 1.1.1.1' /etc/ppp/options.xl2tpd
             docker exec "$TEST_ID" grep 'ms-dns 1.0.0.1' /etc/ppp/options.xl2tpd
-            docker exec "$TEST_ID" grep 'leftid=@example.com' /etc/ipsec.d/ikev2.conf
+            docker exec "$TEST_ID" grep 'leftid=@vpn.example.com' /etc/ipsec.d/ikev2.conf
             docker exec "$TEST_ID" grep 'modecfgdns="1.1.1.1 1.0.0.1"' /etc/ipsec.d/ikev2.conf
             docker exec "$TEST_ID" ls -ld /etc/ipsec.d/your_client_name.mobileconfig
             docker exec "$TEST_ID" ls -ld /etc/ipsec.d/your_client_name.sswan
             docker exec "$TEST_ID" ls -ld /etc/ipsec.d/your_client_name.p12
-            docker exec "$TEST_ID" grep 'example.com' /etc/ipsec.d/your_client_name.mobileconfig
-            docker exec "$TEST_ID" grep 'example.com' /etc/ipsec.d/your_client_name.sswan
+            docker exec "$TEST_ID" grep 'vpn.example.com' /etc/ipsec.d/your_client_name.mobileconfig
+            docker exec "$TEST_ID" grep 'vpn.example.com' /etc/ipsec.d/your_client_name.sswan
             docker exec "$TEST_ID" ikev2.sh --addclient vpnclient2
             docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.mobileconfig
             docker exec "$TEST_ID" ls -ld /etc/ipsec.d/vpnclient2.sswan
