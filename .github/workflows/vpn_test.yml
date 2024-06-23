@@ -18,7 +18,7 @@ on:
 
 jobs:
   vpn_test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.repository_owner == 'hwdsl2'
     strategy:
       matrix:
