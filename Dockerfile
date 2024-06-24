@@ -9,7 +9,7 @@
 
 FROM alpine:3.19
 
-ENV SWAN_VER 5.0
+ENV SWAN_VER=5.0
 WORKDIR /opt/src
 
 RUN set -x \
@@ -50,7 +50,7 @@ CMD ["/opt/src/run.sh"]
 ARG BUILD_DATE
 ARG VERSION
 ARG VCS_REF
-ENV IMAGE_VER $BUILD_DATE
+ENV IMAGE_VER=$BUILD_DATE
 
 LABEL maintainer="Lin Song <linsongui@gmail.com>" \
     org.opencontainers.image.created="$BUILD_DATE" \
