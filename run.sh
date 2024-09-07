@@ -730,7 +730,7 @@ else
 fi
 
 if [ "$status" = 2 ] && [ -n "$VPN_DNS_NAME" ]; then
-  server_addr_cur=$(grep -s "leftcert=" /etc/ipsec.d/ikev2.conf | cut -f2 -d=)
+  server_addr_cur=$(grep -s "leftcert=" /etc/ipsec.d/ikev2.conf | cut -f2 -d= | head -n 1)
   if [ "$VPN_DNS_NAME" != "$server_addr_cur" ]; then
 cat <<'EOF'
 Warning: The VPN_DNS_NAME variable you specified has no effect
