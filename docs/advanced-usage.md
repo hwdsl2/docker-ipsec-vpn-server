@@ -134,7 +134,11 @@ When connecting using IPsec/L2TP mode, the VPN server (Docker container) has int
 
 When connecting using IPsec/XAuth ("Cisco IPsec") or IKEv2 mode, the VPN server (Docker container) does NOT have an internal IP within the VPN subnet `192.168.43.0/24`. Clients are assigned internal IPs from `192.168.43.10` to `192.168.43.250`.
 
-Advanced users may optionally assign static IPs to VPN clients. IKEv2 mode does NOT support this feature. To assign static IPs, declare the `VPN_ADDL_IP_ADDRS` variable in your `env` file, then re-create the Docker container. Example:
+Advanced users may optionally assign static IPs to VPN clients. For **IKEv2 mode**, first open a [Bash shell inside the container](#bash-shell-inside-container), then follow the steps in section "IKEv2 mode: Assign static IPs to VPN clients" of [Internal VPN IPs and traffic](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/advanced-usage.md#internal-vpn-ips-and-traffic). Note that you should skip steps 2, 3 and 5, and restart the Docker container when finished. This is because changes to `/etc/ipsec.conf` may be overwritten on container restart.
+
+Instructions below **ONLY** apply to IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes.
+
+To assign static IPs, declare the `VPN_ADDL_IP_ADDRS` variable in your `env` file, then re-create the Docker container. Example:
 
 ```
 VPN_ADDL_USERS=user1 user2 user3 user4 user5
@@ -198,7 +202,7 @@ VPN_SPLIT_IKEV2=10.123.123.0/24
 
 Note that this variable has no effect if IKEv2 is already set up in the Docker container. In this case, you have two options:
 
-**Option 1:** First start a [bash shell inside the container](#bash-shell-inside-container), then edit `/etc/ipsec.d/ikev2.conf` and replace `leftsubnet=0.0.0.0/0` with your desired subnet. When finished, `exit` the container and run `docker restart ipsec-vpn-server`.
+**Option 1:** First start a [Bash shell inside the container](#bash-shell-inside-container), then edit `/etc/ipsec.d/ikev2.conf` and replace `leftsubnet=0.0.0.0/0` with your desired subnet. When finished, `exit` the container and run `docker restart ipsec-vpn-server`.
 
 **Option 2:** Remove both the Docker container and the `ikev2-vpn-data` volume, then re-create the Docker container. All VPN configuration will be **permanently deleted**. Refer to "remove IKEv2" in [Configure and use IKEv2 VPN](../README.md#configure-and-use-ikev2-vpn).
 

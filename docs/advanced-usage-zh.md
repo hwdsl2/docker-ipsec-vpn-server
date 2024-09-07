@@ -134,7 +134,11 @@ iptables -t nat -I POSTROUTING -s 172.17.0.2 ! -o docker0 -j SNAT --to 192.0.2.2
 
 在使用 IPsec/XAuth ("Cisco IPsec") 或 IKEv2 模式连接时，VPN 服务器（Docker 容器）在虚拟网络 `192.168.43.0/24` 内 **没有** 内网 IP。为客户端分配的内网 IP 在这个范围内：`192.168.43.10` 到 `192.168.43.250`。
 
-高级用户可以将静态 IP 分配给 VPN 客户端。这是可选的。IKEv2 模式 **不支持** 此功能。要分配静态 IP，在你的 `env` 文件中定义 `VPN_ADDL_IP_ADDRS` 变量，然后重新创建 Docker 容器。例如：
+高级用户可以将静态 IP 分配给 VPN 客户端。这是可选的。对于 **IKEv2 模式**，首先[在容器中运行 Bash shell](#在容器中运行-bash-shell)，然后按照[VPN 内网 IP 和流量](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/advanced-usage-zh.md#vpn-内网-ip-和流量)中的 "IKEv2 模式：为 VPN 客户端分配静态 IP" 小节中的步骤操作。请注意，你需要跳过第 2, 3 和 5 步，并且在完成后重启 Docker 容器。这是因为对 `/etc/ipsec.conf` 的修改可能会在重启容器时被覆盖。
+
+以下说明 **仅适用于** IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式。
+
+要分配静态 IP，在你的 `env` 文件中定义 `VPN_ADDL_IP_ADDRS` 变量，然后重新创建 Docker 容器。例如：
 
 ```
 VPN_ADDL_USERS=user1 user2 user3 user4 user5
