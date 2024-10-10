@@ -1,4 +1,4 @@
-[English](README.md) | [中文](README-zh.md) | [Libro en Español](https://books2read.com/vpnguidees?store=amazon)
+[English](README.md) | [中文](README-zh.md)
 
 # IPsec VPN Server on Docker
 
@@ -10,7 +10,7 @@ Based on Alpine 3.20 or Debian 12 with [Libreswan](https://libreswan.org) (IPsec
 
 An IPsec VPN encrypts your network traffic, so that nobody between you and the VPN server can eavesdrop on your data as it travels via the Internet. This is especially useful when using unsecured networks, e.g. at coffee shops, airports or hotel rooms.
 
-**[&raquo; :book: Book: Build Your Own VPN Server: A Step by Step Guide](https://books2read.com/vpnguide?store=amazon)**
+**[&raquo; :book: Book: Build Your Own VPN Server](https://books2read.com/vpnguide?store=amazon)** [[English](https://books2read.com/vpnguide?store=amazon) | [中文](https://books2read.com/vpnguidezh) | [Español](https://books2read.com/vpnguidees?store=amazon) | [Deutsch](https://books2read.com/vpnguidede?store=amazon) | [Français](https://books2read.com/vpnguidefr?store=amazon)]
 
 ## Quick start
 
