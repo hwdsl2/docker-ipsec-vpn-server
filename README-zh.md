@@ -10,7 +10,7 @@
 
 IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时，你和 VPN 服务器之间的任何人对你的数据的未经授权的访问。在使用不安全的网络时，这是特别有用的，例如在咖啡厅，机场或旅馆房间。
 
-**[&raquo; :book: Book: 搭建自己的 VPN 服务器分步指南](https://books2read.com/vpnguidezh)** [[中文](https://books2read.com/vpnguidezh) | [English](https://books2read.com/vpnguide?store=amazon) | [Español](https://books2read.com/vpnguidees?store=amazon) | [Deutsch](https://books2read.com/vpnguidede?store=amazon) | [Français](https://books2read.com/vpnguidefr?store=amazon) | [Italiano](https://books2read.com/vpnguideit?store=amazon) | [PT](https://books2read.com/vpnguidept?store=amazon) | [日本語](https://books2read.com/vpnguideja?store=amazon)]
+**[&raquo; :book: Book: 搭建自己的 VPN 服务器分步指南](https://books2read.com/vpnguidezh)** [[中文](https://books2read.com/vpnguidezh) | [English](https://books2read.com/vpnguide?store=amazon) | [Español](https://books2read.com/vpnguidees?store=amazon) | [Deutsch](https://books2read.com/vpnguidede?store=amazon) | [Français](https://books2read.com/vpnguidefr?store=amazon) | [Italiano](https://books2read.com/vpnguideit?store=amazon) | [NL](https://books2read.com/vpnguidenl?store=amazon) | [PT](https://books2read.com/vpnguidept?store=amazon) | [日本語](https://books2read.com/vpnguideja?store=amazon)]
 
 ## 快速开始
 
