@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2020-2024 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2020-2025 Lin Song <linsongui@gmail.com>
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -48,7 +48,7 @@ jobs:
       - name: Prepare
         run: |
           if [ "$OS_TYPE" = "alpine" ]; then
-            docker pull alpine:3.20
+            docker pull alpine:3.21
             docker pull "$DOCKER_USER/ipsec-vpn-server"
           elif [ "$OS_TYPE" = "debian" ]; then
             docker pull debian:bookworm-slim
@@ -62,7 +62,7 @@ jobs:
           BASE_UPDATED=false
 
           if [ "$OS_TYPE" = "alpine" ]; then
-            base_ts=$(docker inspect --format='{{.Created}}' alpine:3.20)
+            base_ts=$(docker inspect --format='{{.Created}}' alpine:3.21)
             image_ts=$(docker inspect --format='{{.Created}}' "$DOCKER_USER/ipsec-vpn-server")
           elif [ "$OS_TYPE" = "debian" ]; then
             base_ts=$(docker inspect --format='{{.Created}}' debian:bookworm-slim)
