@@ -36,7 +36,7 @@ assignees: ''
 [启用日志](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage-zh.md#启用-libreswan-日志)，检查 [VPN 状态](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#检查日志及-vpn-状态)，并且添加错误日志以帮助解释该问题（如果适用）。
 
 **服务器信息（请填写以下信息）**
-- Docker 主机操作系统: [比如 Ubuntu 20.04]
+- Docker 主机操作系统: [比如 Ubuntu 24.04]
 - 服务提供商（如果适用）: [比如 GCP, AWS]
 
 **客户端信息（请填写以下信息）**
