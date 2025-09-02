@@ -6,7 +6,7 @@
 
 Docker image to run an IPsec VPN server, with IPsec/L2TP, Cisco IPsec and IKEv2.
 
-Based on Alpine 3.21 or Debian 12 with [Libreswan](https://libreswan.org) (IPsec VPN software) and [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP daemon).
+Based on Alpine 3.22 or Debian 12 with [Libreswan](https://libreswan.org) (IPsec VPN software) and [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP daemon).
 
 An IPsec VPN encrypts your network traffic, so that nobody between you and the VPN server can eavesdrop on your data as it travels via the Internet. This is especially useful when using unsecured networks, e.g. at coffee shops, airports or hotel rooms.
 
@@ -66,13 +66,13 @@ Advanced users can [build from source code](docs/advanced-usage.md#build-from-so
 
 ### Image comparison
 
-Two pre-built images are available. The default Alpine-based image is only ~18 MB.
+Two pre-built images are available. The default Alpine-based image is only ~21 MB.
 
 |                   | Alpine-based             | Debian-based                   |
 | ----------------- | ------------------------ | ------------------------------ |
 | Image name        | hwdsl2/ipsec-vpn-server  | hwdsl2/ipsec-vpn-server:debian |
-| Compressed size   | ~ 18 MB                  | ~ 62 MB                        |
-| Base image        | Alpine Linux 3.21        | Debian Linux 12                |
+| Compressed size   | ~ 21 MB                  | ~ 62 MB                        |
+| Base image        | Alpine Linux 3.22        | Debian Linux 12                |
 | Platforms         | amd64, arm64, arm/v7     | amd64, arm64, arm/v7           |
 | Libreswan version | 5.3                      | 5.3                            |
 | IPsec/L2TP        | ✅                       | ✅                              |
@@ -114,7 +114,7 @@ VPN_USER=your_vpn_username
 VPN_PASSWORD=your_vpn_password
 ```
 
-This will create a user account for VPN login, which can be used by your multiple devices[*](#important-notes). The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
+This will create a user account for VPN login, which can be used by your multiple devices[\*](#important-notes). The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
 
 Additional VPN users are supported, and can be optionally declared in your `env` file like this. Usernames and passwords must be separated by spaces, and usernames cannot contain duplicates. All VPN users will share the same IPsec PSK.
 
