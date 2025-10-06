@@ -10,7 +10,9 @@
 
 IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时，你和 VPN 服务器之间的任何人对你的数据的未经授权的访问。在使用不安全的网络时，这是特别有用的，例如在咖啡厅，机场或旅馆房间。
 
-**[&raquo; :book: Book: Privacy in the Age of AI](https://books2read.com/privacy?store=amazon) &nbsp;[搭建自己的 VPN 服务器分步指南](docs/vpn-book-zh.md)**
+---
+#### [&raquo; :book: 限时免费电子书：Privacy Tools in the Age of AI](https://books2read.com/privacy?store=amazon)
+---
 
 ## 快速开始
 

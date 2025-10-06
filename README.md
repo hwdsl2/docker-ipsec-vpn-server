@@ -10,7 +10,9 @@ Based on Alpine 3.22 or Debian 12 with [Libreswan](https://libreswan.org) (IPsec
 
 An IPsec VPN encrypts your network traffic, so that nobody between you and the VPN server can eavesdrop on your data as it travels via the Internet. This is especially useful when using unsecured networks, e.g. at coffee shops, airports or hotel rooms.
 
-**[&raquo; :book: Book: Privacy in the Age of AI](https://books2read.com/privacy?store=amazon) &nbsp;[Build Your Own VPN Server](docs/vpn-book.md)**
+---
+#### [&raquo; :book: FREE eBook (limited time): Privacy Tools in the Age of AI](https://books2read.com/privacy?store=amazon)
+---
 
 ## Quick start
 
