@@ -337,7 +337,7 @@ case $VPN_IKEV2_ONLY in
     disable_ipsec_xauth=yes
     ;;
 esac
-ike_algs="aes256-sha2;modp2048,aes128-sha2;modp2048,aes256-sha1;modp2048,aes128-sha1;modp2048"
+ike_algs="aes256-sha2;modp2048,aes128-sha2;modp2048,aes256-sha1;modp2048,aes128-sha1;modp2048,aes128-sha1;modp1024,aes256-sha1;modp1024"
 ike_algs_addl_1=",aes256-sha2;modp1024,aes128-sha1;modp1024"
 ike_algs_addl_2=",aes256-sha2;modp1536,aes128-sha1;modp1536"
 case $VPN_ENABLE_MODP1024 in
