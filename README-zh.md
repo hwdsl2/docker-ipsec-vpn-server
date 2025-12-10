@@ -123,6 +123,8 @@ VPN_ADDL_USERS=additional_username_1 additional_username_2
 VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 ```
 
+以上变量仅适用于 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式。对于 IKEv2，参见[配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)。
+
 **注：** 在你的 `env` 文件中，**不要**为变量值添加 `""` 或者 `''`，或在 `=` 两边添加空格。**不要**在值中使用这些字符： `\ " '`。一个安全的 IPsec PSK 应该至少包含 20 个随机字符。
 
 **注：** 如果在创建 Docker 容器后修改 `env` 文件，则必须删除并重新创建容器才能使更改生效。参见[更新 Docker 镜像](#更新-docker-镜像)。
@@ -163,7 +165,7 @@ VPN_DNS_SRV2=1.0.0.1
 VPN_PROTECT_CONFIG=yes
 ```
 
-**注：** 如果在 Docker 容器中已经配置了 IKEv2，则以上变量对 IKEv2 模式无效。在这种情况下，你可以移除 IKEv2 并使用自定义选项重新配置它。参见 [配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)。
+**注：** 如果在 Docker 容器中已经配置了 IKEv2，则以上变量对 IKEv2 模式无效。在这种情况下，你可以移除 IKEv2 并使用自定义选项重新配置它。参见[配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)。
 </details>
 
 ### 运行 IPsec VPN 服务器

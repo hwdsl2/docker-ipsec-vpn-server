@@ -123,6 +123,8 @@ VPN_ADDL_USERS=additional_username_1 additional_username_2
 VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 ```
 
+The variables above are only for IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes. For IKEv2, see [Configure and use IKEv2 VPN](#configure-and-use-ikev2-vpn).
+
 **Note:** In your `env` file, DO NOT put `""` or `''` around values, or add space around `=`. DO NOT use these special characters within values: `\ " '`. A secure IPsec PSK should consist of at least 20 random characters.
 
 **Note:** If you modify the `env` file after the Docker container is already created, you must remove and re-create the container for the changes to take effect. Refer to [Update Docker image](#update-docker-image).
