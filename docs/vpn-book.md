@@ -2,10 +2,12 @@
 
 ## New: Privacy Tools in the Age of AI
 
-Learn how to build your next-level privacy in the age of AI. This book is available in eBook, print and audiobook formats on:
+Learn how to build next-level privacy protection in the age of AI. This book is available in eBook, print and audiobook formats on:
 
-**&raquo; [Amazon](https://books2read.com/privacy?store=amazon)**   
-**&raquo; [Other Platforms](https://books2read.com/privacy)**
+&raquo; [Amazon](https://books2read.com/privacy?store=amazon)   
+&raquo; [Google Play](https://books2read.com/privacy?store=google)   
+&raquo; [Apple Books](https://books2read.com/privacy?store=apple)   
+&raquo; [Other Platforms](https://books2read.com/privacy)
 
 Author page: https://amazon.com/author/linsong
 
