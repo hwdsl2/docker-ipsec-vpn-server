@@ -1,4 +1,4 @@
-[English](README.md) | [中文](README-zh.md)
+[English](README.md) | [简体中文](README-zh.md) | [繁體中文](README-zh-Hant.md)
 
 # IPsec VPN Server on Docker
 
@@ -220,7 +220,7 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 
 ## Next steps
 
-*Read this in other languages: [English](README.md#next-steps), [中文](README-zh.md#下一步).*
+*Read this in other languages: [English](README.md#next-steps), [简体中文](README-zh.md#下一步), [繁體中文](README-zh-Hant.md#下一步).*
 
 Get your computer or device to use the VPN. Please refer to:
 
