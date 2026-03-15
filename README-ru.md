@@ -6,7 +6,7 @@
 
 Docker-образ для запуска сервера IPsec VPN с поддержкой IPsec/L2TP, Cisco IPsec и IKEv2.
 
-Основан на Alpine 3.22 или Debian 12 с использованием [Libreswan](https://libreswan.org) (программное обеспечение IPsec VPN) и [xl2tpd](https://github.com/xelerance/xl2tpd) (демон L2TP).
+Основан на Alpine 3.23 или Debian 12 с использованием [Libreswan](https://libreswan.org) (программное обеспечение IPsec VPN) и [xl2tpd](https://github.com/xelerance/xl2tpd) (демон L2TP).
 
 IPsec VPN шифрует сетевой трафик, поэтому никто между вами и VPN-сервером не сможет перехватывать ваши данные во время их передачи через Интернет. Это особенно полезно при использовании незащищённых сетей, например в кофейнях, аэропортах или гостиничных номерах.
 
@@ -66,13 +66,13 @@ docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
 
 ### Сравнение образов
 
-Доступны два предварительно собранных образа. Образ на базе Alpine используется по умолчанию и имеет размер всего около ~21 MB.
+Доступны два предварительно собранных образа. Образ на базе Alpine используется по умолчанию и имеет размер всего около ~19 MB.
 
 |                   | На базе Alpine            | На базе Debian                 |
 | ----------------- | ------------------------- | ------------------------------ |
 | Имя образа        | hwdsl2/ipsec-vpn-server   | hwdsl2/ipsec-vpn-server:debian |
-| Сжатый размер     | ~ 21 MB                   | ~ 62 MB                        |
-| Базовый образ     | Alpine Linux 3.22         | Debian Linux 12                |
+| Сжатый размер     | ~ 19 MB                   | ~ 62 MB                        |
+| Базовый образ     | Alpine Linux 3.23         | Debian Linux 12                |
 | Платформы         | amd64, arm64, arm/v7      | amd64, arm64, arm/v7           |
 | Версия Libreswan  | 5.3                       | 5.3                            |
 | IPsec/L2TP        | ✅                         | ✅                              |
