@@ -36,7 +36,7 @@ jobs:
       should_update: ${{ steps.check.outputs.should_update }}
     steps:
       - name: Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ${{ runner.temp }}/.buildx-bin
@@ -48,7 +48,7 @@ jobs:
       - name: Prepare
         run: |
           if [ "$OS_TYPE" = "alpine" ]; then
-            docker pull alpine:3.22
+            docker pull alpine:3.23
             docker pull "$DOCKER_USER/ipsec-vpn-server"
           elif [ "$OS_TYPE" = "debian" ]; then
             docker pull debian:bookworm-slim
@@ -62,7 +62,7 @@ jobs:
           BASE_UPDATED=false
 
           if [ "$OS_TYPE" = "alpine" ]; then
-            base_ts=$(docker inspect --format='{{.Created}}' alpine:3.22)
+            base_ts=$(docker inspect --format='{{.Created}}' alpine:3.23)
             image_ts=$(docker inspect --format='{{.Created}}' "$DOCKER_USER/ipsec-vpn-server")
           elif [ "$OS_TYPE" = "debian" ]; then
             base_ts=$(docker inspect --format='{{.Created}}' debian:bookworm-slim)

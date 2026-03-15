@@ -32,11 +32,11 @@ jobs:
     runs-on: ubuntu-22.04
     if: github.repository_owner == 'hwdsl2'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ${{ runner.temp }}/.buildx-bin
