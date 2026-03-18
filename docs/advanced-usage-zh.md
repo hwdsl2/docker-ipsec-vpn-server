@@ -9,6 +9,7 @@
 - [指定 VPN 服务器的公有 IP](#指定-vpn-服务器的公有-ip)
 - [为 VPN 客户端指定静态 IP](#为-vpn-客户端指定静态-ip)
 - [自定义 VPN 子网](#自定义-vpn-子网)
+- [IPv6 支持](#ipv6-支持)
 - [VPN 分流](#vpn-分流)
 - [关于 host network 模式](#关于-host-network-模式)
 - [启用 Libreswan 日志](#启用-libreswan-日志)
@@ -45,7 +46,9 @@ VPN_DNS_SRV2=1.0.0.1
 
 ## 不启用 privileged 模式运行
 
-高级用户可以在不启用 [privileged 模式](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities) 的情况下使用本镜像创建一个 Docker 容器（将以下命令中的 `./vpn.env` 替换为你自己的 `env` 文件）。
+高级用户可以在不启用 [privileged 模式](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities)的情况下使用本镜像创建一个 Docker 容器（将以下命令中的 `./vpn.env` 替换为你自己的 `env` 文件）。
+
+**注：** 如果要启用 [IPv6 支持](#ipv6-支持)，你必须在下方的 `docker run` 命令中添加 `--sysctl net.ipv6.conf.all.forwarding=1`。
 
 **注：** 如果你的 Docker 主机运行 CentOS Stream, Oracle Linux 8+, Rocky Linux 或者 AlmaLinux，推荐使用 [privileged 模式](../README-zh.md#运行-ipsec-vpn-服务器)。如果你想要不启用 privileged 模式运行，则 **必须** 在创建 Docker 容器之前以及系统启动时运行 `modprobe ip_tables`。
 
@@ -69,9 +72,9 @@ docker run \
     hwdsl2/ipsec-vpn-server
 ```
 
-在不启用 privileged 模式运行时，容器不能更改 `sysctl` 设置。这可能会影响本镜像的某些功能。一个已知问题是 [Android/Linux MTU/MSS fix](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#androidlinux-mtumss-问题) 需要另外在 `docker run` 命令添加 `--sysctl net.ipv4.ip_no_pmtu_disc=1` 才有效。如果你遇到任何问题，可以尝试换用 [privileged 模式](../README-zh.md#运行-ipsec-vpn-服务器) 重新创建容器。
+在不启用 privileged 模式运行时，容器不能更改 `sysctl` 设置。这可能会影响本镜像的某些功能。一个已知问题是 [Android/Linux MTU/MSS fix](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#androidlinux-mtumss-问题) 需要另外在 `docker run` 命令添加 `--sysctl net.ipv4.ip_no_pmtu_disc=1` 才有效。如果你遇到任何问题，可以尝试换用 [privileged 模式](../README-zh.md#运行-ipsec-vpn-服务器)重新创建容器。
 
-在创建 Docker 容器之后，请转到 [获取 VPN 登录信息](../README-zh.md#获取-vpn-登录信息)。
+在创建 Docker 容器之后，请转到[获取 VPN 登录信息](../README-zh.md#获取-vpn-登录信息)。
 
 类似地，如果你使用 [Docker compose](https://docs.docker.com/compose/)，可以将 [docker-compose.yml](../docker-compose.yml) 中的 `privileged: true` 替换为：
 
@@ -116,7 +119,7 @@ docker run \
 VPN_PUBLIC_IP=192.0.2.2
 ```
 
-请注意，如果在 Docker 容器中已经配置了 IKEv2，则此变量对 IKEv2 模式无效。在这种情况下，你可以移除 IKEv2 并使用自定义选项重新配置它。参见 [配置并使用 IKEv2 VPN](../README-zh.md#配置并使用-ikev2-vpn)。
+请注意，如果在 Docker 容器中已经配置了 IKEv2，则此变量对 IKEv2 模式无效。在这种情况下，你可以移除 IKEv2 并使用自定义选项重新配置它。参见[配置并使用 IKEv2 VPN](../README-zh.md#配置并使用-ikev2-vpn)。
 
 如果你想要 VPN 客户端在 VPN 连接处于活动状态时使用指定的公有 IP 作为其 "出站 IP"，并且指定的 IP **不是** Docker 主机上的主 IP（或默认路由），则可能需要额外的配置。在这种情况下，你可以尝试在 Docker 主机上添加一个 IPTables `SNAT` 规则。如果要在重启后继续有效，你可以将命令添加到 `/etc/rc.local`。
 
@@ -126,7 +129,7 @@ VPN_PUBLIC_IP=192.0.2.2
 iptables -t nat -I POSTROUTING -s 172.17.0.2 ! -o docker0 -j SNAT --to 192.0.2.2
 ```
 
-要检查一个已连接的 VPN 客户端的 "出站 IP"，你可以在该客户端上打开浏览器并到 [这里](https://www.ipchicken.com) 检测 IP 地址。
+要检查一个已连接的 VPN 客户端的 "出站 IP"，你可以在该客户端上打开浏览器并到[这里](https://www.ipchicken.com)检测 IP 地址。
 
 ## 为 VPN 客户端指定静态 IP
 
@@ -190,6 +193,45 @@ VPN_XAUTH_POOL=10.2.0.10-10.2.254.254
 
 请注意，如果你在 `env` 文件中指定了 `VPN_XAUTH_POOL`，并且在 Docker 容器中已经配置了 IKEv2，你 **必须** 在重新创建 Docker 容器之前手动编辑容器内的 `/etc/ipsec.d/ikev2.conf` 并将 `rightaddresspool=192.168.43.10-192.168.43.250` 替换为与 `VPN_XAUTH_POOL` **相同的值**。否则 IKEv2 可能会停止工作。
 
+## IPv6 支持
+
+如果 Docker 宿主机拥有公共（全局单播）IPv6 地址，IKEv2 客户端的 IPv6 支持将在容器启动时自动启用，无需手动配置。
+
+**注：** IPv6 支持已在 Android 上使用 strongSwan VPN 客户端进行测试。其他平台（例如 Windows、macOS、iOS）可能存在限制，或者需要进行额外配置才能使 IPv6 通过 IKEv2 VPN 正常工作。
+
+启用 IPv6 后，IKEv2 VPN 客户端将同时获得来自 `192.168.43.0/24` 地址池的 IPv4 地址和来自 `fddd:500:500:500::/64` 地址池的 IPv6 地址。容器会将来自 VPN 客户端的 IPv6 流量通过宿主机的 IPv6 地址进行伪装（NAT），使 VPN 客户端通过隧道获得完整的 IPv6 互联网访问。
+
+**要求：**
+- Docker 宿主机必须拥有可路由的全局单播 IPv6 地址（以 `2` 或 `3` 开头）。链路本地地址 (`fe80::/10`) 不满足要求。
+- 必须为 Docker 容器启用 IPv6。参见[在 Docker 中启用 IPv6 支持](https://docs.docker.com/engine/daemon/ipv6/)。
+- Libreswan 5.0 或更新版本（Docker 镜像默认包含 5.x）。
+- IPv6 仅支持 **IKEv2 模式**。IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式不支持 IPv6。
+
+要为 Docker 容器启用 IPv6，首先在 Docker 宿主机上将以下内容添加到 `/etc/docker/daemon.json`，然后重启 Docker：
+
+```json
+{
+  "ipv6": true,
+  "fixed-cidr-v6": "fddd:1::/64"
+}
+```
+
+然后重新创建容器。`run.sh` 脚本将检测容器的公共 IPv6 地址并自动配置 IPv6 支持。
+
+要验证 IPv6 是否正常工作，请使用 IKEv2 连接到 VPN，然后检查你的 IPv6 地址，例如使用 [test-ipv6.com](https://test-ipv6.com)。
+
+**注：** 如果[不启用 privileged 模式运行](#不启用-privileged-模式运行) Docker 容器，你必须在 `docker run` 命令中添加 `--sysctl net.ipv6.conf.all.forwarding=1`。
+
+**现有容器注意事项：** 如果你的容器中已经配置了 IKEv2（即 `ikev2-vpn-data` 卷中已存在 `ikev2.conf`），在容器重启或重新创建时 IPv6 **不会**自动添加到现有的 IKEv2 配置中。要为 IKEv2 启用完整的 IPv6 支持，必须移除 IKEv2 并重新配置。参见[配置并使用 IKEv2 VPN](../README-zh.md#配置并使用-ikev2-vpn) 中的"移除 IKEv2"部分。
+
+你也可以在 `env` 文件中设置 `VPN_IP6_NET`，在重新创建容器之前自定义 IPv6 地址池子网：
+
+```
+# 为 IKEv2 客户端自定义 IPv6 地址池子网
+# 必须是 ULA 范围内的 /64 子网
+VPN_IP6_NET=fddd:500:500:500::/64
+```
+
 ## VPN 分流
 
 在启用 VPN 分流 (split tunneling) 时，VPN 客户端将仅通过 VPN 隧道发送特定目标子网的流量。其他流量 **不会** 通过 VPN 隧道。这允许你通过 VPN 安全访问指定的网络，而无需通过 VPN 发送所有客户端的流量。VPN 分流有一些局限性，而且并非所有的 VPN 客户端都支持。
@@ -210,7 +252,7 @@ VPN_SPLIT_IKEV2=10.123.123.0/24
 
 ## 关于 host network 模式
 
-高级用户可以使用 [host network 模式](https://docs.docker.com/network/host/) 运行本镜像，通过为 `docker run` 命令添加 `--network=host` 参数来实现。
+高级用户可以使用 [host network 模式](https://docs.docker.com/network/host/)运行本镜像，通过为 `docker run` 命令添加 `--network=host` 参数来实现。
 
 在非必要的情况下，**不推荐**使用 host network 模式运行本镜像。在该模式下，容器的网络栈未与 Docker 主机隔离，从而在使用 IPsec/L2TP 模式连接之后，VPN 客户端可以使用 Docker 主机的 VPN 内网 IP `192.168.42.1` 访问主机上的端口或服务。请注意，当你不再使用本镜像时，你需要手动清理 [run.sh](../run.sh) 所更改的 IPTables 规则和 sysctl 设置，或者重启服务器。
 
@@ -345,8 +387,8 @@ docker restart ipsec-vpn-server
 
 **注：** 预构建镜像中的软件组件（例如 Libreswan 和 xl2tpd）在其各自版权所有者选择的相应许可下。对于任何预构建的镜像的使用，用户有责任确保对该镜像的任何使用符合其中包含的所有软件的任何相关许可。
 
-版权所有 (C) 2016-2025 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)
+版权所有 (C) 2016-2026 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)
 
 [![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)   
-这个项目是以 [知识共享署名-相同方式共享3.0](http://creativecommons.org/licenses/by-sa/3.0/) 许可协议授权。   
+这个项目是以[知识共享署名-相同方式共享3.0](http://creativecommons.org/licenses/by-sa/3.0/) 许可协议授权。   
 必须署名： 请包括我的名字在任何衍生产品，并且让我知道你是如何改善它的！

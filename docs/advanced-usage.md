@@ -9,6 +9,7 @@
 - [Specify VPN server's public IP](#specify-vpn-servers-public-ip)
 - [Assign static IPs to VPN clients](#assign-static-ips-to-vpn-clients)
 - [Customize VPN subnets](#customize-vpn-subnets)
+- [IPv6 support](#ipv6-support)
 - [Split tunneling](#split-tunneling)
 - [About host network mode](#about-host-network-mode)
 - [Enable Libreswan logs](#enable-libreswan-logs)
@@ -46,6 +47,8 @@ Below is a list of some popular public DNS providers for your reference.
 ## Run without privileged mode
 
 Advanced users can create a Docker container from this image without using [privileged mode](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities) (replace `./vpn.env` in the command below with your own `env` file).
+
+**Note:** For [IPv6 support](#ipv6-support) to work, you must add `--sysctl net.ipv6.conf.all.forwarding=1` to the `docker run` command below.
 
 **Note:** If your Docker host runs CentOS Stream, Oracle Linux 8+, Rocky Linux or AlmaLinux, it is recommended to use [privileged mode](../README.md#start-the-ipsec-vpn-server). If you want to run without privileged mode, you **must** run `modprobe ip_tables` before creating the Docker container and also on boot.
 
@@ -189,6 +192,45 @@ VPN_XAUTH_POOL=10.2.0.10-10.2.254.254
 In the examples above, `VPN_L2TP_LOCAL` is the VPN server's internal IP for IPsec/L2TP mode. `VPN_L2TP_POOL` and `VPN_XAUTH_POOL` are the pools of auto-assigned IP addresses for VPN clients.
 
 Note that if you specify `VPN_XAUTH_POOL` in the `env` file, and IKEv2 is already set up in the Docker container, you **must** manually edit `/etc/ipsec.d/ikev2.conf` inside the container and replace `rightaddresspool=192.168.43.10-192.168.43.250` with the **same value** as `VPN_XAUTH_POOL`, before re-creating the Docker container. Otherwise, IKEv2 may stop working.
+
+## IPv6 support
+
+If the Docker host has a public (global unicast) IPv6 address, IPv6 support for IKEv2 clients is automatically enabled when the container starts. No additional configuration is needed.
+
+**Note:** IPv6 support has been tested on Android using the strongSwan VPN client. Other platforms (e.g. Windows, macOS, iOS) may have limitations or require additional configuration for IPv6 to work over the IKEv2 VPN.
+
+When IPv6 is enabled, IKEv2 VPN clients receive both an IPv4 address from the `192.168.43.0/24` pool and an IPv6 address from the `fddd:500:500:500::/64` pool. The container masquerades IPv6 traffic from VPN clients through the host's IPv6 address, giving clients full IPv6 internet access through the tunnel.
+
+**Requirements:**
+- The Docker host must have a routable global unicast IPv6 address (starting with `2` or `3`). Link-local (`fe80::/10`) addresses are not sufficient.
+- IPv6 must be enabled for the Docker container. See [Enable IPv6 support in Docker](https://docs.docker.com/engine/daemon/ipv6/).
+- Libreswan 5.0 or newer (the Docker image includes 5.x by default).
+- IPv6 is only supported for **IKEv2 mode**. IPsec/L2TP and IPsec/XAuth ("Cisco IPsec") modes do not support IPv6.
+
+To enable IPv6 for the Docker container, first enable IPv6 in the Docker daemon by adding the following to `/etc/docker/daemon.json` on the Docker host, then restart Docker:
+
+```json
+{
+  "ipv6": true,
+  "fixed-cidr-v6": "fddd:1::/64"
+}
+```
+
+After that, re-create the Docker container. The `run.sh` script will detect the container's public IPv6 address and automatically configure IPv6 support.
+
+To verify that IPv6 is working, connect to the VPN using IKEv2 and check your IPv6 address, e.g. using [test-ipv6.com](https://test-ipv6.com).
+
+**Note:** If you run the Docker container [without privileged mode](#run-without-privileged-mode), you must add `--sysctl net.ipv6.conf.all.forwarding=1` to the `docker run` command.
+
+**Note for existing containers:** If IKEv2 is already set up in your container (i.e. `ikev2.conf` already exists in the `ikev2-vpn-data` volume), IPv6 will **not** be automatically added to the existing IKEv2 configuration when the container restarts or is recreated. To enable full IPv6 support for IKEv2, you must remove IKEv2 and set it up again. Refer to "remove IKEv2" in [Configure and use IKEv2 VPN](../README.md#configure-and-use-ikev2-vpn).
+
+You may optionally customize the IPv6 pool subnet by setting `VPN_IP6_NET` in your `env` file before re-creating the container:
+
+```
+# Customize the IPv6 pool subnet for IKEv2 clients
+# Must be a /64 subnet in the ULA range
+VPN_IP6_NET=fddd:500:500:500::/64
+```
 
 ## Split tunneling
 
@@ -345,7 +387,7 @@ docker restart ipsec-vpn-server
 
 **Note:** The software components inside the pre-built image (such as Libreswan and xl2tpd) are under the respective licenses chosen by their respective copyright holders. As for any pre-built image usage, it is the image user's responsibility to ensure that any use of this image complies with any relevant licenses for all software contained within.
 
-Copyright (C) 2016-2025 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)
+Copyright (C) 2016-2026 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)
 
 [![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)   
 This work is licensed under the [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/)   

@@ -28,7 +28,7 @@ docker run \
     hwdsl2/ipsec-vpn-server
 ```
 
-你的 VPN 登录凭证将会被自动随机生成。请参见 [获取 VPN 登录信息](#获取-vpn-登录信息)。
+你的 VPN 登录凭证将会被自动随机生成。请参见[获取 VPN 登录信息](#获取-vpn-登录信息)。
 
 另外，你也可以在不使用 Docker 的情况下[安装 IPsec VPN](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)。要了解更多有关如何使用本镜像的信息，请继续阅读以下部分。
 
@@ -41,7 +41,7 @@ docker run \
 
 ## 安装 Docker
 
-首先在你的 Linux 服务器上 [安装 Docker](https://docs.docker.com/engine/install/)。另外你也可以使用 [Podman](https://podman.io) 运行本镜像，需要首先为 `docker` 命令 [创建一个别名](https://podman.io/whatis.html)。
+首先在你的 Linux 服务器上[安装 Docker](https://docs.docker.com/engine/install/)。另外你也可以使用 [Podman](https://podman.io) 运行本镜像，需要首先为 `docker` 命令[创建一个别名](https://podman.io/whatis.html)。
 
 高级用户可以在 macOS 上通过安装 [Docker for Mac](https://docs.docker.com/docker-for-mac/) 使用本镜像。在使用 IPsec/L2TP 模式之前，你可能需要运行 `docker restart ipsec-vpn-server` 重启一次 Docker 容器。本镜像不支持 Docker for Windows。
 
@@ -170,7 +170,7 @@ VPN_PROTECT_CONFIG=yes
 
 ### 运行 IPsec VPN 服务器
 
-使用本镜像创建一个新的 Docker 容器 （将 `./vpn.env` 替换为你自己的 `env` 文件）：
+使用本镜像创建一个新的 Docker 容器（将 `./vpn.env` 替换为你自己的 `env` 文件）：
 
 ```
 docker run \
@@ -189,7 +189,7 @@ docker run \
 
 推荐在使用本镜像时启用 IKEv2。如果你不想启用 IKEv2 而仅使用 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式连接到 VPN，可以去掉上面 `docker run` 命令中的第一个 `-v` 选项。
 
-**注：** 高级用户也可以 [不启用 privileged 模式运行](docs/advanced-usage-zh.md#不启用-privileged-模式运行)。
+**注：** 高级用户也可以[不启用 privileged 模式运行](docs/advanced-usage-zh.md#不启用-privileged-模式运行)。
 
 ### 获取 VPN 登录信息
 
@@ -230,25 +230,25 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 
 **[配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)**
 
-**阅读 [:book: VPN book](docs/vpn-book-zh.md) 以访问 [额外内容](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)。**
+**阅读 [:book: VPN book](docs/vpn-book-zh.md) 以访问[额外内容](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)。**
 
 开始使用自己的专属 VPN! :sparkles::tada::rocket::sparkles:
 
 ## 重要提示
 
-**Windows 用户** 对于 IPsec/L2TP 模式，在首次连接之前需要 [修改注册表](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器或客户端与 NAT（比如家用路由器）的兼容问题。
+**Windows 用户** 对于 IPsec/L2TP 模式，在首次连接之前需要[修改注册表](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#windows-错误-809)，以解决 VPN 服务器或客户端与 NAT（比如家用路由器）的兼容问题。
 
 同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要连接在同一个 NAT（比如家用路由器）后面的多个设备，你必须使用 [IKEv2](#配置并使用-ikev2-vpn) 或者 [IPsec/XAuth](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md) 模式。
 
-如需添加，修改或者删除 VPN 用户账户，首先更新你的 `env` 文件，然后你必须按照 [下一节](#更新-docker-镜像) 的说明来删除并重新创建 Docker 容器。高级用户可以 [绑定挂载](docs/advanced-usage-zh.md#绑定挂载-env-文件) `env` 文件。
+如需添加，修改或者删除 VPN 用户账户，首先更新你的 `env` 文件，然后你必须按照[下一节](#更新-docker-镜像)的说明来删除并重新创建 Docker 容器。高级用户可以[绑定挂载](docs/advanced-usage-zh.md#绑定挂载-env-文件) `env` 文件。
 
 对于有外部防火墙的服务器（比如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)），请为 VPN 打开 UDP 端口 500 和 4500。阿里云用户请参见 [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433)。
 
-在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，请看 [这里](docs/advanced-usage-zh.md#使用其他的-dns-服务器)。
+在 VPN 已连接时，客户端配置为使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其它的域名解析服务，请看[这里](docs/advanced-usage-zh.md#使用其他的-dns-服务器)。
 
 ## 更新 Docker 镜像
 
-要更新 Docker 镜像和容器，首先 [下载](#下载) 最新版本：
+要更新 Docker 镜像和容器，首先[下载](#下载)最新版本：
 
 ```
 docker pull hwdsl2/ipsec-vpn-server
@@ -260,7 +260,7 @@ docker pull hwdsl2/ipsec-vpn-server
 Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 ```
 
-否则将会下载最新版本。要更新你的 Docker 容器，首先在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)。然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。最后按照 [如何使用本镜像](#如何使用本镜像) 的说明来重新创建它。
+否则将会下载最新版本。要更新你的 Docker 容器，首先在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)。然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。最后按照[如何使用本镜像](#如何使用本镜像)的说明来重新创建它。
 
 ## 配置并使用 IKEv2 VPN
 
@@ -272,7 +272,7 @@ IKEv2 模式是比 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 更佳的连接模
 docker logs ipsec-vpn-server
 ```
 
-**注：** 如果你无法找到 IKEv2 配置信息，IKEv2 可能没有在容器中启用。尝试按照 [更新 Docker 镜像](#更新-docker-镜像) 一节的说明更新 Docker 镜像和容器。
+**注：** 如果你无法找到 IKEv2 配置信息，IKEv2 可能没有在容器中启用。尝试按照[更新 Docker 镜像](#更新-docker-镜像)一节的说明更新 Docker 镜像和容器。
 
 在 IKEv2 安装过程中会创建一个 IKEv2 客户端（默认名称为 `vpnclient`），并且导出它的配置到 **容器内** 的 `/etc/ipsec.d` 目录下。你可以将配置文件复制到 Docker 主机：
 
@@ -283,7 +283,7 @@ docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
 docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
 ```
 
-**下一步：** [配置你的设备](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md) 以使用 IKEv2 VPN。
+**下一步：** [配置你的设备](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md)以使用 IKEv2 VPN。
 
 <details>
 <summary>
@@ -342,7 +342,7 @@ docker exec -it ipsec-vpn-server ikev2.sh
 
 ## 高级用法
 
-请参见 [高级用法](docs/advanced-usage-zh.md)。
+请参见[高级用法](docs/advanced-usage-zh.md)。
 
 - [使用其他的 DNS 服务器](docs/advanced-usage-zh.md#使用其他的-dns-服务器)
 - [不启用 privileged 模式运行](docs/advanced-usage-zh.md#不启用-privileged-模式运行)
@@ -351,6 +351,7 @@ docker exec -it ipsec-vpn-server ikev2.sh
 - [指定 VPN 服务器的公有 IP](docs/advanced-usage-zh.md#指定-vpn-服务器的公有-ip)
 - [为 VPN 客户端指定静态 IP](docs/advanced-usage-zh.md#为-vpn-客户端指定静态-ip)
 - [自定义 VPN 子网](docs/advanced-usage-zh.md#自定义-vpn-子网)
+- [IPv6 支持](docs/advanced-usage-zh.md#ipv6-支持)
 - [VPN 分流](docs/advanced-usage-zh.md#vpn-分流)
 - [关于 host network 模式](docs/advanced-usage-zh.md#关于-host-network-模式)
 - [启用 Libreswan 日志](docs/advanced-usage-zh.md#启用-libreswan-日志)
@@ -378,9 +379,9 @@ docker exec -it ipsec-vpn-server ikev2.sh
 
 **注：** 预构建镜像中的软件组件（例如 Libreswan 和 xl2tpd）在其各自版权所有者选择的相应许可下。对于任何预构建的镜像的使用，用户有责任确保对该镜像的任何使用符合其中包含的所有软件的任何相关许可。
 
-版权所有 (C) 2016-2025 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
+版权所有 (C) 2016-2026 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
 基于 [Thomas Sarlandie 的工作](https://github.com/sarfata/voodooprivacy) (版权所有 2012)
 
 [![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)   
-这个项目是以 [知识共享署名-相同方式共享3.0](http://creativecommons.org/licenses/by-sa/3.0/) 许可协议授权。   
+这个项目是以[知识共享署名-相同方式共享3.0](http://creativecommons.org/licenses/by-sa/3.0/) 许可协议授权。   
 必须署名： 请包括我的名字在任何衍生产品，并且让我知道你是如何改善它的！

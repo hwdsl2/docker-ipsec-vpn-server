@@ -352,6 +352,7 @@ See [Advanced usage](docs/advanced-usage.md).
 - [Specify VPN server's public IP](docs/advanced-usage.md#specify-vpn-servers-public-ip)
 - [Assign static IPs to VPN clients](docs/advanced-usage.md#assign-static-ips-to-vpn-clients)
 - [Customize VPN subnets](docs/advanced-usage.md#customize-vpn-subnets)
+- [IPv6 support](docs/advanced-usage.md#ipv6-support)
 - [Split tunneling](docs/advanced-usage.md#split-tunneling)
 - [About host network mode](docs/advanced-usage.md#about-host-network-mode)
 - [Enable Libreswan logs](docs/advanced-usage.md#enable-libreswan-logs)
@@ -379,7 +380,7 @@ The ports that are exposed for this container to work are:
 
 **Note:** The software components inside the pre-built image (such as Libreswan and xl2tpd) are under the respective licenses chosen by their respective copyright holders. As for any pre-built image usage, it is the image user's responsibility to ensure that any use of this image complies with any relevant licenses for all software contained within.
 
-Copyright (C) 2016-2025 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
+Copyright (C) 2016-2026 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
 Based on [the work of Thomas Sarlandie](https://github.com/sarfata/voodooprivacy) (Copyright 2012)
 
 [![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)   

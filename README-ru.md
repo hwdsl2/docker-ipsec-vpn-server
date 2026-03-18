@@ -352,6 +352,7 @@ docker exec -it ipsec-vpn-server ikev2.sh
 - [Указание публичного IP-адреса VPN-сервера](docs/advanced-usage.md#specify-vpn-servers-public-ip)
 - [Назначение статических IP-адресов клиентам VPN](docs/advanced-usage.md#assign-static-ips-to-vpn-clients)
 - [Настройка подсетей VPN](docs/advanced-usage.md#customize-vpn-subnets)
+- [Поддержка IPv6](docs/advanced-usage.md#ipv6-support)
 - [Раздельная маршрутизация (Split tunneling)](docs/advanced-usage.md#split-tunneling)
 - [О режиме сетевого хоста](docs/advanced-usage.md#about-host-network-mode)
 - [Включение журналов Libreswan](docs/advanced-usage.md#enable-libreswan-logs)
@@ -379,7 +380,7 @@ docker exec -it ipsec-vpn-server ikev2.sh
 
 **Примечание:** Компоненты программного обеспечения внутри предварительно собранного образа (например, Libreswan и xl2tpd) распространяются по лицензиям, выбранным их правообладателями. Как и в случае использования любого готового образа, пользователь образа несёт ответственность за то, чтобы использование этого образа соответствовало всем применимым лицензиям для программного обеспечения, содержащегося внутри.
 
-Copyright (C) 2016-2025 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)  
+Copyright (C) 2016-2026 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)  
 Основано на [работе Thomas Sarlandie](https://github.com/sarfata/voodooprivacy) (Copyright 2012)
 
 [![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)  
