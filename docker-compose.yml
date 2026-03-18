@@ -18,3 +18,17 @@ services:
     volumes:
       - ikev2-vpn-data:/etc/ipsec.d
       - /lib/modules:/lib/modules:ro
+    # To enable IPv6 support for IKEv2 clients, the Docker host must have a
+    # public IPv6 address. Uncomment the network section below and configure
+    # IPv6 in your Docker daemon (set "ipv6": true and "fixed-cidr-v6" in
+    # /etc/docker/daemon.json), then re-create this container.
+    # networks:
+    #   vpnnet:
+    #     ipv6_address: <assign_a_ula_ipv6_address>
+
+# networks:
+#   vpnnet:
+#     enable_ipv6: true
+#     ipam:
+#       config:
+#         - subnet: fddd:1::/64

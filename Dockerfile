@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021-2025 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2021-2026 Lin Song <linsongui@gmail.com>
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
 # Unported License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -14,12 +14,14 @@ WORKDIR /opt/src
 
 RUN set -x \
     && apk add --no-cache \
-         bash bind-tools coreutils openssl uuidgen wget xl2tpd iptables iptables-legacy \
+         bash bind-tools coreutils openssl uuidgen wget xl2tpd iptables iptables-legacy ip6tables \
          iproute2 libcap-ng libcurl libevent linux-pam musl nspr nss nss-tools openrc \
          bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev \
          nss-dev libcap-ng-dev libevent-dev curl-dev nspr-dev \
     && cd /sbin \
-    && for fn in iptables iptables-save iptables-restore; do ln -fs xtables-legacy-multi "$fn"; done \
+    && for fn in iptables iptables-save iptables-restore \
+                 ip6tables ip6tables-save ip6tables-restore; do \
+         ln -fs xtables-legacy-multi "$fn"; done \
     && cd /opt/src \
     && wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://github.com/libreswan/libreswan/archive/v${SWAN_VER}.tar.gz" \
     || wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz" \
@@ -38,7 +40,7 @@ RUN set -x \
          bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev \
          nss-dev libcap-ng-dev libevent-dev curl-dev nspr-dev
 
-RUN wget -t 3 -T 30 -nv -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/ad61b354c57b3fa9871c04ec177bef2a93dd8eeb/extras/ikev2setup.sh \
+RUN wget -t 3 -T 30 -nv -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/8167d54c44c67c468d6defd7da827c57beb44239/extras/ikev2setup.sh \
     && chmod +x /opt/src/ikev2.sh \
     && ln -s /opt/src/ikev2.sh /usr/bin
 

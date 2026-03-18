@@ -8,7 +8,7 @@
 # This file is part of IPsec VPN Docker image, available at:
 # https://github.com/hwdsl2/docker-ipsec-vpn-server
 #
-# Copyright (C) 2016-2025 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2016-2026 Lin Song <linsongui@gmail.com>
 # Based on the work of Thomas Sarlandie (Copyright 2012)
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
@@ -28,6 +28,11 @@ noquotes2() { printf '%s' "$1" | sed -e 's/" "/ /g' -e "s/' '/ /g"; }
 check_ip() {
   IP_REGEX='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
   printf '%s' "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
+}
+
+check_ip6() {
+  IP6_REGEX='^[0-9a-fA-F]{0,4}(:[0-9a-fA-F]{0,4}){1,7}$'
+  printf '%s' "$1" | tr -d '\n' | grep -Eq "$IP6_REGEX"
 }
 
 check_cidr() {
@@ -210,6 +215,27 @@ if [ -n "$VPN_XAUTH_POOL" ]; then
   VPN_XAUTH_POOL=$(nospaces "$VPN_XAUTH_POOL")
   VPN_XAUTH_POOL=$(noquotes "$VPN_XAUTH_POOL")
 fi
+if [ -n "$VPN_PUBLIC_IP6" ]; then
+  VPN_PUBLIC_IP6=$(nospaces "$VPN_PUBLIC_IP6")
+  VPN_PUBLIC_IP6=$(noquotes "$VPN_PUBLIC_IP6")
+fi
+if [ -n "$VPN_IP6_NET" ]; then
+  VPN_IP6_NET=$(nospaces "$VPN_IP6_NET")
+  VPN_IP6_NET=$(noquotes "$VPN_IP6_NET")
+fi
+
+ip6=""
+if [ -n "$VPN_PUBLIC_IP6" ]; then
+  ip6="$VPN_PUBLIC_IP6"
+  check_ip6 "$ip6" || exiterr "Invalid IPv6 address. Check variable 'VPN_PUBLIC_IP6'."
+else
+  ip6_addr=$(ip -6 addr 2>/dev/null | awk '/inet6 [23]/ {print $2}' | cut -d'/' -f1 | head -n1)
+  [ -n "$ip6_addr" ] && ip6="$ip6_addr"
+  if [ -z "$ip6" ] && ip -6 addr 2>/dev/null | grep 'inet6' | grep -qv 'inet6 \(::1\|fe80\)'; then
+    ip6=$(wget -t 2 -T 10 -qO- https://ipv6.icanhazip.com 2>/dev/null)
+    check_ip6 "$ip6" || ip6=""
+  fi
+fi
 
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
   exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
@@ -298,10 +324,13 @@ L2TP_LOCAL=${VPN_L2TP_LOCAL:-'192.168.42.1'}
 L2TP_POOL=${VPN_L2TP_POOL:-'192.168.42.10-192.168.42.250'}
 XAUTH_NET=${VPN_XAUTH_NET:-'192.168.43.0/24'}
 XAUTH_POOL=${VPN_XAUTH_POOL:-'192.168.43.10-192.168.43.250'}
+IP6_NET=${VPN_IP6_NET:-'fddd:500:500:500::/64'}
 DNS_SRV1=${VPN_DNS_SRV1:-'8.8.8.8'}
 DNS_SRV2=${VPN_DNS_SRV2:-'8.8.4.4'}
 DNS_SRVS="\"$DNS_SRV1 $DNS_SRV2\""
 [ -n "$VPN_DNS_SRV1" ] && [ -z "$VPN_DNS_SRV2" ] && DNS_SRVS="$DNS_SRV1"
+vp_ip6=""
+[ -n "$ip6" ] && vp_ip6=",%v6:fc00::/7,%v6:!$IP6_NET"
 
 if [ -n "$VPN_DNS_SRV1" ] && [ -n "$VPN_DNS_SRV2" ]; then
   echo
@@ -386,7 +415,7 @@ version 2.0
 
 config setup
   ikev1-policy=accept
-  virtual-private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!$L2TP_NET,%v4:!$XAUTH_NET
+  virtual-private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!$L2TP_NET,%v4:!$XAUTH_NET$vp_ip6
   uniqueids=no
 
 conn shared
@@ -553,6 +582,9 @@ $syt "net.ipv4.conf.$NET_IFACE.send_redirects=0" 2>/dev/null
 $syt "net.ipv4.conf.$NET_IFACE.rp_filter=0" 2>/dev/null
 $syt net.ipv4.tcp_rmem="4096 87380 16777216" 2>/dev/null
 $syt net.ipv4.tcp_wmem="4096 87380 16777216" 2>/dev/null
+if [ -n "$ip6" ]; then
+  $syt net.ipv6.conf.all.forwarding=1 2>/dev/null
+fi
 if modprobe -q tcp_bbr 2>/dev/null \
   && printf '%s\n%s' "4.20" "$(uname -r)" | sort -C -V; then
   $syt net.ipv4.tcp_congestion_control=bbr 2>/dev/null
@@ -589,6 +621,28 @@ if ! iptables -t nat -C POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
     $ipp -s "$XAUTH_NET" -o "$NET_IFACE" ! -d "$XAUTH_NET" -j MASQUERADE
   fi
   $ipp -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
+fi
+
+if [ -n "$ip6" ]; then
+  modprobe -q ip6_tables 2>/dev/null
+  if ip6tables -t nat -L >/dev/null 2>&1; then
+    ipi6='ip6tables -I INPUT'
+    ipf6='ip6tables -I FORWARD'
+    ipp6='ip6tables -t nat -I POSTROUTING'
+    if ! ip6tables -t nat -C POSTROUTING -s "$IP6_NET" -o "$NET_IFACE" \
+        -j MASQUERADE 2>/dev/null; then
+      $ipi6 1 -m conntrack --ctstate INVALID -j DROP
+      $ipi6 2 -m conntrack --ctstate "$res" -j ACCEPT
+      $ipi6 3 -p udp -m multiport --dports 500,4500 -j ACCEPT
+      $ipf6 1 -m conntrack --ctstate INVALID -j DROP
+      $ipf6 2 -i "$NET_IFACE" -d "$IP6_NET" -m conntrack --ctstate "$res" -j ACCEPT
+      $ipf6 3 -s "$IP6_NET" -o "$NET_IFACE" -j ACCEPT
+      if ! $ipp6 -s "$IP6_NET" -o "$NET_IFACE" \
+          -m policy --dir out --pol none -j MASQUERADE; then
+        $ipp6 -s "$IP6_NET" -o "$NET_IFACE" ! -d "$IP6_NET" -j MASQUERADE
+      fi
+    fi
+  fi
 fi
 
 case $VPN_ANDROID_MTU_FIX in
@@ -694,6 +748,7 @@ if grep -q " /etc/ipsec.d " /proc/mounts && [ -s "$ikev2_sh" ] && [ ! -f "$ikev2
     VPN_CLIENT_NAME="$VPN_CLIENT_NAME" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
     VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
     VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
+    VPN_PUBLIC_IP6="$ip6" \
     /bin/bash "$ikev2_sh" --auto >"$ikev2_log" 2>&1; then
     status=1
     status_text="IKEv2 setup successful."
