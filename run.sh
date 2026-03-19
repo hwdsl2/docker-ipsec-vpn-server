@@ -227,10 +227,11 @@ fi
 ip6=""
 if [ -n "$VPN_PUBLIC_IP6" ]; then
   ip6="$VPN_PUBLIC_IP6"
-  check_ip6 "$ip6" || exiterr "Invalid IPv6 address. Check variable 'VPN_PUBLIC_IP6'."
-else
-  ip6_addr=$(ip -6 addr 2>/dev/null | awk '/inet6 [23]/ {print $2}' | cut -d'/' -f1 | head -n1)
-  [ -n "$ip6_addr" ] && ip6="$ip6_addr"
+  check_ip6 "$ip6" || { echo "Warning: Invalid IPv6 address in 'VPN_PUBLIC_IP6'. Detecting IPv6..." >&2; ip6=""; }
+fi
+if [ -z "$ip6" ]; then
+  ip6=$(ip -6 addr 2>/dev/null | awk '/inet6 [23]/ {print $2}' | cut -d'/' -f1 | head -n1)
+  check_ip6 "$ip6" || ip6=""
   if [ -z "$ip6" ] && ip -6 addr 2>/dev/null | grep 'inet6' | grep -qv 'inet6 \(::1\|fe80\)'; then
     ip6=$(wget -t 2 -T 10 -qO- https://ipv6.icanhazip.com 2>/dev/null)
     check_ip6 "$ip6" || ip6=""
