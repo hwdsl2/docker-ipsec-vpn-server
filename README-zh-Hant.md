@@ -379,7 +379,7 @@ docker exec -it ipsec-vpn-server ikev2.sh
 
 **註：** 預先建構映像中的軟體元件（例如 Libreswan 和 xl2tpd）依其各自版權持有人所選擇的授權條款發布。對於任何預先建構映像的使用，使用者有責任確保其使用方式符合映像中所有軟體的相關授權條款。
 
-版權所有 (C) 2016-2025 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
+版權所有 (C) 2016-2026 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
 基於 [Thomas Sarlandie 的工作](https://github.com/sarfata/voodooprivacy)（版權所有 2012）
 
 [![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)   

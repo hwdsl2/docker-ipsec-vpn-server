@@ -195,7 +195,7 @@ Note that if you specify `VPN_XAUTH_POOL` in the `env` file, and IKEv2 is alread
 
 ## IPv6 support
 
-If the Docker host has a public (global unicast) IPv6 address, IPv6 support for IKEv2 clients is automatically enabled when the container starts. No additional configuration is needed.
+If the Docker host has a public (global unicast) IPv6 address and the requirements below are met, IPv6 support for IKEv2 clients is automatically enabled when the container starts. No additional configuration is needed.
 
 **Note:** IPv6 support has been tested on Android using the strongSwan VPN client. Other platforms (e.g. Windows, macOS, iOS) may have limitations or require additional configuration for IPv6 to work over the IKEv2 VPN.
 
@@ -227,9 +227,9 @@ To verify that IPv6 is working, connect to the VPN using IKEv2 and check your IP
 You may optionally customize the IPv6 pool subnet by setting `VPN_IP6_NET` in your `env` file before re-creating the container:
 
 ```
-# Customize the IPv6 pool subnet for IKEv2 clients
+# Example: Specify custom IPv6 pool subnet for IKEv2 mode
 # Must be a /64 subnet in the ULA range
-VPN_IP6_NET=fddd:500:500:500::/64
+VPN_IP6_NET=fddd:1234:5678:9012::/64
 ```
 
 ## Split tunneling
