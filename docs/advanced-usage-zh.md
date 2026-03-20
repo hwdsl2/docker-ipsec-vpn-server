@@ -199,6 +199,13 @@ VPN_XAUTH_POOL=10.2.0.10-10.2.254.254
 
 **注：** IPv6 支持已在 Android 上使用 strongSwan VPN 客户端进行测试。其他平台（例如 Windows、macOS、iOS）可能存在限制，或者需要进行额外配置才能使 IPv6 通过 IKEv2 VPN 正常工作。
 
+**注：** 对于 **Windows** 客户端，你需要在 PowerShell 窗口中运行以下命令一次，以通过 VPN 路由 IPv6 流量。将 `IKEv2 VPN X.X.X.X` 替换为你的 VPN 连接的实际名称。完成后，重新连接到 IKEv2 VPN。
+
+```powershell
+Add-VpnConnectionRoute -ConnectionName "IKEv2 VPN X.X.X.X" -DestinationPrefix ::/1
+Add-VpnConnectionRoute -ConnectionName "IKEv2 VPN X.X.X.X" -DestinationPrefix 8000::/1
+```
+
 启用 IPv6 后，IKEv2 VPN 客户端将同时获得来自 `192.168.43.0/24` 地址池的 IPv4 地址和来自 `fddd:500:500:500::/64` 地址池的 IPv6 地址。容器会将来自 VPN 客户端的 IPv6 流量通过宿主机的 IPv6 地址进行伪装（NAT），使 VPN 客户端通过隧道获得完整的 IPv6 互联网访问。
 
 **要求：**
