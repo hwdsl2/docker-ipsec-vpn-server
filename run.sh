@@ -167,6 +167,10 @@ if [ -n "$VPN_SHA2_TRUNCBUG" ]; then
   VPN_SHA2_TRUNCBUG=$(nospaces "$VPN_SHA2_TRUNCBUG")
   VPN_SHA2_TRUNCBUG=$(noquotes "$VPN_SHA2_TRUNCBUG")
 fi
+if [ -n "$VPN_CLIENT_VALIDITY" ]; then
+  VPN_CLIENT_VALIDITY=$(nospaces "$VPN_CLIENT_VALIDITY")
+  VPN_CLIENT_VALIDITY=$(noquotes "$VPN_CLIENT_VALIDITY")
+fi
 if [ -n "$VPN_PROTECT_CONFIG" ]; then
   VPN_PROTECT_CONFIG=$(nospaces "$VPN_PROTECT_CONFIG")
   VPN_PROTECT_CONFIG=$(noquotes "$VPN_PROTECT_CONFIG")
@@ -749,6 +753,7 @@ if grep -q " /etc/ipsec.d " /proc/mounts && [ -s "$ikev2_sh" ] && [ ! -f "$ikev2
     VPN_CLIENT_NAME="$VPN_CLIENT_NAME" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
     VPN_DNS_SRV1="$VPN_DNS_SRV1" VPN_DNS_SRV2="$VPN_DNS_SRV2" \
     VPN_PROTECT_CONFIG="$VPN_PROTECT_CONFIG" \
+    VPN_CLIENT_VALIDITY="$VPN_CLIENT_VALIDITY" \
     VPN_PUBLIC_IP6="$ip6" \
     /bin/bash "$ikev2_sh" --auto >"$ikev2_log" 2>&1; then
     status=1
