@@ -197,7 +197,7 @@ VPN_XAUTH_POOL=10.2.0.10-10.2.254.254
 
 如果 Docker 宿主机拥有公共（全局单播）IPv6 地址并且满足以下要求，IKEv2 客户端的 IPv6 支持将在容器启动时自动启用，无需手动配置。
 
-**注：** 在 Android 上使用 strongSwan VPN 客户端时，IPv6 无需额外配置即可正常工作。对于 Windows 和 macOS 客户端，请按照以下平台特定步骤进行配置。iOS 客户端目前不支持通过 IKEv2 VPN 路由 IPv6 流量。
+**注：** 在 Android 上使用 strongSwan VPN 客户端时，IPv6 无需额外配置即可正常工作。对于 Windows 和 macOS 客户端，请按照以下平台特定步骤进行配置。iOS 客户端目前不支持通过 IKEv2 VPN 路由 IPv6 流量；你可以改用 [OpenVPN](https://github.com/hwdsl2/openvpn-install/blob/master/README-zh.md) 或 [WireGuard](https://github.com/hwdsl2/wireguard-install/blob/master/README-zh.md)。
 
 <details>
 <summary>

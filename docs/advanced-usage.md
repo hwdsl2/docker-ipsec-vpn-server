@@ -197,7 +197,7 @@ Note that if you specify `VPN_XAUTH_POOL` in the `env` file, and IKEv2 is alread
 
 If the Docker host has a public (global unicast) IPv6 address and the requirements below are met, IPv6 support for IKEv2 clients is automatically enabled when the container starts. No manual configuration is needed.
 
-**Note:** IPv6 works without additional configuration when using the strongSwan VPN client on Android. For Windows and macOS clients, follow the platform-specific steps below. iOS clients do not currently support routing IPv6 traffic through the IKEv2 VPN.
+**Note:** IPv6 works without additional configuration when using the strongSwan VPN client on Android. For Windows and macOS clients, follow the platform-specific steps below. iOS clients do not currently support routing IPv6 traffic through the IKEv2 VPN; you may instead use [OpenVPN](https://github.com/hwdsl2/openvpn-install) or [WireGuard](https://github.com/hwdsl2/wireguard-install).
 
 <details>
 <summary>
