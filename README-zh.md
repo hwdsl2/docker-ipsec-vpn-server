@@ -4,6 +4,8 @@
 
 [![Build Status](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions/workflows/main-alpine.yml/badge.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions/workflows/main-alpine.yml) [![GitHub Stars](docs/images/badges/github-stars.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/stargazers) [![Docker Stars](docs/images/badges/docker-stars.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) [![Docker Pulls](docs/images/badges/docker-pulls.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/)
 
+**新：** 另可参阅：[Docker 上的 OpenVPN 服务器](https://github.com/hwdsl2/docker-openvpn)。
+
 使用这个 Docker 镜像快速搭建 IPsec VPN 服务器。支持 IPsec/L2TP，Cisco IPsec 和 IKEv2 协议。
 
 本镜像以 Alpine 3.23 或 Debian 12 为基础，并使用 [Libreswan](https://libreswan.org) (IPsec VPN 软件) 和 [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP 服务进程)。
@@ -30,7 +32,7 @@ docker run \
 
 你的 VPN 登录凭证将会被自动随机生成。请参见[获取 VPN 登录信息](#获取-vpn-登录信息)。
 
-另外，你也可以在不使用 Docker 的情况下[安装 IPsec VPN](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)。要了解更多有关如何使用本镜像的信息，请继续阅读以下部分。
+另外，你也可以在不使用 Docker 的情况下[安装 IPsec VPN](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)。另可参阅：[Docker 上的 OpenVPN 服务器](https://github.com/hwdsl2/docker-openvpn)。要了解更多有关如何使用本镜像的信息，请继续阅读以下部分。
 
 ## 功能特性
 
