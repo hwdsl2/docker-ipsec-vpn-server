@@ -4,7 +4,7 @@
 
 [![Build Status](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions/workflows/main-alpine.yml/badge.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions/workflows/main-alpine.yml) [![GitHub Stars](docs/images/badges/github-stars.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/stargazers) [![Docker Stars](docs/images/badges/docker-stars.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) [![Docker Pulls](docs/images/badges/docker-pulls.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/)
 
-**Новинка:** Также доступно: [сервер OpenVPN на Docker](https://github.com/hwdsl2/docker-openvpn).
+**Новинка:** Также доступно: [сервер WireGuard на Docker](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md) | [сервер OpenVPN на Docker](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md).
 
 Docker-образ для запуска сервера IPsec VPN с поддержкой IPsec/L2TP, Cisco IPsec и IKEv2.
 
@@ -32,7 +32,7 @@ docker run \
 
 Данные для входа в VPN будут сгенерированы случайным образом. См. раздел [Получение данных для входа в VPN](#получение-данных-для-входа-в-vpn).
 
-В качестве альтернативы вы можете [настроить IPsec VPN без Docker](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-ru.md). Также доступно: [сервер OpenVPN на Docker](https://github.com/hwdsl2/docker-openvpn). Чтобы узнать больше о том, как использовать этот образ, прочитайте разделы ниже.
+В качестве альтернативы вы можете [настроить IPsec VPN без Docker](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-ru.md). Также доступно: [сервер WireGuard на Docker](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md) | [сервер OpenVPN на Docker](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md). Чтобы узнать больше о том, как использовать этот образ, прочитайте разделы ниже.
 
 ## Возможности
 

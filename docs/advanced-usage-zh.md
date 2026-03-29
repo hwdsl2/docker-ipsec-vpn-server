@@ -48,9 +48,7 @@ VPN_DNS_SRV2=1.0.0.1
 
 高级用户可以在不启用 [privileged 模式](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities)的情况下使用本镜像创建一个 Docker 容器（将以下命令中的 `./vpn.env` 替换为你自己的 `env` 文件）。
 
-**注：** 如果要启用 [IPv6 支持](#ipv6-支持)，你必须在下方的 `docker run` 命令中添加 `--sysctl net.ipv6.conf.all.forwarding=1`。
-
-**注：** 如果你的 Docker 主机运行 CentOS Stream, Oracle Linux 8+, Rocky Linux 或者 AlmaLinux，推荐使用 [privileged 模式](../README-zh.md#运行-ipsec-vpn-服务器)。如果你想要不启用 privileged 模式运行，则 **必须** 在创建 Docker 容器之前以及系统启动时运行 `modprobe ip_tables`。
+**注：** 如果你的 Docker 主机运行 CentOS Stream, Oracle Linux 8+, Rocky Linux 或者 AlmaLinux，推荐使用 [privileged 模式](../README-zh.md#运行-ipsec-vpn-服务器)。如果你想要不启用 privileged 模式运行，则 **必须** 在创建 Docker 容器之前以及系统启动时运行 `modprobe ip_tables ip6_tables`。
 
 ```
 docker run \
@@ -69,6 +67,7 @@ docker run \
     --sysctl net.ipv4.conf.default.accept_redirects=0 \
     --sysctl net.ipv4.conf.default.send_redirects=0 \
     --sysctl net.ipv4.conf.default.rp_filter=0 \
+    --sysctl net.ipv6.conf.all.forwarding=1 \
     hwdsl2/ipsec-vpn-server
 ```
 
@@ -91,6 +90,7 @@ docker run \
     - net.ipv4.conf.default.accept_redirects=0
     - net.ipv4.conf.default.send_redirects=0
     - net.ipv4.conf.default.rp_filter=0
+    - net.ipv6.conf.all.forwarding=1
 ```
 
 更多信息请参见 [compose file reference](https://docs.docker.com/compose/compose-file/)。
@@ -243,8 +243,6 @@ sudo route -n add -inet6 default -interface ipsec0
 然后重新创建容器。`run.sh` 脚本将检测容器的公共 IPv6 地址并自动配置 IPv6 支持。
 
 要验证 IPv6 是否正常工作，请使用 IKEv2 连接到 VPN，然后检查你的 IPv6 地址，例如使用 [test-ipv6.com](https://test-ipv6.com)。
-
-**注：** 如果[不启用 privileged 模式运行](#不启用-privileged-模式运行) Docker 容器，你必须在 `docker run` 命令中添加 `--sysctl net.ipv6.conf.all.forwarding=1`。
 
 **现有容器注意事项：** 如果你的容器中已经配置了 IKEv2（即 `ikev2-vpn-data` 卷中已存在 `ikev2.conf`），在容器重启或重新创建时 IPv6 **不会**自动添加到现有的 IKEv2 配置中。要为 IKEv2 启用完整的 IPv6 支持，必须移除 IKEv2 并重新配置。参见[配置并使用 IKEv2 VPN](../README-zh.md#配置并使用-ikev2-vpn) 中的"移除 IKEv2"部分。
 

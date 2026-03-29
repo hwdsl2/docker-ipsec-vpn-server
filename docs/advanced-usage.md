@@ -48,9 +48,7 @@ Below is a list of some popular public DNS providers for your reference.
 
 Advanced users can create a Docker container from this image without using [privileged mode](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities) (replace `./vpn.env` in the command below with your own `env` file).
 
-**Note:** For [IPv6 support](#ipv6-support) to work, you must add `--sysctl net.ipv6.conf.all.forwarding=1` to the `docker run` command below.
-
-**Note:** If your Docker host runs CentOS Stream, Oracle Linux 8+, Rocky Linux or AlmaLinux, it is recommended to use [privileged mode](../README.md#start-the-ipsec-vpn-server). If you want to run without privileged mode, you **must** run `modprobe ip_tables` before creating the Docker container and also on boot.
+**Note:** If your Docker host runs CentOS Stream, Oracle Linux 8+, Rocky Linux or AlmaLinux, it is recommended to use [privileged mode](../README.md#start-the-ipsec-vpn-server). If you want to run without privileged mode, you **must** run `modprobe ip_tables ip6_tables` before creating the Docker container and also on boot.
 
 ```
 docker run \
@@ -69,6 +67,7 @@ docker run \
     --sysctl net.ipv4.conf.default.accept_redirects=0 \
     --sysctl net.ipv4.conf.default.send_redirects=0 \
     --sysctl net.ipv4.conf.default.rp_filter=0 \
+    --sysctl net.ipv6.conf.all.forwarding=1 \
     hwdsl2/ipsec-vpn-server
 ```
 
@@ -91,6 +90,7 @@ Similarly, if using [Docker compose](https://docs.docker.com/compose/), you may 
     - net.ipv4.conf.default.accept_redirects=0
     - net.ipv4.conf.default.send_redirects=0
     - net.ipv4.conf.default.rp_filter=0
+    - net.ipv6.conf.all.forwarding=1
 ```
 
 For more information, see [compose file reference](https://docs.docker.com/compose/compose-file/).
@@ -243,8 +243,6 @@ To enable IPv6 for the Docker container, first enable IPv6 in the Docker daemon 
 After that, re-create the Docker container. The `run.sh` script will detect the container's public IPv6 address and automatically configure IPv6 support.
 
 To verify that IPv6 is working, connect to the VPN using IKEv2 and check your IPv6 address, e.g. using [test-ipv6.com](https://test-ipv6.com).
-
-**Note:** If you run the Docker container [without privileged mode](#run-without-privileged-mode), you must add `--sysctl net.ipv6.conf.all.forwarding=1` to the `docker run` command.
 
 **Note for existing containers:** If IKEv2 is already set up in your container (i.e. `ikev2.conf` already exists in the `ikev2-vpn-data` volume), IPv6 will **not** be automatically added to the existing IKEv2 configuration when the container restarts or is recreated. To enable full IPv6 support for IKEv2, you must remove IKEv2 and set it up again. Refer to "remove IKEv2" in [Configure and use IKEv2 VPN](../README.md#configure-and-use-ikev2-vpn).
 
