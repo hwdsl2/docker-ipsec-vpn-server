@@ -4,7 +4,7 @@
 
 [![Build Status](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions/workflows/main-alpine.yml/badge.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions/workflows/main-alpine.yml) [![GitHub Stars](docs/images/badges/github-stars.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/stargazers) [![Docker Stars](docs/images/badges/docker-stars.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) [![Docker Pulls](docs/images/badges/docker-pulls.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/)
 
-**新：** 另可參閱：Docker 上的 [WireGuard 伺服器](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md) 和 [OpenVPN 伺服器](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md)。
+**新：** 提供 [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md) 與 [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-zh-Hant.md) 的 Docker 映像。
 
 使用此 Docker 映像快速架設 IPsec VPN 伺服器。支援 IPsec/L2TP、Cisco IPsec 和 IKEv2 協議。
 
@@ -32,7 +32,7 @@ docker run \
 
 你的 VPN 登入憑證將會自動隨機生成。請參見[取得 VPN 登入資訊](#取得-vpn-登入資訊)。
 
-另外，你也可以在不使用 Docker 的情況下[安裝 IPsec VPN](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh-Hant.md)。另可參閱：Docker 上的 [WireGuard 伺服器](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md) 和 [OpenVPN 伺服器](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md)。若要了解更多關於如何使用本映像的資訊，請繼續閱讀以下部分。
+另外，你也可以在不使用 Docker 的情況下[安裝 IPsec VPN](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh-Hant.md)。若要了解更多關於如何使用本映像的資訊，請繼續閱讀以下部分。
 
 ## 功能特性
 

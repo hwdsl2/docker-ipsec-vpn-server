@@ -4,7 +4,7 @@
 
 [![Build Status](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions/workflows/main-alpine.yml/badge.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions/workflows/main-alpine.yml) [![GitHub Stars](docs/images/badges/github-stars.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/stargazers) [![Docker Stars](docs/images/badges/docker-stars.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) [![Docker Pulls](docs/images/badges/docker-pulls.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/)
 
-**New:** Also available: [WireGuard server on Docker](https://github.com/hwdsl2/docker-wireguard) | [OpenVPN server on Docker](https://github.com/hwdsl2/docker-openvpn).
+**New:** Docker images available for [WireGuard](https://github.com/hwdsl2/docker-wireguard), [OpenVPN](https://github.com/hwdsl2/docker-openvpn), and [Headscale](https://github.com/hwdsl2/docker-headscale).
 
 Docker image to run an IPsec VPN server, with IPsec/L2TP, Cisco IPsec and IKEv2.
 
@@ -32,7 +32,7 @@ docker run \
 
 Your VPN login details will be randomly generated. See [Retrieve VPN login details](#retrieve-vpn-login-details).
 
-Alternatively, you may [set up IPsec VPN without Docker](https://github.com/hwdsl2/setup-ipsec-vpn). Also available: [WireGuard server on Docker](https://github.com/hwdsl2/docker-wireguard) | [OpenVPN server on Docker](https://github.com/hwdsl2/docker-openvpn). To learn more about how to use this image, read the sections below.
+Alternatively, you may [set up IPsec VPN without Docker](https://github.com/hwdsl2/setup-ipsec-vpn). To learn more about how to use this image, read the sections below.
 
 ## Features
 
