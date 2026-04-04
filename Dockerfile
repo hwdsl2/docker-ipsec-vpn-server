@@ -45,6 +45,7 @@ RUN wget -t 3 -T 30 -nv -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ips
     && ln -s /opt/src/ikev2.sh /usr/bin
 
 COPY ./run.sh /opt/src/run.sh
+COPY ./LICENSE.md /opt/src/LICENSE.md
 RUN chmod 755 /opt/src/run.sh
 EXPOSE 500/udp 4500/udp
 CMD ["/opt/src/run.sh"]
