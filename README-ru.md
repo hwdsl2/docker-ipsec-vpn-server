@@ -4,13 +4,13 @@
 
 [![Build Status](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions/workflows/main-alpine.yml/badge.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions/workflows/main-alpine.yml) [![GitHub Stars](docs/images/badges/github-stars.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/stargazers) [![Docker Stars](docs/images/badges/docker-stars.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) [![Docker Pulls](docs/images/badges/docker-pulls.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/)
 
-**Новое:** Доступны Docker-образы для [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md), [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md) и [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-ru.md).
-
 Docker-образ для запуска сервера IPsec VPN с поддержкой IPsec/L2TP, Cisco IPsec и IKEv2.
 
 Основан на Alpine 3.23 или Debian 12 с использованием [Libreswan](https://libreswan.org) (программное обеспечение IPsec VPN) и [xl2tpd](https://github.com/xelerance/xl2tpd) (демон L2TP).
 
 IPsec VPN шифрует сетевой трафик, поэтому никто между вами и VPN-сервером не сможет перехватывать ваши данные во время их передачи через Интернет. Это особенно полезно при использовании незащищённых сетей, например в кофейнях, аэропортах или гостиничных номерах.
+
+**Также доступно:** Docker-образы для [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md), [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md), [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-ru.md) и [LiteLLM](https://github.com/hwdsl2/docker-litellm/blob/main/README-ru.md).
 
 **[&raquo; :book: Книга: Privacy Tools in the Age of AI](docs/vpn-book.md) &nbsp;[Build Your Own VPN Server](docs/vpn-book.md)**
 
@@ -248,6 +248,40 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 
 Клиенты настроены использовать [Google Public DNS](https://developers.google.com/speed/public-dns/) при активном VPN. Если вы предпочитаете другого DNS-провайдера, прочитайте [этот раздел](docs/advanced-usage.md#use-alternative-dns-servers).
 
+## Использование docker-compose
+
+```bash
+cp vpn.env.example vpn.env
+# При необходимости отредактируйте vpn.env, затем:
+docker compose up -d
+docker logs ipsec-vpn-server
+```
+
+Пример `docker-compose.yml` (уже включён):
+
+```yaml
+version: '3'
+
+volumes:
+  ikev2-vpn-data:
+
+services:
+  vpn:
+    image: hwdsl2/ipsec-vpn-server
+    restart: always
+    env_file:
+      - ./vpn.env
+    ports:
+      - "500:500/udp"
+      - "4500:4500/udp"
+    privileged: true
+    hostname: ipsec-vpn-server
+    container_name: ipsec-vpn-server
+    volumes:
+      - ikev2-vpn-data:/etc/ipsec.d
+      - /lib/modules:/lib/modules:ro
+```
+
 ## Обновление Docker-образа
 
 Чтобы обновить Docker-образ и контейнер, сначала [загрузите](#загрузка) последнюю версию:
@@ -374,9 +408,7 @@ docker exec -it ipsec-vpn-server ikev2.sh
 * IKEv1 с PSK и XAuth («Cisco IPsec»)
 * IKEv2
 
-Порты, которые должны быть открыты для работы контейнера:
-
-* 4500/udp и 500/udp для IPsec
+Необходимые порты: `500/udp` и `4500/udp` (IPsec)
 
 ## Лицензия
 

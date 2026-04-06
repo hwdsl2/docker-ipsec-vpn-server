@@ -4,13 +4,13 @@
 
 [![Build Status](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions/workflows/main-alpine.yml/badge.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions/workflows/main-alpine.yml) [![GitHub Stars](docs/images/badges/github-stars.svg)](https://github.com/hwdsl2/docker-ipsec-vpn-server/stargazers) [![Docker Stars](docs/images/badges/docker-stars.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) [![Docker Pulls](docs/images/badges/docker-pulls.svg)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/)
 
-**新：** 提供 [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md) 與 [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-zh-Hant.md) 的 Docker 映像。
-
 使用此 Docker 映像快速架設 IPsec VPN 伺服器。支援 IPsec/L2TP、Cisco IPsec 和 IKEv2 協議。
 
 本映像以 Alpine 3.23 或 Debian 12 為基礎，並使用 [Libreswan](https://libreswan.org)（IPsec VPN 軟體）和 [xl2tpd](https://github.com/xelerance/xl2tpd)（L2TP 服務程序）。
 
 IPsec VPN 可以加密你的網路流量，以防止在透過網際網路傳送時，你與 VPN 伺服器之間的任何人未經授權存取你的資料。在使用不安全的網路時，這一點特別有用，例如在咖啡廳、機場或旅館房間。
+
+**另提供：** [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md)、[Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-zh-Hant.md) 與 [LiteLLM](https://github.com/hwdsl2/docker-litellm/blob/main/README-zh-Hant.md) 的 Docker 映像。
 
 **[&raquo; :book: Book: Privacy Tools in the Age of AI](docs/vpn-book-zh-Hant.md) &nbsp;[架設自己的 VPN 伺服器](docs/vpn-book-zh-Hant.md)**
 
@@ -248,6 +248,40 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 
 在 VPN 已連線時，客戶端設定為使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其他的網域解析服務，請參見[這裡](docs/advanced-usage-zh.md#使用其他的-dns-服务器)。
 
+## 使用 docker-compose
+
+```bash
+cp vpn.env.example vpn.env
+# 如果需要，編輯 vpn.env，然後：
+docker compose up -d
+docker logs ipsec-vpn-server
+```
+
+範例 `docker-compose.yml`（已包含在內）：
+
+```yaml
+version: '3'
+
+volumes:
+  ikev2-vpn-data:
+
+services:
+  vpn:
+    image: hwdsl2/ipsec-vpn-server
+    restart: always
+    env_file:
+      - ./vpn.env
+    ports:
+      - "500:500/udp"
+      - "4500:4500/udp"
+    privileged: true
+    hostname: ipsec-vpn-server
+    container_name: ipsec-vpn-server
+    volumes:
+      - ikev2-vpn-data:/etc/ipsec.d
+      - /lib/modules:/lib/modules:ro
+```
+
 ## 更新 Docker 映像
 
 要更新 Docker 映像與容器，請先[下載](#下載)最新版本：
@@ -373,9 +407,7 @@ docker exec -it ipsec-vpn-server ikev2.sh
 * IKEv1 with PSK and XAuth ("Cisco IPsec")
 * IKEv2
 
-為了讓 VPN 伺服器正常運作，將會開啟以下連接埠：
-
-* 4500/udp 和 500/udp 用於 IPsec
+所需連接埠：`500/udp` 和 `4500/udp`（IPsec）
 
 ## 授權條款
 
