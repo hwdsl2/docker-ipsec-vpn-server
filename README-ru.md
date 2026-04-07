@@ -260,8 +260,6 @@ docker logs ipsec-vpn-server
 Пример `docker-compose.yml` (уже включён):
 
 ```yaml
-version: '3'
-
 volumes:
   ikev2-vpn-data:
 

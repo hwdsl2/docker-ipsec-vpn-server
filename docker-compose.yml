@@ -1,5 +1,3 @@
-version: '3'
-
 volumes:
   ikev2-vpn-data:
 
@@ -24,7 +22,6 @@ services:
     # /etc/docker/daemon.json), then re-create this container.
     # networks:
     #   vpnnet:
-    #     ipv6_address: <assign_a_ula_ipv6_address>
 
 # networks:
 #   vpnnet:
