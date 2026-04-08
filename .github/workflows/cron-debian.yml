@@ -11,7 +11,7 @@ name: build debian cron
 
 on:
   schedule:
-    - cron: '25 2,14 * * *'
+    - cron: '25 3 * * 1,4'
 
 jobs:
   check_update:
