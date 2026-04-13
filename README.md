@@ -384,6 +384,7 @@ See [Advanced usage](docs/advanced-usage.md).
 - [Use alternative DNS servers](docs/advanced-usage.md#use-alternative-dns-servers)
 - [Run without privileged mode](docs/advanced-usage.md#run-without-privileged-mode)
 - [Select VPN modes](docs/advanced-usage.md#select-vpn-modes)
+- [Enable IKEv2 perfect forward secrecy](docs/advanced-usage.md#enable-ikev2-perfect-forward-secrecy)
 - [Access other containers on the Docker host](docs/advanced-usage.md#access-other-containers-on-the-docker-host)
 - [Specify VPN server's public IP](docs/advanced-usage.md#specify-vpn-servers-public-ip)
 - [Assign static IPs to VPN clients](docs/advanced-usage.md#assign-static-ips-to-vpn-clients)

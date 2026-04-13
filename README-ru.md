@@ -384,6 +384,7 @@ docker exec -it ipsec-vpn-server ikev2.sh
 - [Использование альтернативных DNS-серверов](docs/advanced-usage.md#use-alternative-dns-servers)
 - [Запуск без привилегированного режима](docs/advanced-usage.md#run-without-privileged-mode)
 - [Выбор режимов VPN](docs/advanced-usage.md#select-vpn-modes)
+- [Включить совершенную прямую секретность IKEv2](docs/advanced-usage.md#enable-ikev2-perfect-forward-secrecy)
 - [Доступ к другим контейнерам на Docker-хосте](docs/advanced-usage.md#access-other-containers-on-the-docker-host)
 - [Указание публичного IP-адреса VPN-сервера](docs/advanced-usage.md#specify-vpn-servers-public-ip)
 - [Назначение статических IP-адресов клиентам VPN](docs/advanced-usage.md#assign-static-ips-to-vpn-clients)

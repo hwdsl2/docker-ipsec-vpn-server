@@ -5,6 +5,7 @@
 - [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
 - [不启用 privileged 模式运行](#不启用-privileged-模式运行)
 - [选择 VPN 模式](#选择-vpn-模式)
+- [启用 IKEv2 前向保密](#启用-ikev2-前向保密)
 - [访问 Docker 主机上的其它容器](#访问-docker-主机上的其它容器)
 - [指定 VPN 服务器的公有 IP](#指定-vpn-服务器的公有-ip)
 - [为 VPN 客户端指定静态 IP](#为-vpn-客户端指定静态-ip)
@@ -104,6 +105,40 @@ docker run \
 禁用 IPsec/L2TP 模式：`VPN_DISABLE_IPSEC_L2TP=yes`   
 禁用 IPsec/XAuth ("Cisco IPsec") 模式：`VPN_DISABLE_IPSEC_XAUTH=yes`   
 禁用 IPsec/L2TP 和 IPsec/XAuth 模式：`VPN_IKEV2_ONLY=yes`
+
+## 启用 IKEv2 前向保密
+
+默认情况下，IKEv2 子安全关联（Child SA）从现有 IKE SA 派生密钥材料，不进行新的 Diffie-Hellman 交换（`pfs=no`）。启用前向保密（PFS）后，每次子 SA 重新生成密钥时都会执行新的 DH 交换，从而确保即使服务器私钥在将来遭到泄露，攻击者也无法解密之前录制的会话。
+
+**注：** IKE SA 已将 ECP-256（`aes_gcm_c_256-hmac_sha2_256-ecp_256`）作为首选提案，所有现代客户端均会协商使用，因此这些客户端的会话密钥已与长期密钥材料独立。为子 SA 启用 PFS 是一项渐进式安全加固措施，而非关键漏洞修复。
+
+**客户端兼容性：** 所有现代客户端均支持 PFS。但是，macOS 和 iOS 客户端需要重新导出并导入已将 `EnablePFS` 设为 `1` 的 `.mobileconfig` 配置文件（详见下文）。Windows 客户端需要更新连接配置。RouterOS 用户需将 IKEv2 配置文件中的 `pfs-group=none` 改为 `pfs-group=ecp256`。Android 和 Linux strongSwan 客户端无需更改。Windows 7 IKEv2 客户端不支持 ECP PFS 组，若服务器启用 PFS，将无法连接。
+
+要启用 PFS，请先[在容器内打开 Bash shell](#在容器中运行-bash-shell)，然后运行：
+
+```bash
+sed -i 's/pfs=no/pfs=yes/' /etc/ipsec.d/ikev2.conf
+```
+
+完成后，`exit` 容器并重启：
+
+```
+docker restart ipsec-vpn-server
+```
+
+启用 PFS 后，需要更新以下客户端配置：
+
+- **macOS / iOS：** 运行 `docker exec -it ipsec-vpn-server ikev2.sh --exportclient <名称>` 重新导出客户端 `.mobileconfig` 文件并复制到 Docker 主机，然后编辑导出的文件以启用 PFS：
+  ```bash
+  sed -i '/EnablePFS/{n;s/0/1/;}' <名称>.mobileconfig
+  ```
+  在设备上重新导入更新后的文件。
+- **Windows：** 在提升权限的 PowerShell 窗口中运行 `Set-VpnConnection -Name "你的VPN名称" -PfsGroup ECP256`（替换为实际的 VPN 连接名称），然后重新连接 VPN。
+- **RouterOS (MikroTik)：** 在 IKEv2 对等配置文件中，将 `pfs-group=none` 改为 `pfs-group=ecp256`。
+
+Android 和 Linux strongSwan 客户端无需更改，PFS 会自动协商。
+
+要恢复默认设置（禁用 PFS），请重复上述步骤，但在 `sed` 命令中将 `pfs=yes` 替换为 `pfs=no`。
 
 ## 访问 Docker 主机上的其它容器
 

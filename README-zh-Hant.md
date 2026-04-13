@@ -383,6 +383,7 @@ docker exec -it ipsec-vpn-server ikev2.sh
 - [使用其他 DNS 伺服器](docs/advanced-usage-zh.md#使用其他的-dns-服务器)
 - [不啟用 privileged 模式執行](docs/advanced-usage-zh.md#不启用-privileged-模式运行)
 - [選擇 VPN 模式](docs/advanced-usage-zh.md#选择-vpn-模式)
+- [啟用 IKEv2 前向保密](docs/advanced-usage-zh.md#启用-ikev2-前向保密)
 - [存取 Docker 主機上的其他容器](docs/advanced-usage-zh.md#访问-docker-主机上的其它容器)
 - [指定 VPN 伺服器的公有 IP](docs/advanced-usage-zh.md#指定-vpn-服务器的公有-ip)
 - [為 VPN 客戶端指定靜態 IP](docs/advanced-usage-zh.md#为-vpn-客户端指定静态-ip)
