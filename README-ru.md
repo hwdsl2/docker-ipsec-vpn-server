@@ -10,17 +10,28 @@ Docker-образ для запуска сервера IPsec VPN с поддер
 
 IPsec VPN шифрует сетевой трафик, поэтому никто между вами и VPN-сервером не сможет перехватывать ваши данные во время их передачи через Интернет. Это особенно полезно при использовании незащищённых сетей, например в кофейнях, аэропортах или гостиничных номерах.
 
+**Возможности:**
+
+- Автоматическая генерация учётных данных VPN и конфигурации IKEv2 при первом запуске
+- Поддержка IKEv2 с мощными и быстрыми шифрами (например, AES-GCM)
+- Генерация VPN-профилей для автоматической настройки устройств iOS, macOS и Android
+- Поддержка Windows, macOS, iOS, Android, Chrome OS и Linux в качестве VPN-клиентов
+- Включает вспомогательный скрипт для управления пользователями и сертификатами IKEv2
+- Автоматически собирается и публикуется через [GitHub Actions](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions/workflows/main-alpine.yml)
+- Постоянное хранение данных через Docker volume
+- Поддержка нескольких архитектур: `linux/amd64`, `linux/arm64`, `linux/arm/v7`
+
 **Также доступно:**
+
 - VPN: [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md), [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md), [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-ru.md)
 - ИИ/Аудио: [Whisper (STT)](https://github.com/hwdsl2/docker-whisper/blob/main/README-ru.md), [Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro/blob/main/README-ru.md), [Embeddings](https://github.com/hwdsl2/docker-embeddings/blob/main/README-ru.md), [LiteLLM](https://github.com/hwdsl2/docker-litellm/blob/main/README-ru.md)
-
-**[&raquo; :book: Книга: Privacy Tools in the Age of AI](docs/vpn-book.md) &nbsp;[Build Your Own VPN Server](docs/vpn-book.md)**
+- :book: Книга: [Privacy Tools in the Age of AI](docs/vpn-book.md), [Build Your Own VPN Server](docs/vpn-book.md)
 
 ## Быстрый старт
 
 Используйте эту команду для настройки сервера IPsec VPN в Docker:
 
-```
+```bash
 docker run \
     --name ipsec-vpn-server \
     --restart=always \
@@ -36,30 +47,26 @@ docker run \
 
 В качестве альтернативы вы можете [настроить IPsec VPN без Docker](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-ru.md). Чтобы узнать больше о том, как использовать этот образ, прочитайте разделы ниже.
 
-## Возможности
+## Требования
 
-- Поддержка IKEv2 с мощными и быстрыми шифрами (например, AES-GCM)
-- Генерация VPN-профилей для автоматической настройки устройств iOS, macOS и Android
-- Поддержка Windows, macOS, iOS, Android, Chrome OS и Linux в качестве VPN-клиентов
-- Включает вспомогательный скрипт для управления пользователями и сертификатами IKEv2
+- Linux-сервер с публичным IP-адресом или DNS-именем
+- Установленный Docker
+- Открытые VPN-порты в брандмауэре (UDP 500 и 4500)
+- Вы также можете использовать [Podman](https://docs.podman.io) для запуска этого образа после создания псевдонима для `docker`
 
-## Установка Docker
-
-Сначала [установите Docker](https://docs.docker.com/engine/install/) на ваш Linux-сервер. Вы также можете использовать [Podman](https://podman.io) для запуска этого образа после [создания псевдонима](https://podman.io/whatis.html) для `docker`.
-
-Продвинутые пользователи могут использовать этот образ на macOS с помощью [Docker for Mac](https://docs.docker.com/docker-for-mac/). Перед использованием режима IPsec/L2TP может потребоваться один раз перезапустить контейнер Docker с помощью `docker restart ipsec-vpn-server`. Этот образ не поддерживает Docker for Windows.
+**Примечание:** Продвинутые пользователи могут использовать этот образ на macOS с помощью [Docker for Mac](https://docs.docker.com/desktop/setup/install/mac-install/). Перед использованием режима IPsec/L2TP может потребоваться один раз перезапустить контейнер с помощью `docker restart ipsec-vpn-server`. Этот образ не поддерживает Docker for Windows.
 
 ## Загрузка
 
 Получите доверенную сборку из [реестра Docker Hub](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/):
 
-```
+```bash
 docker pull hwdsl2/ipsec-vpn-server
 ```
 
 В качестве альтернативы можно скачать из [Quay.io](https://quay.io/repository/hwdsl2/ipsec-vpn-server):
 
-```
+```bash
 docker pull quay.io/hwdsl2/ipsec-vpn-server
 docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
 ```
@@ -92,7 +99,7 @@ docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
 
 Обычно рекомендуется использовать последнюю версию [Libreswan](https://libreswan.org/) 5, которая является версией по умолчанию в этом проекте. Однако если вы хотите использовать более старую версию Libreswan 4, вы можете собрать Docker-образ из исходного кода:
 
-```
+```bash
 git clone https://github.com/hwdsl2/docker-ipsec-vpn-server
 cd docker-ipsec-vpn-server
 # Указать версию Libreswan 4
@@ -176,7 +183,7 @@ VPN_PROTECT_CONFIG=yes
 
 Создайте новый Docker-контейнер из этого образа (замените `./vpn.env` на ваш собственный файл `env`):
 
-```
+```bash
 docker run \
     --name ipsec-vpn-server \
     --env-file ./vpn.env \
@@ -199,7 +206,7 @@ docker run \
 
 Если вы не указали файл `env` в команде `docker run` выше, значение `VPN_USER` по умолчанию будет `vpnuser`, а `VPN_IPSEC_PSK` и `VPN_PASSWORD` будут сгенерированы случайным образом. Чтобы получить их, просмотрите журналы контейнера:
 
-```
+```bash
 docker logs ipsec-vpn-server
 ```
 
@@ -218,37 +225,9 @@ Password: your_vpn_password
 
 (Необязательно) Сохраните сгенерированные данные для входа в VPN (если они есть) в текущий каталог:
 
-```
+```bash
 docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 ```
-
-## Следующие шаги
-
-*Прочитать на других языках: [English](README.md#next-steps), [简体中文](README-zh.md#下一步), [繁體中文](README-zh-Hant.md#下一步), [Русский](README-ru.md#следующие-шаги).*
-
-Настройте ваш компьютер или устройство для использования VPN. Пожалуйста, обратитесь к следующим инструкциям (на английском языке):
-
-**[Настройка и использование IKEv2 VPN (рекомендуется)](#настройка-и-использование-ikev2-vpn)**
-
-**[Настройка клиентов IPsec/L2TP VPN](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md)**
-
-**[Настройка клиентов IPsec/XAuth («Cisco IPsec»)](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md)**
-
-**Прочитайте [:book: книгу о VPN](docs/vpn-book.md), чтобы получить доступ к [дополнительному контенту](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).**
-
-Наслаждайтесь собственным VPN! :sparkles::tada::rocket::sparkles:
-
-## Важные замечания
-
-**Пользователи Windows**: для режима IPsec/L2TP требуется [одноразовое изменение реестра](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#windows-error-809), если VPN-сервер или клиент находится за NAT (например, домашним роутером).
-
-Одна и та же учетная запись VPN может использоваться на нескольких ваших устройствах. Однако из-за ограничения IPsec/L2TP, если вы хотите подключить несколько устройств из-за одного NAT (например, домашнего роутера), необходимо использовать режим [IKEv2](#настройка-и-использование-ikev2-vpn) или [IPsec/XAuth](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md).
-
-Если вы хотите добавить, изменить или удалить учетные записи пользователей VPN, сначала обновите файл `env`, затем удалите и заново создайте Docker-контейнер, следуя инструкциям из [следующего раздела](#обновление-docker-образа). Продвинутые пользователи могут использовать [bind mount](docs/advanced-usage.md#bind-mount-the-env-file) для файла `env`.
-
-Для серверов с внешним файрволом (например, [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)) откройте UDP-порты 500 и 4500 для VPN. Пользователям Aliyun см. [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
-
-Клиенты настроены использовать [Google Public DNS](https://developers.google.com/speed/public-dns/) при активном VPN. Если вы предпочитаете другого DNS-провайдера, прочитайте [этот раздел](docs/advanced-usage.md#use-alternative-dns-servers).
 
 ## Использование docker-compose
 
@@ -282,11 +261,39 @@ services:
       - /lib/modules:/lib/modules:ro
 ```
 
+## Следующие шаги
+
+*Прочитать на других языках: [English](README.md#next-steps), [简体中文](README-zh.md#下一步), [繁體中文](README-zh-Hant.md#下一步), [Русский](README-ru.md#следующие-шаги).*
+
+Настройте ваш компьютер или устройство для использования VPN. Пожалуйста, обратитесь к следующим инструкциям (на английском языке):
+
+**[Настройка и использование IKEv2 VPN (рекомендуется)](#настройка-и-использование-ikev2-vpn)**
+
+**[Настройка клиентов IPsec/L2TP VPN](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md)**
+
+**[Настройка клиентов IPsec/XAuth («Cisco IPsec»)](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md)**
+
+**Прочитайте [:book: книгу о VPN](docs/vpn-book.md), чтобы получить доступ к [дополнительному контенту](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).**
+
+Наслаждайтесь собственным VPN! :sparkles::tada::rocket::sparkles:
+
+## Важные замечания
+
+**Пользователи Windows**: для режима IPsec/L2TP требуется [одноразовое изменение реестра](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#windows-error-809), если VPN-сервер или клиент находится за NAT (например, домашним роутером).
+
+Одна и та же учетная запись VPN может использоваться на нескольких ваших устройствах. Однако из-за ограничения IPsec/L2TP, если вы хотите подключить несколько устройств из-за одного NAT (например, домашнего роутера), необходимо использовать режим [IKEv2](#настройка-и-использование-ikev2-vpn) или [IPsec/XAuth](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth.md).
+
+Если вы хотите добавить, изменить или удалить учетные записи пользователей VPN, сначала обновите файл `env`, затем удалите и заново создайте Docker-контейнер, следуя инструкциям из [следующего раздела](#обновление-docker-образа). Продвинутые пользователи могут использовать [bind mount](docs/advanced-usage.md#bind-mount-the-env-file) для файла `env`.
+
+Для серверов с внешним файрволом (например, [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)) откройте UDP-порты 500 и 4500 для VPN. Пользователям Aliyun см. [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433).
+
+Клиенты настроены использовать [Google Public DNS](https://developers.google.com/speed/public-dns/) при активном VPN. Если вы предпочитаете другого DNS-провайдера, прочитайте [этот раздел](docs/advanced-usage.md#use-alternative-dns-servers).
+
 ## Обновление Docker-образа
 
 Чтобы обновить Docker-образ и контейнер, сначала [загрузите](#загрузка) последнюю версию:
 
-```
+```bash
 docker pull hwdsl2/ipsec-vpn-server
 ```
 
@@ -312,7 +319,7 @@ docker logs ipsec-vpn-server
 
 Во время настройки IKEv2 создаётся клиент IKEv2 (с именем по умолчанию `vpnclient`), а его конфигурация экспортируется в `/etc/ipsec.d` **внутри контейнера**. Чтобы скопировать файл(ы) конфигурации на Docker-хост:
 
-```
+```bash
 # Проверить содержимое /etc/ipsec.d в контейнере
 docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
 # Пример: копирование файла конфигурации клиента из контейнера
@@ -379,7 +386,7 @@ docker exec -it ipsec-vpn-server ikev2.sh
 
 ## Расширенное использование
 
-См. [Расширенное использование](docs/advanced-usage.md) (на английском языке).
+См. [Расширенное использование (на английском)](docs/advanced-usage.md).
 
 - [Использование альтернативных DNS-серверов](docs/advanced-usage.md#use-alternative-dns-servers)
 - [Запуск без привилегированного режима](docs/advanced-usage.md#run-without-privileged-mode)

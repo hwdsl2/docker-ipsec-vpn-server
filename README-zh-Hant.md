@@ -10,17 +10,28 @@
 
 IPsec VPN 可以加密你的網路流量，以防止在透過網際網路傳送時，你與 VPN 伺服器之間的任何人未經授權存取你的資料。在使用不安全的網路時，這一點特別有用，例如在咖啡廳、機場或旅館房間。
 
+**功能特性：**
+
+- 首次啟動時自動產生 VPN 憑證和 IKEv2 設定
+- 支援具有強大且快速加密演算法（例如 AES-GCM）的 IKEv2 模式
+- 生成 VPN 設定檔以自動設定 iOS、macOS 和 Android 裝置
+- 支援 Windows、macOS、iOS、Android、Chrome OS 和 Linux 客戶端
+- 包含輔助腳本以管理 IKEv2 使用者與憑證
+- 透過 [GitHub Actions](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions/workflows/main-alpine.yml) 自動建置和發布
+- 使用 Docker 卷實現資料持久化
+- 多架構支援：`linux/amd64`、`linux/arm64`、`linux/arm/v7`
+
 **另提供：**
+
 - VPN：[WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md)、[Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-zh-Hant.md)
 - AI/音訊：[Whisper (STT)](https://github.com/hwdsl2/docker-whisper/blob/main/README-zh-Hant.md)、[Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro/blob/main/README-zh-Hant.md)、[Embeddings](https://github.com/hwdsl2/docker-embeddings/blob/main/README-zh-Hant.md)、[LiteLLM](https://github.com/hwdsl2/docker-litellm/blob/main/README-zh-Hant.md)
-
-**[&raquo; :book: Book: Privacy Tools in the Age of AI](docs/vpn-book-zh-Hant.md) &nbsp;[架設自己的 VPN 伺服器](docs/vpn-book-zh-Hant.md)**
+- :book: Book：[Privacy Tools in the Age of AI](docs/vpn-book-zh-Hant.md)、[架設自己的 VPN 伺服器](docs/vpn-book-zh-Hant.md)
 
 ## 快速開始
 
 使用以下命令在 Docker 上快速架設 IPsec VPN 伺服器：
 
-```
+```bash
 docker run \
     --name ipsec-vpn-server \
     --restart=always \
@@ -36,35 +47,31 @@ docker run \
 
 另外，你也可以在不使用 Docker 的情況下[安裝 IPsec VPN](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh-Hant.md)。若要了解更多關於如何使用本映像的資訊，請繼續閱讀以下部分。
 
-## 功能特性
+## 系統需求
 
-- 支援具有強大且快速加密演算法（例如 AES-GCM）的 IKEv2 模式
-- 生成 VPN 設定檔以自動設定 iOS、macOS 和 Android 裝置
-- 支援 Windows、macOS、iOS、Android、Chrome OS 和 Linux 客戶端
-- 包含輔助腳本以管理 IKEv2 使用者與憑證
+- 具有公用 IP 位址或 DNS 名稱的 Linux 伺服器
+- 已安裝 Docker
+- 在防火牆中開啟 VPN 連接埠（UDP 500 和 4500）
+- 你也可以使用 [Podman](https://docs.podman.io) 執行本映像，需要先為 `docker` 命令建立一個別名
 
-## 安裝 Docker
-
-首先在你的 Linux 伺服器上[安裝 Docker](https://docs.docker.com/engine/install/)。另外你也可以使用 [Podman](https://podman.io) 執行本映像，需要先為 `docker` 命令[建立一個別名](https://podman.io/whatis.html)。
-
-進階使用者可以在 macOS 上透過安裝 [Docker for Mac](https://docs.docker.com/docker-for-mac/) 使用本映像。在使用 IPsec/L2TP 模式之前，你可能需要執行 `docker restart ipsec-vpn-server` 重新啟動一次 Docker 容器。本映像不支援 Docker for Windows。
+**注：** 進階使用者可以在 macOS 上透過安裝 [Docker for Mac](https://docs.docker.com/desktop/setup/install/mac-install/) 使用本映像。在使用 IPsec/L2TP 模式之前，你可能需要執行 `docker restart ipsec-vpn-server` 重新啟動一次容器。本映像不支援 Docker for Windows。
 
 ## 下載
 
 預先建構的可信任映像可在 [Docker Hub registry](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) 下載：
 
-```
+```bash
 docker pull hwdsl2/ipsec-vpn-server
 ```
 
 或者，你也可以從 [Quay.io](https://quay.io/repository/hwdsl2/ipsec-vpn-server) 下載：
 
-```
+```bash
 docker pull quay.io/hwdsl2/ipsec-vpn-server
 docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
 ```
 
-支援以下架構系統：`linux/amd64`、`linux/arm64` 和 `linux/arm/v7`。
+支援的平台：`linux/amd64`、`linux/arm64` 和 `linux/arm/v7`。
 
 進階使用者可以自行從 GitHub [編譯原始碼](docs/advanced-usage-zh.md#从源代码构建)。
 
@@ -92,7 +99,7 @@ docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
 
 一般建議使用最新的 [Libreswan](https://libreswan.org/) 版本 5，它是本專案的預設版本。不過，如果你想要使用較舊版本的 Libreswan 版本 4，你可以從原始碼建構 Docker 映像：
 
-```
+```bash
 git clone https://github.com/hwdsl2/docker-ipsec-vpn-server
 cd docker-ipsec-vpn-server
 # Specify Libreswan version 4
@@ -176,7 +183,7 @@ VPN_PROTECT_CONFIG=yes
 
 使用本映像建立一個新的 Docker 容器（將 `./vpn.env` 替換為你自己的 `env` 檔案）：
 
-```
+```bash
 docker run \
     --name ipsec-vpn-server \
     --env-file ./vpn.env \
@@ -199,7 +206,7 @@ docker run \
 
 如果你在上述 `docker run` 命令中沒有指定 `env` 檔案，`VPN_USER` 會預設為 `vpnuser`，並且 `VPN_IPSEC_PSK` 和 `VPN_PASSWORD` 會自動隨機生成。要取得這些登入資訊，可以查看容器的日誌：
 
-```
+```bash
 docker logs ipsec-vpn-server
 ```
 
@@ -218,37 +225,9 @@ Password: 你的VPN密碼
 
 （可選步驟）將自動生成的 VPN 登入資訊（如果有）備份到目前目錄：
 
-```
+```bash
 docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 ```
-
-## 下一步
-
-*其他語言版本: [English](README.md#next-steps), [简体中文](README-zh.md#下一步), [繁體中文](README-zh-Hant.md#下一步), [Русский](README-ru.md#следующие-шаги)。*
-
-設定你的電腦或其他裝置使用 VPN。請參見以下連結（簡體中文）：
-
-**[設定並使用 IKEv2 VPN（推薦）](#設定並使用-ikev2-vpn)**
-
-**[設定 IPsec/L2TP VPN 客戶端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md)**
-
-**[設定 IPsec/XAuth ("Cisco IPsec") VPN 客戶端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)**
-
-**閱讀 [:book: VPN book](docs/vpn-book-zh-Hant.md) 以存取[額外內容](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)。**
-
-開始使用自己的專屬 VPN! :sparkles::tada::rocket::sparkles:
-
-## 重要提示
-
-**Windows 使用者** 對於 IPsec/L2TP 模式，在首次連線之前需要[修改登錄檔](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#windows-错误-809)，以解決 VPN 伺服器或客戶端與 NAT（例如家用路由器）的相容問題。
-
-同一個 VPN 帳戶可以在你的多個裝置上使用。但由於 IPsec/L2TP 的限制，如果需要連線到同一個 NAT（例如家用路由器）後面的多個裝置，你必須使用 [IKEv2](#設定並使用-ikev2-vpn) 或 [IPsec/XAuth](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md) 模式。
-
-如需新增、修改或刪除 VPN 使用者帳戶，請先更新你的 `env` 檔案，然後必須依照[下一節](#更新-docker-映像)的說明刪除並重新建立 Docker 容器。進階使用者可以[綁定掛載](docs/advanced-usage-zh.md#绑定挂载-env-文件) `env` 檔案。
-
-對於有外部防火牆的伺服器（例如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)），請為 VPN 開啟 UDP 連接埠 500 和 4500。阿里雲使用者請參見 [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433)。
-
-在 VPN 已連線時，客戶端設定為使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其他的網域解析服務，請參見[這裡](docs/advanced-usage-zh.md#使用其他的-dns-服务器)。
 
 ## 使用 docker-compose
 
@@ -282,11 +261,39 @@ services:
       - /lib/modules:/lib/modules:ro
 ```
 
+## 下一步
+
+*其他語言版本: [English](README.md#next-steps), [简体中文](README-zh.md#下一步), [繁體中文](README-zh-Hant.md#下一步), [Русский](README-ru.md#следующие-шаги)。*
+
+設定你的電腦或其他裝置使用 VPN。請參見以下連結（簡體中文）：
+
+**[設定並使用 IKEv2 VPN（推薦）](#設定並使用-ikev2-vpn)**
+
+**[設定 IPsec/L2TP VPN 客戶端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md)**
+
+**[設定 IPsec/XAuth ("Cisco IPsec") VPN 客戶端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)**
+
+**閱讀 [:book: VPN book](docs/vpn-book-zh-Hant.md) 以存取[額外內容](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)。**
+
+開始使用自己的專屬 VPN! :sparkles::tada::rocket::sparkles:
+
+## 重要提示
+
+**Windows 使用者** 對於 IPsec/L2TP 模式，在首次連線之前需要[修改登錄檔](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#windows-错误-809)，以解決 VPN 伺服器或客戶端與 NAT（例如家用路由器）的相容問題。
+
+同一個 VPN 帳戶可以在你的多個裝置上使用。但由於 IPsec/L2TP 的限制，如果需要連線到同一個 NAT（例如家用路由器）後面的多個裝置，你必須使用 [IKEv2](#設定並使用-ikev2-vpn) 或 [IPsec/XAuth](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md) 模式。
+
+如需新增、修改或刪除 VPN 使用者帳戶，請先更新你的 `env` 檔案，然後必須依照[下一節](#更新-docker-映像)的說明刪除並重新建立 Docker 容器。進階使用者可以[綁定掛載](docs/advanced-usage-zh.md#绑定挂载-env-文件) `env` 檔案。
+
+對於有外部防火牆的伺服器（例如 [EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html)/[GCE](https://cloud.google.com/vpc/docs/firewalls)），請為 VPN 開啟 UDP 連接埠 500 和 4500。阿里雲使用者請參見 [#433](https://github.com/hwdsl2/setup-ipsec-vpn/issues/433)。
+
+在 VPN 已連線時，客戶端設定為使用 [Google Public DNS](https://developers.google.com/speed/public-dns/)。如果偏好其他的網域解析服務，請參見[這裡](docs/advanced-usage-zh.md#使用其他的-dns-服务器)。
+
 ## 更新 Docker 映像
 
 要更新 Docker 映像與容器，請先[下載](#下載)最新版本：
 
-```
+```bash
 docker pull hwdsl2/ipsec-vpn-server
 ```
 
@@ -296,7 +303,7 @@ docker pull hwdsl2/ipsec-vpn-server
 Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 ```
 
-否則將會下載最新版本。要更新你的 Docker 容器，請先在紙上記下所有的 [VPN 登入資訊](#取得-vpn-登入資訊)。然後刪除 Docker 容器：`docker rm -f ipsec-vpn-server`。最後依照[如何使用本映像](#如何使用本映像)的說明重新建立它。
+否則將會下載最新版本。要更新你的 Docker 容器，請先記下所有的 [VPN 登入資訊](#取得-vpn-登入資訊)。然後刪除 Docker 容器：`docker rm -f ipsec-vpn-server`。最後依照[如何使用本映像](#如何使用本映像)的說明重新建立它。
 
 ## 設定並使用 IKEv2 VPN
 
@@ -378,7 +385,7 @@ docker exec -it ipsec-vpn-server ikev2.sh
 
 ## 進階用法
 
-請參見[進階用法](docs/advanced-usage-zh.md)（簡體中文）。
+請參見[進階用法（簡體中文）](docs/advanced-usage-zh.md)。
 
 - [使用其他 DNS 伺服器](docs/advanced-usage-zh.md#使用其他的-dns-服务器)
 - [不啟用 privileged 模式執行](docs/advanced-usage-zh.md#不启用-privileged-模式运行)
