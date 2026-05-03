@@ -15,8 +15,6 @@ on:
     paths:
       - '.github/workflows/main-debian.yml'
       - '.github/workflows/buildx.yml'
-      - '.github/workflows/shellcheck.yml'
-      - '.github/workflows/vpn_test.yml'
       - '.dockerignore'
       - 'Dockerfile.debian'
       - 'run.sh'

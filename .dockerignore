@@ -2,7 +2,7 @@
 .github
 .gitignore
 docker-compose.yml
-README.md
-README-zh.md
+README*.md
+docs/
 vpn.env
 vpn.env.example
