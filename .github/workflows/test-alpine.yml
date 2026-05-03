@@ -1,0 +1,30 @@
+#
+# Copyright (C) 2020-2026 Lin Song <linsongui@gmail.com>
+#
+# This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
+# Unported License: http://creativecommons.org/licenses/by-sa/3.0/
+#
+# Attribution required: please include my name in any derivative and let me
+# know how you have improved it!
+
+name: test alpine
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/test-alpine.yml'
+      - '.github/workflows/shellcheck.yml'
+      - '.github/workflows/vpn_test.yml'
+
+jobs:
+  shellcheck:
+    if: github.repository_owner == 'hwdsl2'
+    uses: ./.github/workflows/shellcheck.yml
+
+  vpn_test:
+    if: github.repository_owner == 'hwdsl2'
+    uses: ./.github/workflows/vpn_test.yml
+    with:
+      os_type: alpine
