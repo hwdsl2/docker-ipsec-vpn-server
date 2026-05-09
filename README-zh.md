@@ -243,6 +243,7 @@ docker logs ipsec-vpn-server
 ```yaml
 volumes:
   ikev2-vpn-data:
+    name: ikev2-vpn-data
 
 services:
   vpn:
