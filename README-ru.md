@@ -278,6 +278,10 @@ services:
 
 Наслаждайтесь собственным VPN! :sparkles::tada::rocket::sparkles:
 
+## Сообщество
+
+- Обсуждения и примеры: [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/)
+
 ## Важные замечания
 
 **Пользователи Windows**: для режима IPsec/L2TP требуется [одноразовое изменение реестра](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#windows-error-809), если VPN-сервер или клиент находится за NAT (например, домашним роутером).
