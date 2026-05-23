@@ -280,7 +280,7 @@ services:
 
 ## 社群
 
-- 討論與展示：[r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/)
+- 討論與更新：[r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/)
 
 ## 重要提示
 

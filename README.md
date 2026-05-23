@@ -280,7 +280,7 @@ Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
 
 ## Community
 
-- Discussions and showcases: [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/)
+- Discussions and updates: [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/)
 
 ## Important notes
 
