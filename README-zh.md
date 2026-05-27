@@ -47,6 +47,9 @@ docker run \
 
 另外，你也可以在不使用 Docker 的情况下[安装 IPsec VPN](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)。要了解更多有关如何使用本镜像的信息，请继续阅读以下部分。
 
+> [!TIP]
+> [订阅项目更新](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn)，获取免费的 VPN 和 AI 部署指南（PDF，英文）。
+
 ## 系统要求
 
 - 具有公网 IP 地址或 DNS 名称的 Linux 服务器
@@ -280,8 +283,8 @@ services:
 
 ## 社区
 
-- 订阅项目更新（每月 1-2 封邮件）：[Self-Hosted Stack](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn)
-- 社区讨论：[r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/)
+- [订阅项目更新](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn)（每月 1–2 封邮件）
+- 加入 [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) 社区参与讨论
 
 ## 重要提示
 
