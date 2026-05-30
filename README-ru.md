@@ -47,8 +47,11 @@ docker run \
 
 В качестве альтернативы вы можете [настроить IPsec VPN без Docker](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-ru.md). Чтобы узнать больше о том, как использовать этот образ, прочитайте разделы ниже.
 
-> [!TIP]
-> [Подписаться на обновления проектов](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-ru) (1–2 письма в месяц) и получить бесплатные руководства по развёртыванию VPN и AI (PDF, на английском).
+## Сообщество
+
+- 📬 [Подписаться на обновления проектов](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-ru) (1–2 письма в месяц) — получить бесплатные руководства по развёртыванию VPN и AI (PDF, на английском)
+- 💬 Присоединяйтесь к сообществу [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) для обсуждений и демонстрации проектов
+- ⭐ Поставьте звезду репозиторию, если он вам полезен
 
 ## Требования
 
@@ -280,11 +283,6 @@ services:
 **Прочитайте [:book: книгу о VPN](docs/vpn-book.md), чтобы получить доступ к [дополнительному контенту](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).**
 
 Наслаждайтесь собственным VPN! :sparkles::tada::rocket::sparkles:
-
-## Сообщество
-
-- [Подписаться на обновления проектов](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-ru) (1–2 письма в месяц)
-- Присоединяйтесь к сообществу [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) для обсуждений
 
 ## Важные замечания
 

@@ -47,8 +47,11 @@ docker run \
 
 另外，你也可以在不使用 Docker 的情況下[安裝 IPsec VPN](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh-Hant.md)。若要了解更多關於如何使用本映像的資訊，請繼續閱讀以下部分。
 
-> [!TIP]
-> [訂閱專案更新](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-zh-hant)（每月 1–2 封郵件），獲取免費的 VPN 和 AI 部署指南（PDF，英文）。
+## 社群
+
+- 📬 [訂閱專案更新](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-zh-hant)（每月 1–2 封郵件）——獲取免費的 VPN 和 AI 部署指南（PDF，英文）
+- 💬 加入 [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) 社群，參與討論與專案展示
+- ⭐ 如果本專案對你有幫助，請為儲存庫加星
 
 ## 系統需求
 
@@ -280,11 +283,6 @@ services:
 **閱讀 [:book: VPN book](docs/vpn-book-zh-Hant.md) 以存取[額外內容](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-X8X5FVFZC)。**
 
 開始使用自己的專屬 VPN! :sparkles::tada::rocket::sparkles:
-
-## 社群
-
-- [訂閱專案更新](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-zh-hant)（每月 1–2 封郵件）
-- 加入 [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) 社群參與討論
 
 ## 重要提示
 

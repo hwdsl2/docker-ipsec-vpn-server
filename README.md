@@ -47,8 +47,11 @@ Your VPN login details will be randomly generated. See [Retrieve VPN login detai
 
 Alternatively, you may [set up IPsec VPN without Docker](https://github.com/hwdsl2/setup-ipsec-vpn). To learn more about how to use this image, read the sections below.
 
-> [!TIP]
-> [Subscribe for project updates](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn) (1–2 emails/month) and get free VPN and AI deployment guides (PDF).
+## Community
+
+- 📬 [Subscribe for project updates](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn) (1–2 emails/month) — get free VPN and AI deployment guides (PDF)
+- 💬 Join the [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) community for discussions
+- ⭐ Star the repository if it is useful to you
 
 ## Requirements
 
@@ -280,11 +283,6 @@ Get your computer or device to use the VPN. Please refer to:
 **Read [:book: VPN book](docs/vpn-book.md) to access [extra content](https://ko-fi.com/post/Support-this-project-and-get-access-to-supporter-o-O5O7FVF8J).**
 
 Enjoy your very own VPN! :sparkles::tada::rocket::sparkles:
-
-## Community
-
-- [Subscribe for project updates](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn) (1–2 emails/month)
-- Join the [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) community for discussions
 
 ## Important notes
 
