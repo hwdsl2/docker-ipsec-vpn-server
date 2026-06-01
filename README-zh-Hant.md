@@ -51,7 +51,7 @@ docker run \
 
 - 📬 [訂閱專案更新](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn-zh-hant)（每月 1–2 封郵件）——獲取免費的 VPN 和 AI 部署指南（PDF，英文）
 - 💬 加入 [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) 社群，參與討論與專案展示
-- ⭐ 如果本專案對你有幫助，請為儲存庫加星
+- ⭐ 如果你覺得本專案有用，請為儲存庫加星——這能幫助更多人發現它。
 
 ## 系統需求
 
