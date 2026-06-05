@@ -249,7 +249,6 @@ Example `docker-compose.yml` (already included):
 ```yaml
 volumes:
   ikev2-vpn-data:
-    name: ikev2-vpn-data
 
 services:
   vpn:
