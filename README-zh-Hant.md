@@ -23,7 +23,7 @@ IPsec VPN 可以加密你的網路流量，以防止在透過網際網路傳送�
 
 **另提供：**
 
-- VPN：[WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md)、[Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-zh-Hant.md)
+- VPN：[IPsec 無 Docker 版](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh-Hant.md)、[WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md)、[Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-zh-Hant.md)
 - AI：[自架 AI 套件](https://github.com/hwdsl2/docker-ai-stack/blob/main/README-zh-Hant.md)
 - :book: Book：[Privacy Tools in the Age of AI](docs/vpn-book-zh-Hant.md)、[架設自己的 VPN 伺服器](docs/vpn-book-zh-Hant.md)
 
