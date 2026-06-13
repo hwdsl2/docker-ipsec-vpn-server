@@ -10,17 +10,23 @@ assignees: ''
 **Checklist**
 
 - [ ] I searched existing [Issues](https://github.com/hwdsl2/docker-ipsec-vpn-server/issues?q=is%3Aissue), and did not find a similar enhancement request
-- [ ] This enhancement request is about the IPsec VPN server Docker image, and not IPsec VPN itself
 - [ ] I read the [README](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md)
-- [ ] I read the [Important notes](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#important-notes)
-- [ ] I followed instructions to [configure VPN clients](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README.md#next-steps)
-- [ ] I checked [IKEv1 troubleshooting](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#ikev1-troubleshooting), [IKEv2 troubleshooting](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md#ikev2-troubleshooting), [enabled logs](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/docs/advanced-usage.md#enable-libreswan-logs) and checked [VPN status](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients.md#check-logs-and-vpn-status)
+- [ ] This enhancement request is about the IPsec VPN server Docker image, and not IPsec VPN itself
 
 **Describe the enhancement request**
 A clear and concise description of your enhancement request.
 
 **Is your enhancement request related to a problem? Please describe.**
 (If applicable) A clear and concise description of what the problem is.
+
+**Affected area**
+Which part of the project would this improve?
+
+- Docker image or build
+- Container startup/runtime behavior
+- IKEv2 helper scripts
+- VPN client setup
+- Documentation
 
 **Additional context**
 Add any other context about the enhancement request here.
