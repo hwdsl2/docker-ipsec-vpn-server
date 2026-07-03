@@ -27,6 +27,9 @@ on:
       BUILD_ONLY:
         required: true
 
+permissions:
+  contents: read
+
 jobs:
   buildx:
     runs-on: ubuntu-24.04

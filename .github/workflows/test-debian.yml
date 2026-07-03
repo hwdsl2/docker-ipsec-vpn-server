@@ -18,6 +18,9 @@ on:
       - '.github/workflows/shellcheck.yml'
       - '.github/workflows/vpn_test.yml'
 
+permissions:
+  contents: read
+
 jobs:
   shellcheck:
     if: github.repository_owner == 'hwdsl2'
