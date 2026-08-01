@@ -17,7 +17,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 - 生成 VPN 配置文件以自动配置 iOS, macOS 和 Android 设备
 - 支持 Windows, macOS, iOS, Android, Chrome OS 和 Linux 客户端
 - 包括辅助脚本以管理 IKEv2 用户和证书
-- 通过 [GitHub Actions](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions/workflows/main-alpine.yml) 自动构建和发布
+- 通过 [GitHub Actions](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions) 自动构建和发布
 - 使用 Docker 卷实现数据持久化
 - 多架构支持：`linux/amd64`、`linux/arm64`、`linux/arm/v7`
 

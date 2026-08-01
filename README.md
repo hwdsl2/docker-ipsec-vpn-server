@@ -17,7 +17,7 @@ An IPsec VPN encrypts your network traffic, so that nobody between you and the V
 - Generates VPN profiles to auto-configure iOS, macOS and Android devices
 - Supports Windows, macOS, iOS, Android, Chrome OS and Linux as VPN clients
 - Includes a helper script to manage IKEv2 users and certificates
-- Automatically built and published via [GitHub Actions](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions/workflows/main-alpine.yml)
+- Automatically built and published via [GitHub Actions](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions)
 - Persistent data via a Docker volume
 - Multi-arch: `linux/amd64`, `linux/arm64`, `linux/arm/v7`
 
