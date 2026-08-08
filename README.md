@@ -25,7 +25,7 @@ An IPsec VPN encrypts your network traffic, so that nobody between you and the V
 
 - VPN: [IPsec without Docker](https://github.com/hwdsl2/setup-ipsec-vpn), [WireGuard](https://github.com/hwdsl2/docker-wireguard), [OpenVPN](https://github.com/hwdsl2/docker-openvpn), [Headscale](https://github.com/hwdsl2/docker-headscale)
 - AI: [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack) for local LLMs, chat, RAG, voice and AI tools
-- Books: [Privacy Tools in the Age of AI](docs/vpn-book.md#new-privacy-tools-in-the-age-of-ai), [Build Your Own VPN Server](docs/vpn-book.md#build-your-own-vpn-server-a-step-by-step-guide)
+- Books: [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon), [Privacy Tools in the Age of AI](docs/vpn-book.md)
 
 ## Quick start
 
