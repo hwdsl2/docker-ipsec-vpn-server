@@ -23,8 +23,8 @@ RUN set -x \
                  ip6tables ip6tables-save ip6tables-restore; do \
          ln -fs xtables-legacy-multi "$fn"; done \
     && cd /opt/src \
-    && wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://github.com/libreswan/libreswan/archive/v${SWAN_VER}.tar.gz" \
-    || wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz" \
+    && ( wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://github.com/libreswan/libreswan/archive/v${SWAN_VER}.tar.gz" \
+      || wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz" ) \
     && tar xzf libreswan.tar.gz \
     && rm -f libreswan.tar.gz \
     && cd "libreswan-${SWAN_VER}" \
