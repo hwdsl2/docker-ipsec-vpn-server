@@ -745,7 +745,7 @@ if grep -q " /etc/ipsec.d " /proc/mounts && [ -s "$ikev2_sh" ] && [ ! -f "$ikev2
   echo
   echo "Setting up IKEv2. This may take a few moments..."
   if [ -n "$VPN_SPLIT_IKEV2" ]; then
-    sed -i "s|^  leftsubnet=0\.0\.0\.0/0$|  leftsubnet=$VPN_SPLIT_IKEV2|g" "$ikev2_sh"
+    sed -i "s|^  leftsubnet=\\\$lsubnet$|  leftsubnet=$VPN_SPLIT_IKEV2|g" "$ikev2_sh"
   fi
   if VPN_DNS_NAME="$VPN_DNS_NAME" VPN_PUBLIC_IP="$public_ip" \
     VPN_CLIENT_NAME="$VPN_CLIENT_NAME" VPN_XAUTH_POOL="$VPN_XAUTH_POOL" \
