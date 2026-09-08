@@ -25,7 +25,9 @@ An IPsec VPN encrypts your network traffic, so that nobody between you and the V
 
 - VPN: [IPsec without Docker](https://github.com/hwdsl2/setup-ipsec-vpn), [WireGuard](https://github.com/hwdsl2/docker-wireguard), [OpenVPN](https://github.com/hwdsl2/docker-openvpn), [Headscale](https://github.com/hwdsl2/docker-headscale)
 - AI: [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack) for local LLMs, chat, RAG, voice and AI tools
-- :books: Books: [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon), [Privacy Tools in the Age of AI](docs/vpn-book.md)
+- 📚 Related reading: [Privacy Tools in the Age of AI](docs/vpn-book.md)
+
+> 📘 **New book:** [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon). A practical guide to building, securing, and operating your own private AI stack.
 
 ## Quick start
 
@@ -49,7 +51,7 @@ Alternatively, you may [set up IPsec VPN without Docker](https://github.com/hwds
 
 ## Community
 
-- 📬 [Subscribe for project updates](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn) (1–2 emails/month) — get free VPN and AI deployment guides (PDF)
+- 📬 [Get project updates and free deployment guides](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=vpn) (1–2 emails/month)
 - 💬 Join the [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) community for discussions
 - ⭐ Star the repository if you find it useful — it helps others discover it
 
