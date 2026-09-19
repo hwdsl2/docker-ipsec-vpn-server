@@ -143,7 +143,8 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 以上變數僅適用於 IPsec/L2TP 和 IPsec/XAuth（"Cisco IPsec"）模式。對於 IKEv2，請參見[設定並使用 IKEv2 VPN](#設定並使用-ikev2-vpn)。
 
-**註：** 在你的 `env` 檔案中，**不要**為變數值加入 `""` 或 `''`，或在 `=` 兩側加入空格。**不要**在值中使用這些字元： `\ " '`。一個安全的 IPsec PSK 應至少包含 20 個隨機字元。
+> [!IMPORTANT]
+> 在 `env` 檔案中填寫值時，不要在值外加上引號，也不要在 `=` 兩側加入空格。值中不能包含 `\`、`"` 或 `'`。一個安全的 IPsec PSK 應至少包含 20 個隨機字元。
 
 **註：** 如果在建立 Docker 容器後修改 `env` 檔案，則必須刪除並重新建立容器才能讓變更生效。請參見[更新 Docker 映像](#更新-docker-映像)。
 

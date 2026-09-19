@@ -132,7 +132,7 @@ VPN_USER=your_vpn_username
 VPN_PASSWORD=your_vpn_password
 ```
 
-这将创建一个用于 VPN 登录的用户账户，它可以在你的多个设备上使用[\*](#重要提示)。 IPsec PSK (预共享密钥) 由 `VPN_IPSEC_PSK` 环境变量指定。 VPN 用户名和密码分别在 `VPN_USER` 和 `VPN_PASSWORD` 中定义。
+这将创建一个用于 VPN 登录的用户账户，它可以在你的多个设备上使用[\*](#重要提示)。IPsec PSK (预共享密钥) 由 `VPN_IPSEC_PSK` 环境变量指定。VPN 用户名和密码分别在 `VPN_USER` 和 `VPN_PASSWORD` 中定义。
 
 支持创建额外的 VPN 用户，如果需要，可以像下面这样在你的 `env` 文件中定义。用户名和密码必须分别使用空格进行分隔，并且用户名不能有重复。所有的 VPN 用户将共享同一个 IPsec PSK。
 
@@ -143,7 +143,8 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 以上变量仅适用于 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式。对于 IKEv2，参见[配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)。
 
-**注：** 在你的 `env` 文件中，**不要**为变量值添加 `""` 或者 `''`，或在 `=` 两边添加空格。**不要**在值中使用这些字符： `\ " '`。一个安全的 IPsec PSK 应该至少包含 20 个随机字符。
+> [!IMPORTANT]
+> 在 `env` 文件中填写值时，不要在值外添加引号，也不要在 `=` 两侧添加空格。值中不能包含 `\`、`"` 或 `'`。一个安全的 IPsec PSK 应该至少包含 20 个随机字符。
 
 **注：** 如果在创建 Docker 容器后修改 `env` 文件，则必须删除并重新创建容器才能使更改生效。参见[更新 Docker 镜像](#更新-docker-镜像)。
 
