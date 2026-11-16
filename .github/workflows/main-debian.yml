@@ -10,6 +10,7 @@
 name: build debian
 
 on:
+  workflow_dispatch:
   push:
     branches: [master]
     paths:
@@ -34,6 +35,7 @@ jobs:
       os_type: debian
 
   buildx:
+    if: github.ref == 'refs/heads/master'
     needs: [shellcheck, vpn_test]
     uses: ./.github/workflows/buildx.yml
     with:
