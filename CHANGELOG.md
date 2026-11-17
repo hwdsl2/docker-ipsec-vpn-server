@@ -2,6 +2,13 @@
 
 Notable changes to the Docker IPsec VPN server are documented here.
 
+## 2026-11-16
+
+### Changed
+
+- Updated the Alpine base to 3.24 and removed the obsolete legacy iptables
+  workaround.
+
 ## 2026-08-27
 
 ### Fixed
