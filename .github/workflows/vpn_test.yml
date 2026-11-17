@@ -99,6 +99,10 @@ jobs:
           fi
           docker exec "$TEST_ID" netstat -anpu | grep pluto
           docker exec "$TEST_ID" netstat -anpu | grep xl2tpd
+          if [ "$OS_TYPE" = "alpine" ]; then
+            docker exec "$TEST_ID" iptables --version | grep -q '(nf_tables)'
+            docker exec "$TEST_ID" ip6tables --version | grep -q '(nf_tables)'
+          fi
           docker exec "$TEST_ID" iptables -nvL
           docker exec "$TEST_ID" iptables -nvL | grep -q 'ppp+'
           docker exec "$TEST_ID" iptables -nvL | grep -q '192\.168\.43\.0/24'
@@ -150,6 +154,10 @@ jobs:
           docker logs "$TEST_ID"
           docker exec "$TEST_ID" netstat -anpu | grep pluto
           docker exec "$TEST_ID" netstat -anpu | grep xl2tpd
+          if [ "$OS_TYPE" = "alpine" ]; then
+            docker exec "$TEST_ID" iptables --version | grep -q '(nf_tables)'
+            docker exec "$TEST_ID" ip6tables --version | grep -q '(nf_tables)'
+          fi
           docker exec "$TEST_ID" iptables -nvL
           docker exec "$TEST_ID" iptables -nvL | grep -q 'ppp+'
           docker exec "$TEST_ID" iptables -nvL | grep -q '192\.168\.43\.0/24'
