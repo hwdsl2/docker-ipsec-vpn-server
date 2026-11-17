@@ -9,6 +9,10 @@ Notable changes to the Docker IPsec VPN server are documented here.
 - Updated the Alpine base to 3.24 and removed the obsolete legacy iptables
   workaround.
 
+### Fixed
+
+- Restored `/var/log/auth.log` when enabling logs in the Alpine 3.24 image.
+
 ## 2026-08-27
 
 ### Fixed
