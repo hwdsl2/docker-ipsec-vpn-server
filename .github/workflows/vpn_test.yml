@@ -175,6 +175,25 @@ jobs:
           docker exec "$TEST_ID" ipsec status | grep -q ikev2-cp && exit 1
 
           exit 0
+      - name: Check Alpine logs
+        if: env.OS_TYPE == 'alpine'
+        run: |
+          docker exec "$TEST_ID" sh -c '! command -v rsyslogd'
+          docker exec "$TEST_ID" apk add --no-cache rsyslog
+          docker exec "$TEST_ID" rsyslogd -N1
+          docker exec "$TEST_ID" rsyslogd
+          docker exec "$TEST_ID" logger -p authpriv.info -t vpn-test 'vpn-test-auth-log'
+          count=0
+          until docker exec "$TEST_ID" grep -qs 'vpn-test-auth-log' /var/log/auth.log; do
+            [ "$count" -ge 10 ] && { echo "Authentication log test failed."; exit 1; }
+            count=$((count+1))
+            sleep 1
+          done
+          test "$(docker exec "$TEST_ID" stat -c '%U:%G %a' /var/log/auth.log)" = "root:adm 640"
+          if docker exec "$TEST_ID" grep -qs 'vpn-test-auth-log' /var/log/messages; then
+            echo "Authentication log message also found in /var/log/messages."
+            exit 1
+          fi
       - name: Clear
         if: always()
         run: |
