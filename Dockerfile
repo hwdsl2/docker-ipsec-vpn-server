@@ -14,15 +14,10 @@ WORKDIR /opt/src
 
 RUN set -x \
     && apk add --no-cache \
-         bash bind-tools ca-certificates coreutils openssl uuidgen wget xl2tpd iptables iptables-legacy ip6tables \
+         bash bind-tools ca-certificates coreutils openssl uuidgen wget xl2tpd iptables ip6tables \
          iproute2 libcap-ng libcurl libevent linux-pam musl nspr nss nss-tools openrc \
          bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev \
          nss-dev libcap-ng-dev libevent-dev curl-dev nspr-dev \
-    && cd /sbin \
-    && for fn in iptables iptables-save iptables-restore \
-                 ip6tables ip6tables-save ip6tables-restore; do \
-         ln -fs xtables-legacy-multi "$fn"; done \
-    && cd /opt/src \
     && ( wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://github.com/libreswan/libreswan/archive/v${SWAN_VER}.tar.gz" \
       || wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz" ) \
     && tar xzf libreswan.tar.gz \
