@@ -35,6 +35,14 @@ RUN set -x \
          bison flex gcc make libc-dev bsd-compat-headers linux-pam-dev \
          nss-dev libcap-ng-dev libevent-dev curl-dev nspr-dev
 
+RUN mkdir -p /etc/rsyslog.d \
+    && printf '%s\n' \
+         'if ($syslogfacility-text == "authpriv") then {' \
+         '    action(type="omfile" file="/var/log/auth.log"' \
+         '           fileOwner="root" fileGroup="adm" fileCreateMode="0640")' \
+         '    stop' \
+         '}' > /etc/rsyslog.d/ipsec.conf
+
 RUN wget -t 3 -T 30 -nv -O /opt/src/ikev2.sh https://github.com/hwdsl2/setup-ipsec-vpn/raw/ae78dcdc77546a7856dff783a2cbf5305ac56817/extras/ikev2setup.sh \
     && chmod +x /opt/src/ikev2.sh \
     && ln -s /opt/src/ikev2.sh /usr/bin
