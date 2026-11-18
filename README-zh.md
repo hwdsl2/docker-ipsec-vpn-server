@@ -26,8 +26,7 @@ IPsec VPN 可以加密你的网络流量，以防止在通过因特网传送时�
 - **不使用 Docker：** [IPsec VPN 安装脚本](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)
 - **VPN：** [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/docs/README-zh.md)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/docs/README-zh.md)、[Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/docs/README-zh.md)
 - **AI：** [自托管 AI 套件](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/docs/README-zh.md)，用于本地 LLM、聊天、RAG、语音和 AI 工具
-
-> 📘 对自托管 AI 感兴趣吗？**The Self-Hosted AI Builder’s Guide**（[Kindle](https://books2read.com/aiguide?store=amazon) · [Google Play](https://books2read.com/aiguide?store=google) · [平装书](https://books2read.com/aiguide?store=amazon-paperback&format=PAPERBACK)）是一本关于构建、保护和运维自己的私有 AI 技术栈的实用指南。
+- **图书：** [VPN 服务器完整指南](https://books2read.com/vpnzh) · [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide)
 
 ## 快速开始
 
